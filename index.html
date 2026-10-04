@@ -90,18 +90,19 @@
     };
 
     const lookables = [];
-    function markLookable(object, description) {
+    function markLookable(object, description, category = 'other') {
       object.userData.lookDescription = description;
+      object.userData.lookCategory = category;
       lookables.push(object);
       return object;
     }
-    function addMesh(geometry, material, position, description = null, castShadow = true) {
+    function addMesh(geometry, material, position, description = null, castShadow = true, category = 'other') {
       const mesh = new THREE.Mesh(geometry, material);
       mesh.position.set(...position);
       mesh.castShadow = castShadow;
       mesh.receiveShadow = true;
       scene.add(mesh);
-      if (description) markLookable(mesh, description);
+      if (description) markLookable(mesh, description, category);
       return mesh;
     }
 
@@ -120,17 +121,17 @@
     ramp.castShadow = false;
     ramp.userData.lookDescription = 'Uma colina se estende à frente.';
     scene.add(ramp);
-    markLookable(ramp, ramp.userData.lookDescription);
+    markLookable(ramp, ramp.userData.lookDescription, 'hill');
 
-    const plateau = addMesh(new THREE.PlaneGeometry(4.2, 1.2), materials.grass, [0, 1.8, -5.4], 'Você está olhando para o topo da colina.', false);
+    const plateau = addMesh(new THREE.PlaneGeometry(4.2, 1.2), materials.grass, [0, 1.8, -5.4], 'Você está olhando para o topo da colina.', false, 'hill');
     plateau.rotation.x = -Math.PI / 2;
     plateau.receiveShadow = false;
 
     // Árvore mantida como referência para testar o olhar para cima.
     const treeX = 2.2, treeZ = -2.1;
-    addMesh(new THREE.CylinderGeometry(.2, .28, 2.7, 8), materials.bark, [treeX, 1.35, treeZ], 'O tronco de uma árvore está à frente.');
-    const canopyA = addMesh(new THREE.SphereGeometry(1.0, 12, 10), materials.leaves, [treeX, 3.0, treeZ], 'A copa da árvore está acima de você; galhos e folhas entram no campo de visão.');
-    const canopyB = addMesh(new THREE.SphereGeometry(.72, 12, 10), materials.leaves, [treeX, 3.8, treeZ], 'A parte mais alta da copa aparece acima, se o olhar alcançar essa altura.');
+    addMesh(new THREE.CylinderGeometry(.2, .28, 2.7, 8), materials.bark, [treeX, 1.35, treeZ], 'O tronco de uma árvore está à frente.', true, 'tree');
+    addMesh(new THREE.SphereGeometry(1.0, 12, 10), materials.leaves, [treeX, 3.0, treeZ], 'A copa da árvore está acima de você; galhos e folhas entram no campo de visão.', true, 'tree');
+    addMesh(new THREE.SphereGeometry(.72, 12, 10), materials.leaves, [treeX, 3.8, treeZ], 'A parte mais alta da copa aparece acima, se o olhar alcançar essa altura.', true, 'tree');
 
     const blockers = [{ x: treeX, z: treeZ, radius: .52 }];
 
@@ -284,32 +285,61 @@
     }
     function lookDescription() {
       setCamera();
-      const raycaster = new THREE.Raycaster();
+      scene.updateMatrixWorld(true);
       const direction = new THREE.Vector3();
       camera.getWorldDirection(direction);
-      raycaster.set(camera.position, direction);
-      raycaster.far = 22;
-      const hits = raycaster.intersectObjects(lookables, false);
-      if (hits.length) {
-        const object = hits[0].object;
-        if (object === ramp) {
-          const toward = direction.y;
-          const forwardPoint = new THREE.Vector3(player.x, 0, player.z).add(direction.clone().multiplyScalar(1.2));
-          const slopeDelta = heightAt(forwardPoint.x, forwardPoint.z) - heightAt(player.x, player.z);
-          if (slopeDelta > .04) return 'Uma encosta sobe à frente.';
-          if (slopeDelta < -.04) return 'Uma encosta desce à frente.';
-          if (toward > .25) return 'Você olha para a parte mais alta da encosta.';
-          return 'A encosta ocupa a direção do olhar.';
-        }
-        return object.userData.lookDescription || 'Há um elemento do terreno à frente.';
+      const degrees = (player.yaw * 180 / Math.PI + 360) % 360;
+      const sectors = ['norte', 'nordeste', 'leste', 'sudeste', 'sul', 'sudoeste', 'oeste', 'noroeste'];
+      const heading = `${sectors[Math.round(degrees / 45) % 8]}, aproximadamente ${Math.round(degrees)} graus a partir do norte no sentido horário`;
+      const targets = [
+        { category: 'tree', name: 'o tronco da árvore', point: new THREE.Vector3(treeX, 1.35, treeZ) },
+        { category: 'tree', name: 'a copa da árvore', point: new THREE.Vector3(treeX, 3.0, treeZ) },
+        { category: 'tree', name: 'a parte mais alta da copa', point: new THREE.Vector3(treeX, 4.15, treeZ) },
+        { category: 'hill', name: 'a encosta da colina', point: new THREE.Vector3(0, .9, -2.95) },
+        { category: 'hill', name: 'o topo da colina', point: new THREE.Vector3(0, 1.8, -5.4) }
+      ];
+      const raycaster = new THREE.Raycaster();
+      const visible = [];
+      for (const target of targets) {
+        const screen = target.point.clone().project(camera);
+        if (screen.z < -1 || screen.z > 1 || Math.abs(screen.x) > 1 || Math.abs(screen.y) > 1) continue;
+        const offset = target.point.clone().sub(camera.position);
+        const distance = offset.length();
+        raycaster.set(camera.position, offset.normalize());
+        raycaster.far = distance + .1;
+        const blocker = raycaster.intersectObjects(lookables, false).find(hit =>
+          hit.distance < distance - .25 && hit.object.userData.lookCategory !== target.category
+        );
+        if (blocker) continue;
+        const score = screen.x * screen.x * .8 + screen.y * screen.y;
+        visible.push({ ...target, screen, distance, score });
       }
-      if (player.pitch > .28) return 'Acima, céu aberto; nenhum objeto está no centro do olhar neste campo de visão.';
-      if (player.pitch < -.3) return 'Abaixo, o chão do caminho está dentro do olhar.';
+      visible.sort((a, b) => a.score - b.score);
+      if (visible.length && visible[0].score < .65) {
+        const target = visible[0];
+        const side = target.screen.x < -.22 ? 'à esquerda' : target.screen.x > .22 ? 'à direita' : 'à frente';
+        let feature = target.name;
+        if (target.category === 'hill') {
+          const forwardX = player.x + Math.sin(player.yaw) * 4;
+          const forwardZ = player.z - Math.cos(player.yaw) * 4;
+          const slopeDelta = heightAt(forwardX, forwardZ) - heightAt(player.x, player.z);
+          if (slopeDelta > .08) feature = 'a encosta da colina, que sobe nessa direção';
+          else if (slopeDelta < -.08) feature = 'a encosta da colina, que desce nessa direção';
+        }
+        return `${feature} está ${side}, a aproximadamente ${target.distance.toFixed(1)} unidades. O olhar aponta para ${heading}.`;
+      }
+      if (visible.length) {
+        const target = visible[0];
+        const side = target.screen.x < 0 ? 'à esquerda' : 'à direita';
+        return `${target.name} aparece ${side} no campo de visão. O olhar aponta para ${heading}.`;
+      }
+      if (player.pitch > .28) return `Céu aberto acima. O olhar aponta para ${heading}.`;
+      if (player.pitch < -.3) return `O chão do campo está abaixo. O olhar aponta para ${heading}.`;
       if (Math.abs(direction.y) < .6) {
         const boundary = boundaryAhead(player.x, player.z, { x: direction.x, z: direction.z });
-        if (boundary.distance < 2.5) return `O limite ${boundary.side} do campo está à frente.`;
+        if (boundary.distance < 3) return `O limite ${boundary.side} do campo está à frente. O olhar aponta para ${heading}.`;
       }
-      return 'Na direção do olhar, há chão aberto. Continue virando para explorar os lados.';
+      return `Campo aberto à frente na direção ${heading}; a colina e a árvore não estão no centro do olhar.`;
     }
 
     function chooseDirection(code) {
