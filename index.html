@@ -318,15 +318,16 @@
       if (visible.length && visible[0].score < .65) {
         const target = visible[0];
         const side = target.screen.x < -.22 ? 'à esquerda' : target.screen.x > .22 ? 'à direita' : 'à frente';
-        let feature = target.name;
         if (target.category === 'hill') {
           const forwardX = player.x + Math.sin(player.yaw) * 4;
           const forwardZ = player.z - Math.cos(player.yaw) * 4;
           const slopeDelta = heightAt(forwardX, forwardZ) - heightAt(player.x, player.z);
-          if (slopeDelta > .08) feature = 'a encosta da colina, que sobe nessa direção';
-          else if (slopeDelta < -.08) feature = 'a encosta da colina, que desce nessa direção';
+          let slopeText = 'A lateral da colina está no campo de visão.';
+          if (slopeDelta > .08) slopeText = 'A encosta sobe nessa direção.';
+          else if (slopeDelta < -.08) slopeText = 'A encosta desce nessa direção.';
+          return `A colina está ${side}, a aproximadamente ${target.distance.toFixed(1)} unidades. ${slopeText} O olhar aponta para ${heading}.`;
         }
-        return `${feature} está ${side}, a aproximadamente ${target.distance.toFixed(1)} unidades. O olhar aponta para ${heading}.`;
+        return `${target.name[0].toUpperCase()}${target.name.slice(1)} está ${side}, a aproximadamente ${target.distance.toFixed(1)} unidades. O olhar aponta para ${heading}.`;
       }
       if (visible.length) {
         const target = visible[0];
