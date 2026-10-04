@@ -16,7 +16,7 @@ Abra a página publicada no GitHub Pages. O navegador precisa permitir WebGL e c
 - Setas cima/baixo: olhar para cima/baixo sem deslocar o personagem.
 - C: anunciar as coordenadas atuais X, Y e Z em unidades do cenário.
 
-As direções de movimento são fixas no cenário; A e D não são strafe. A descrição da direção central do olhar aparece na tela e numa região acessível para leitor de tela.
+As direções de movimento são fixas no cenário; A e D não são strafe. Ao olhar, a página descreve os alvos que estão no campo de visão, sua posição relativa e o rumo aproximado; quando não há um alvo visível, informa o rumo e o que ocupa a visão. A descrição aparece numa região acessível para leitor de tela.
 
 ## Pistas sonoras provisórias
 
