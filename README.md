@@ -16,7 +16,7 @@ Abra a página publicada no GitHub Pages. O navegador precisa permitir WebGL e c
 - Setas cima/baixo: inclinar o olhar 15° para cima/baixo, sem deslocar o personagem.
 - C: anunciar as coordenadas atuais X, Y e Z em unidades do cenário.
 
-As direções de movimento são fixas nos eixos do cenário; A e D não são strafe. A descrição separa o rumo do olhar da direção selecionada para caminhar; “à esquerda” e “à direita” referem-se sempre à posição de um objeto no campo de visão, não à caminhada. As setas para cima/baixo descrevem o que está no centro da visão vertical. A descrição aparece numa região acessível para leitor de tela. Ao trocar uma tecla de movimento pela oposta, ela substitui a direção anterior; soltar a tecla ativa interrompe o deslocamento, sem retomar automaticamente uma tecla anterior.
+As direções de movimento são fixas nos eixos do cenário; A e D não são strafe. A descrição separa o rumo do olhar da direção selecionada para caminhar; “à esquerda” e “à direita” referem-se sempre à posição de um objeto no campo de visão, não à caminhada. As setas para cima/baixo descrevem o que está no centro da visão vertical. A descrição aparece numa região acessível para leitor de tela, mas caminhar não narra cada tecla ou passo. Ao trocar uma tecla de movimento pela oposta, ela substitui a direção anterior; soltar a tecla ativa interrompe o deslocamento, sem retomar automaticamente uma tecla anterior.
 
 ## Pistas sonoras provisórias
 
