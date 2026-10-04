@@ -34,7 +34,7 @@
       <h1>Phoenix Island — teste de caminhada em 3D</h1>
       <div id="instructions">
         <p><strong>Movimento:</strong> W norte, S sul, A oeste, D leste, sempre nos eixos fixos do cenário. Ao pressionar, o personagem vira para essa direção; enquanto a tecla fica pressionada, caminha. A tecla oposta substitui a direção anterior; soltar a tecla ativa para o movimento.</p>
-        <p><strong>Olhar:</strong> setas esquerda/direita giram a visão 45° por toque; cima/baixo inclinam o olhar 15° sem mover o personagem. A descrição separa o rumo do olhar do rumo de caminhada; quando diz que um objeto está à esquerda ou à direita, isso é relativo ao campo de visão. Pressione C para anunciar as coordenadas X, Y e Z.</p>
+        <p><strong>Olhar:</strong> setas esquerda/direita giram a visão 45° por toque; cima/baixo inclinam o olhar 15° sem mover o personagem. A descrição separa o rumo do olhar do rumo de caminhada; quando diz que um objeto está à esquerda ou à direita, isso é relativo ao campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar as coordenadas X, Y e Z.</p>
         <p><strong>Sons:</strong> passos ao caminhar; tom agudo para subir a colina, grave para descer; alerta pulsante que fica mais agudo ao se aproximar do limite do campo e um som distinto ao alcançá-lo. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
       </div>
     </header>
@@ -287,7 +287,6 @@
       const degrees = (player.yaw * 180 / Math.PI + 360) % 360;
       const sectors = ['norte', 'norte-nordeste', 'nordeste', 'leste-nordeste', 'leste', 'leste-sudeste', 'sudeste', 'sul-sudeste', 'sul', 'sul-sudoeste', 'sudoeste', 'oeste-sudoeste', 'oeste', 'oeste-noroeste', 'noroeste', 'norte-noroeste'];
       const heading = sectors[Math.round(degrees / 22.5) % 16];
-      const movement = activeDirection ? `Direção de caminhada selecionada: ${activeDirection.name}.` : 'Movimento parado.';
       const targets = [
         { category: 'tree', name: 'o tronco da árvore', point: new THREE.Vector3(treeX, 1.35, treeZ) },
         { category: 'tree', name: 'a copa da árvore', point: new THREE.Vector3(treeX, 3.0, treeZ) },
@@ -315,14 +314,14 @@
 
       if (player.pitch > .12) {
         const canopy = visible.find(target => target.category === 'tree' && target.name.includes('copa') && Math.abs(target.screen.x) < .55 && Math.abs(target.screen.y) < .42);
-        if (canopy) return `Olhar para cima: ${canopy.name} no centro ou perto do centro, a ${canopy.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}. ${movement}`;
-        return `Olhar para cima: céu aberto no centro da visão, rumo ${heading}. ${movement}`;
+        if (canopy) return `Olhar para cima: ${canopy.name} no centro ou perto do centro, a ${canopy.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
+        return `Olhar para cima: céu aberto no centro da visão, rumo ${heading}.`;
       }
       if (player.pitch < -.12) {
         const trunk = visible.find(target => target.category === 'tree' && target.name.includes('tronco') && Math.abs(target.screen.x) < .55 && Math.abs(target.screen.y) < .48);
-        if (trunk) return `Olhar para baixo: ${trunk.name} está no campo de visão, a ${trunk.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}. ${movement}`;
+        if (trunk) return `Olhar para baixo: ${trunk.name} está no campo de visão, a ${trunk.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
         const surface = heightAt(player.x, player.z) > .05 ? 'a encosta da colina' : 'o chão do campo';
-        return `Olhar para baixo: ${surface} ocupa o centro da visão, rumo ${heading}. ${movement}`;
+        return `Olhar para baixo: ${surface} ocupa o centro da visão, rumo ${heading}.`;
       }
 
       const centered = visible.find(target => target.score < .16);
@@ -335,18 +334,18 @@
           let slopeText = 'A lateral da colina está visível.';
           if (slopeDelta > .08) slopeText = 'A encosta sobe na direção do olhar.';
           else if (slopeDelta < -.08) slopeText = 'A encosta desce na direção do olhar.';
-          return `Olhar horizontal: a colina está ${side}, a ${centered.distance.toFixed(1)} unidades. ${slopeText} Rumo do olhar: ${heading}. ${movement}`;
+          return `Olhar horizontal: a colina está ${side}, a ${centered.distance.toFixed(1)} unidades. ${slopeText} Rumo do olhar: ${heading}.`;
         }
-        return `Olhar horizontal: ${centered.name} está ${side}, a ${centered.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}. ${movement}`;
+        return `Olhar horizontal: ${centered.name} está ${side}, a ${centered.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
       }
       if (visible.length) {
         const target = visible[0];
         const side = target.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
-        return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro. Rumo do olhar: ${heading}. ${movement}`;
+        return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro. Rumo do olhar: ${heading}.`;
       }
       const boundary = boundaryAhead(player.x, player.z, { x: direction.x, z: direction.z });
-      if (boundary.distance < 3) return `Olhar horizontal: o limite ${boundary.side} está a ${boundary.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}. ${movement}`;
-      return `Olhar horizontal: campo aberto no rumo ${heading}. ${movement}`;
+      if (boundary.distance < 3) return `Olhar horizontal: o limite ${boundary.side} está a ${boundary.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
+      return `Olhar horizontal: campo aberto no rumo ${heading}.`;
     }
 
     function chooseDirection(code) {
@@ -357,14 +356,19 @@
       terrainChange(activeDirection);
       nextEdgeAt = 0;
     }
+    function movementCodeFromEvent(event) {
+      const letter = String(event.key || '').toLowerCase();
+      const byLetter = { w: 'KeyW', a: 'KeyA', s: 'KeyS', d: 'KeyD' };
+      return byLetter[letter] || (directionForKey[event.code] ? event.code : null);
+    }
 
     window.addEventListener('keydown', async event => {
       const code = event.code;
-      if (directionForKey[code]) {
+      const movementCode = movementCodeFromEvent(event);
+      if (movementCode) {
         event.preventDefault();
         if (event.repeat) return;
-        chooseDirection(code);
-        announce(`Direção de caminhada selecionada: ${activeDirection.name}.`);
+        chooseDirection(movementCode);
         await unlockAudio();
         return;
       }
@@ -386,11 +390,11 @@
       }
     });
     window.addEventListener('keyup', event => {
-      if (!directionForKey[event.code] || activeCode !== event.code) return;
+      const movementCode = movementCodeFromEvent(event);
+      if (!movementCode || activeCode !== movementCode) return;
       activeDirection = null;
       activeCode = null;
       obstacleContact = false;
-      announce('Movimento parado.');
     });
     window.addEventListener('blur', () => { activeDirection = null; activeCode = null; obstacleContact = false; });
 
