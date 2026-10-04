@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Protótipo 3D de Phoenix Island para testar caminhada, olhar e orientação por som.">
+  <title>Phoenix Island — Teste de caminhada 3D</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #111820; color: #f3f6f8; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; }
+    main { min-height: 100vh; display: grid; grid-template-rows: auto 1fr; }
+    header { padding: 1rem 1.25rem; background: #18232c; border-bottom: 1px solid #40515b; }
+    h1 { margin: 0 0 .4rem; font-size: 1.35rem; }
+    p { margin: .35rem 0; line-height: 1.45; }
+    #instructions { max-width: 80rem; font-size: .96rem; }
+    #instructions strong { color: #b8e2ff; }
+    #stage { position: relative; min-height: 55vh; height: calc(100vh - 190px); overflow: hidden; background: #87b7c8; }
+    canvas { display: block; width: 100%; height: 100%; outline: none; }
+    #readout { position: absolute; left: 1rem; right: 1rem; bottom: 1rem; max-width: 54rem; padding: .8rem 1rem; border: 1px solid #637783; border-radius: .5rem; background: rgb(12 20 25 / 88%); line-height: 1.45; }
+    #readout strong { color: #b8e2ff; }
+    #webgl-warning { padding: 1rem; background: #472b16; color: #ffe4c4; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    @media (max-width: 700px) {
+      header { padding: .75rem; }
+      #stage { height: calc(100vh - 250px); min-height: 45vh; }
+      #readout { left: .5rem; right: .5rem; bottom: .5rem; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Phoenix Island — teste de caminhada em 3D</h1>
+      <div id="instructions">
+        <p><strong>Movimento:</strong> W norte, S sul, A oeste, D leste. Ao pressionar, o personagem vira para a direção fixa do cenário; mantendo a tecla pressionada, caminha.</p>
+        <p><strong>Olhar:</strong> setas esquerda/direita olham para os lados; cima/baixo olham para cima/baixo sem mover o personagem. A descrição aparece abaixo da cena e é anunciada pelo leitor de tela.</p>
+        <p><strong>Sons:</strong> passos ao caminhar; tom agudo para subida, grave para descida; alerta pulsante que fica mais agudo perto da borda sem descida segura. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
+      </div>
+    </header>
+    <section id="stage" aria-label="Cena tridimensional do protótipo">
+      <div id="webgl-warning" hidden>Este navegador ou dispositivo não disponibilizou WebGL para a cena 3D.</div>
+      <div id="readout" role="status" aria-live="polite" aria-atomic="true"><strong>Descrição:</strong> posição inicial. À frente há um caminho; use as setas para olhar e receber uma descrição.</div>
+    </section>
+  </main>
+
+  <script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
+
+    const stage = document.querySelector('#stage');
+    const readout = document.querySelector('#readout');
+    const warning = document.querySelector('#webgl-warning');
+    const descriptionText = readout;
+
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    } catch (error) {
+      warning.hidden = false;
+      throw error;
+    }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    stage.prepend(renderer.domElement);
+    renderer.domElement.setAttribute('aria-hidden', 'true');
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x9fc7d1);
+    scene.fog = new THREE.Fog(0x9fc7d1, 22, 48);
+
+    const camera = new THREE.PerspectiveCamera(68, 1, 0.1, 100);
+    const player = { x: 0, z: 4.2, eye: 1.65, yaw: 0, pitch: 0 };
+    camera.position.set(player.x, player.eye, player.z);
+
+    scene.add(new THREE.HemisphereLight(0xd9f1ff, 0x34432e, 2.0));
+    const sun = new THREE.DirectionalLight(0xffe2b3, 2.3);
+    sun.position.set(-8, 14, 7);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(1024, 1024);
+    scene.add(sun);
+
+    const materials = {
+      grass: new THREE.MeshStandardMaterial({ color: 0x667a4b, roughness: 1 }),
+      path: new THREE.MeshStandardMaterial({ color: 0x9b8463, roughness: 1 }),
+      hill: new THREE.MeshStandardMaterial({ color: 0x7d694d, roughness: 1, side: THREE.DoubleSide }),
+      rock: new THREE.MeshStandardMaterial({ color: 0x626a6b, roughness: 1 }),
+      bark: new THREE.MeshStandardMaterial({ color: 0x59442e, roughness: 1 }),
+      leaves: new THREE.MeshStandardMaterial({ color: 0x315f45, roughness: 1 }),
+      cliff: new THREE.MeshStandardMaterial({ color: 0x51463c, roughness: 1 }),
+      water: new THREE.MeshStandardMaterial({ color: 0x276d86, roughness: .35, metalness: .1 }),
+      marker: new THREE.MeshStandardMaterial({ color: 0xd3b54b, roughness: .8 })
+    };
+
+    const lookables = [];
+    function markLookable(object, description) {
+      object.userData.lookDescription = description;
+      lookables.push(object);
+      return object;
+    }
+    function addMesh(geometry, material, position, description = null, castShadow = true) {
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.position.set(...position);
+      mesh.castShadow = castShadow;
+      mesh.receiveShadow = true;
+      scene.add(mesh);
+      if (description) markLookable(mesh, description);
+      return mesh;
+    }
+
+    // Ilha simples: uma área de chão, uma encosta que pode ser subida ou descida e uma borda.
+    const ground = addMesh(new THREE.PlaneGeometry(26, 22), materials.grass, [0, -0.08, -1.8], null, false);
+    ground.rotation.x = -Math.PI / 2;
+    const path = addMesh(new THREE.PlaneGeometry(5.2, 20), materials.path, [0, -0.045, -1.7], null, false);
+    path.rotation.x = -Math.PI / 2;
+
+    const rampGeometry = new THREE.BufferGeometry();
+    rampGeometry.setAttribute('position', new THREE.Float32BufferAttribute([
+      -2.8, 0, -4,  2.8, 0, -4,  -2.8, 2.6, -9,  2.8, 2.6, -9
+    ], 3));
+    rampGeometry.setIndex([0, 1, 2, 1, 3, 2]);
+    rampGeometry.computeVertexNormals();
+    const ramp = new THREE.Mesh(rampGeometry, materials.hill);
+    ramp.receiveShadow = true;
+    ramp.castShadow = true;
+    ramp.userData.lookDescription = 'Uma encosta de terra se estende à frente.';
+    scene.add(ramp);
+    markLookable(ramp, ramp.userData.lookDescription);
+
+    const plateau = addMesh(new THREE.PlaneGeometry(5.6, 3), materials.hill, [0, 2.6, -10.5], 'Terreno elevado no topo da encosta.', false);
+    plateau.rotation.x = -Math.PI / 2;
+    addMesh(new THREE.BoxGeometry(5.6, 3.5, .35), materials.cliff, [0, .85, -12.05], 'O terreno elevado termina numa parede íngreme.', false);
+
+    // Um obstáculo central ajuda a testar o olhar lateral e o contorno do caminho.
+    const boulder = addMesh(new THREE.DodecahedronGeometry(.82, 1), materials.rock, [0, .72, .2], 'Uma rocha grande bloqueia a passagem reta; há espaço para procurar um caminho ao redor.');
+    boulder.scale.set(1.2, .9, 1);
+
+    // Árvore com copa alta para testar o olhar para cima.
+    const treeX = 4.1, treeZ = -1.8;
+    const trunk = addMesh(new THREE.CylinderGeometry(.24, .34, 3.2, 8), materials.bark, [treeX, 1.6, treeZ], 'O tronco de uma árvore está à frente.');
+    const canopyA = addMesh(new THREE.ConeGeometry(1.55, 2.5, 8), materials.leaves, [treeX, 3.65, treeZ], 'A copa da árvore está acima de você; galhos e folhas entram no campo de visão.');
+    const canopyB = addMesh(new THREE.ConeGeometry(1.15, 2.1, 8), materials.leaves, [treeX, 4.7, treeZ], 'A parte mais alta da copa aparece acima, se o olhar alcançar essa altura.');
+    canopyA.rotation.y = .25;
+    canopyB.rotation.y = -.2;
+
+    // Marcadores baixos destacam o limite seguro sem formar uma barreira visual alta.
+    const edgeZ = 7.6;
+    const edgeLine = addMesh(new THREE.BoxGeometry(24, .12, .14), materials.marker, [0, .03, edgeZ], 'À frente, a ilha termina numa borda alta; não há caminho seguro para descer.', false);
+    addMesh(new THREE.BoxGeometry(24, 3.8, .5), materials.cliff, [0, -1.9, 8.15], 'A ilha termina numa borda íngreme sobre o mar.', false);
+    const sea = addMesh(new THREE.PlaneGeometry(50, 30), materials.water, [0, -3.85, 20], null, false);
+    sea.rotation.x = -Math.PI / 2;
+
+    // Pequenos marcos no alto e no caminho ajudam na percepção de distância.
+    addMesh(new THREE.CylinderGeometry(.22, .35, .7, 8), materials.marker, [1.8, 2.95, -10.1], 'Um marco baixo está no topo da encosta.');
+    const horizonRock = addMesh(new THREE.DodecahedronGeometry(.65, 0), materials.rock, [-4.3, .56, -4.2], 'Uma pedra menor fica à esquerda da encosta.');
+    horizonRock.scale.set(1.2, .8, .9);
+
+    const blockers = [
+      { x: 0, z: .2, radius: 1.12 },
+      { x: treeX, z: treeZ, radius: .48 },
+      { x: -4.3, z: -4.2, radius: .75 }
+    ];
+
+    function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
+    function heightAt(x, z) {
+      if (Math.abs(x) <= 2.8 && z < -9 && z >= -11.9) return 2.6;
+      if (Math.abs(x) <= 2.8 && z >= -9 && z <= -4) return 2.6 * ((-z - 4) / 5);
+      return 0;
+    }
+    function isWalkable(x, z) {
+      if (x < -11.7 || x > 11.7 || z < -11.9 || z > 7.18) return false;
+      if (z < -9 && Math.abs(x) > 2.8) return false;
+      for (const item of blockers) {
+        if (Math.hypot(x - item.x, z - item.z) < item.radius + .34) return false;
+      }
+      return true;
+    }
+
+    const keysDown = new Set();
+    const directionForKey = {
+      KeyW: { name: 'norte', x: 0, z: -1, yaw: 0 },
+      KeyS: { name: 'sul', x: 0, z: 1, yaw: Math.PI },
+      KeyA: { name: 'oeste', x: -1, z: 0, yaw: -Math.PI / 2 },
+      KeyD: { name: 'leste', x: 1, z: 0, yaw: Math.PI / 2 }
+    };
+    const moveOrder = [];
+    let activeDirection = null;
+    let audioContext = null;
+    let audioBuffers = {};
+    let audioReady = false;
+    let nextStepAt = 0;
+    let nextEdgeAt = 0;
+    let lastTerrainCue = '';
+    let lastAnnouncement = '';
+
+    async function unlockAudio() {
+      if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioContext.state === 'suspended') await audioContext.resume();
+      if (!audioReady) {
+        audioReady = true;
+        for (const [name, path] of Object.entries({
+          step: './assets/footstep.wav',
+          up: './assets/slope-up.wav',
+          down: './assets/slope-down.wav'
+        })) {
+          try {
+            const response = await fetch(path);
+            if (!response.ok) continue;
+            audioBuffers[name] = await audioContext.decodeAudioData(await response.arrayBuffer());
+          } catch (_) {
+            // Se um arquivo não carregar, o protótipo continua e usa tons sintetizados como reserva.
+          }
+        }
+      }
+    }
+    function playBuffer(name, volume = .42) {
+      if (!audioContext || !audioBuffers[name]) return false;
+      const source = audioContext.createBufferSource();
+      const gain = audioContext.createGain();
+      source.buffer = audioBuffers[name];
+      gain.gain.value = volume;
+      source.connect(gain).connect(audioContext.destination);
+      source.start();
+      return true;
+    }
+    function playTone(frequency, duration = .16, type = 'sine', volume = .075) {
+      if (!audioContext) return;
+      const oscillator = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      const now = audioContext.currentTime;
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(frequency, now);
+      gain.gain.setValueAtTime(.0001, now);
+      gain.gain.exponentialRampToValueAtTime(volume, now + .015);
+      gain.gain.exponentialRampToValueAtTime(.0001, now + duration);
+      oscillator.connect(gain).connect(audioContext.destination);
+      oscillator.start(now);
+      oscillator.stop(now + duration + .02);
+    }
+    function playStep() {
+      if (!playBuffer('step', .32)) playTone(105, .09, 'triangle', .035);
+    }
+    function terrainChange(direction) {
+      const here = heightAt(player.x, player.z);
+      const ahead = heightAt(player.x + direction.x * .75, player.z + direction.z * .75);
+      const difference = ahead - here;
+      if (difference > .035) {
+        if (playBuffer('up', .3) === false) playTone(760, .18, 'sine', .055);
+        lastTerrainCue = 'subida';
+      } else if (difference < -.035) {
+        if (playBuffer('down', .3) === false) playTone(245, .2, 'sine', .055);
+        lastTerrainCue = 'descida';
+      } else {
+        lastTerrainCue = '';
+      }
+    }
+    function playEdgeWarning(distance) {
+      const proximity = clamp(1 - distance / 3.4, 0, 1);
+      const frequency = 330 + proximity * 670;
+      // Timbre pulsante distinto dos tons contínuos de subida e descida.
+      playTone(frequency, .12, 'square', .035);
+    }
+
+    function setCamera() {
+      camera.position.set(player.x, player.eye + heightAt(player.x, player.z), player.z);
+      const cp = Math.cos(player.pitch);
+      const direction = new THREE.Vector3(
+        Math.sin(player.yaw) * cp,
+        Math.sin(player.pitch),
+        -Math.cos(player.yaw) * cp
+      );
+      camera.lookAt(camera.position.clone().add(direction));
+      camera.updateMatrixWorld(true);
+    }
+    function announce(text) {
+      if (text === lastAnnouncement) text += ' ';
+      lastAnnouncement = text;
+      descriptionText.innerHTML = '<strong>Descrição:</strong> ' + text;
+    }
+    function lookDescription() {
+      setCamera();
+      const raycaster = new THREE.Raycaster();
+      const direction = new THREE.Vector3();
+      camera.getWorldDirection(direction);
+      raycaster.set(camera.position, direction);
+      raycaster.far = 22;
+      const hits = raycaster.intersectObjects(lookables, false);
+      if (hits.length) {
+        const object = hits[0].object;
+        if (object === ramp) {
+          const toward = direction.y;
+          const forwardPoint = new THREE.Vector3(player.x, 0, player.z).add(direction.clone().multiplyScalar(1.2));
+          const slopeDelta = heightAt(forwardPoint.x, forwardPoint.z) - heightAt(player.x, player.z);
+          if (slopeDelta > .04) return 'Uma encosta sobe à frente.';
+          if (slopeDelta < -.04) return 'Uma encosta desce à frente.';
+          if (toward > .25) return 'Você olha para a parte mais alta da encosta.';
+          return 'A encosta ocupa a direção do olhar.';
+        }
+        return object.userData.lookDescription || 'Há um elemento do terreno à frente.';
+      }
+      if (player.pitch > .28) return 'Acima, céu aberto; nenhum objeto está no centro do olhar neste campo de visão.';
+      if (player.pitch < -.3) return 'Abaixo, o chão do caminho está dentro do olhar.';
+      if (player.yaw > 2.2 || player.yaw < -2.2) {
+        const distance = edgeZ - player.z;
+        if (distance < 12) return 'Na direção sul, o terreno termina numa borda íngreme; não há descida segura.';
+      }
+      return 'Na direção do olhar, há chão aberto. Continue virando para explorar os lados.';
+    }
+
+    function chooseDirection(code) {
+      activeDirection = directionForKey[code] || null;
+      if (!activeDirection) return;
+      player.yaw = activeDirection.yaw;
+      terrainChange(activeDirection);
+      nextEdgeAt = 0;
+    }
+    function restoreDirection() {
+      const last = [...moveOrder].reverse().find(code => keysDown.has(code));
+      activeDirection = last ? directionForKey[last] : null;
+      if (activeDirection) {
+        player.yaw = activeDirection.yaw;
+        terrainChange(activeDirection);
+      }
+    }
+
+    window.addEventListener('keydown', async event => {
+      const code = event.code;
+      if (directionForKey[code]) {
+        event.preventDefault();
+        if (!keysDown.has(code)) {
+          keysDown.add(code);
+          moveOrder.push(code);
+          chooseDirection(code);
+          await unlockAudio();
+        }
+        return;
+      }
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(code)) {
+        event.preventDefault();
+        if (event.repeat) return;
+        const turn = Math.PI / 12;
+        if (code === 'ArrowLeft') player.yaw -= turn;
+        if (code === 'ArrowRight') player.yaw += turn;
+        if (code === 'ArrowUp') player.pitch = clamp(player.pitch + turn, -1.2, 1.2);
+        if (code === 'ArrowDown') player.pitch = clamp(player.pitch - turn, -1.2, 1.2);
+        announce(lookDescription());
+      }
+    });
+    window.addEventListener('keyup', event => {
+      if (!directionForKey[event.code]) return;
+      keysDown.delete(event.code);
+      const index = moveOrder.lastIndexOf(event.code);
+      if (index >= 0) moveOrder.splice(index, 1);
+      if (activeDirection && directionForKey[event.code] === activeDirection) restoreDirection();
+    });
+    window.addEventListener('blur', () => { keysDown.clear(); moveOrder.length = 0; activeDirection = null; });
+
+    const clock = new THREE.Clock();
+    function update(delta) {
+      if (activeDirection) {
+        const distance = 2.4 * delta;
+        const nx = player.x + activeDirection.x * distance;
+        const nz = player.z + activeDirection.z * distance;
+        // Dividir o deslocamento reduz a chance de atravessar um obstáculo num quadro lento.
+        const steps = Math.max(1, Math.ceil(distance / .08));
+        for (let i = 0; i < steps; i++) {
+          const tx = player.x + activeDirection.x * distance / steps;
+          const tz = player.z + activeDirection.z * distance / steps;
+          if (!isWalkable(tx, tz)) break;
+          player.x = tx;
+          player.z = tz;
+        }
+        const now = performance.now();
+        if (now >= nextStepAt) {
+          playStep();
+          nextStepAt = now + 430;
+        }
+        if (activeDirection.z > 0) {
+          const edgeDistance = edgeZ - player.z;
+          if (edgeDistance <= 3.4 && edgeDistance >= 0 && now >= nextEdgeAt) {
+            playEdgeWarning(edgeDistance);
+            nextEdgeAt = now + Math.max(150, 620 * edgeDistance / 3.4);
+          }
+        }
+      }
+      setCamera();
+    }
+    function render() {
+      const delta = Math.min(clock.getDelta(), .05);
+      update(delta);
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
+    }
+    function resize() {
+      const width = stage.clientWidth;
+      const height = stage.clientHeight;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height, false);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+    setCamera();
+    requestAnimationFrame(render);
+  </script>
+</body>
+</html>
