@@ -34,7 +34,7 @@
       <h1>Phoenix Island — teste de caminhada em 3D</h1>
       <div id="instructions">
         <p><strong>Movimento:</strong> W norte, S sul, A oeste, D leste, sempre nos eixos fixos do cenário. Ao pressionar, o personagem vira para essa direção; enquanto a tecla fica pressionada, caminha. A tecla oposta substitui a direção anterior; soltar a tecla ativa para o movimento.</p>
-        <p><strong>Olhar:</strong> setas esquerda/direita olham para os lados; cima/baixo olham para cima/baixo sem mover o personagem. A descrição separa o rumo do olhar do rumo de caminhada; quando diz que um objeto está à esquerda ou à direita, isso é relativo ao campo de visão. Pressione C para anunciar as coordenadas X, Y e Z.</p>
+        <p><strong>Olhar:</strong> setas esquerda/direita giram a visão 45° por toque; cima/baixo inclinam o olhar 15° sem mover o personagem. A descrição separa o rumo do olhar do rumo de caminhada; quando diz que um objeto está à esquerda ou à direita, isso é relativo ao campo de visão. Pressione C para anunciar as coordenadas X, Y e Z.</p>
         <p><strong>Sons:</strong> passos ao caminhar; tom agudo para subir a colina, grave para descer; alerta pulsante que fica mais agudo ao se aproximar do limite do campo e um som distinto ao alcançá-lo. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
       </div>
     </header>
@@ -376,11 +376,12 @@
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(code)) {
         event.preventDefault();
         if (event.repeat) return;
-        const turn = Math.PI / 12;
-        if (code === 'ArrowLeft') player.yaw -= turn;
-        if (code === 'ArrowRight') player.yaw += turn;
-        if (code === 'ArrowUp') player.pitch = clamp(player.pitch + turn, -1.2, 1.2);
-        if (code === 'ArrowDown') player.pitch = clamp(player.pitch - turn, -1.2, 1.2);
+        const horizontalTurn = Math.PI / 4;
+        const verticalTurn = Math.PI / 12;
+        if (code === 'ArrowLeft') player.yaw -= horizontalTurn;
+        if (code === 'ArrowRight') player.yaw += horizontalTurn;
+        if (code === 'ArrowUp') player.pitch = clamp(player.pitch + verticalTurn, -1.2, 1.2);
+        if (code === 'ArrowDown') player.pitch = clamp(player.pitch - verticalTurn, -1.2, 1.2);
         announce(lookDescription());
       }
     });
