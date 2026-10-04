@@ -34,13 +34,13 @@
       <h1>Phoenix Island — teste de caminhada em 3D</h1>
       <div id="instructions">
         <p><strong>Movimento:</strong> W norte, S sul, A oeste, D leste. Ao pressionar, o personagem vira para a direção fixa do cenário; mantendo a tecla pressionada, caminha.</p>
-        <p><strong>Olhar:</strong> setas esquerda/direita olham para os lados; cima/baixo olham para cima/baixo sem mover o personagem. A descrição aparece abaixo da cena e é anunciada pelo leitor de tela.</p>
-        <p><strong>Sons:</strong> passos ao caminhar; tom agudo para subida, grave para descida; alerta pulsante que fica mais agudo perto da borda sem descida segura. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
+        <p><strong>Olhar:</strong> setas esquerda/direita olham para os lados; cima/baixo olham para cima/baixo sem mover o personagem. A descrição aparece abaixo da cena e é anunciada pelo leitor de tela. Pressione C para anunciar as coordenadas X, Y e Z.</p>
+        <p><strong>Sons:</strong> passos ao caminhar; tom agudo para subir a colina, grave para descer; alerta pulsante que fica mais agudo ao se aproximar do limite do campo e um som distinto ao alcançá-lo. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
       </div>
     </header>
     <section id="stage" aria-label="Cena tridimensional do protótipo">
       <div id="webgl-warning" hidden>Este navegador ou dispositivo não disponibilizou WebGL para a cena 3D.</div>
-      <div id="readout" role="status" aria-live="polite" aria-atomic="true"><strong>Descrição:</strong> posição inicial. À frente há um caminho; use as setas para olhar e receber uma descrição.</div>
+      <div id="readout" role="status" aria-live="polite" aria-atomic="true"><strong>Descrição:</strong> posição inicial num pequeno campo com uma colina e uma árvore. Use as setas para olhar, ou C para anunciar as coordenadas.</div>
     </section>
   </main>
 
@@ -71,7 +71,8 @@
     scene.fog = new THREE.Fog(0x9fc7d1, 22, 48);
 
     const camera = new THREE.PerspectiveCamera(68, 1, 0.1, 100);
-    const player = { x: 0, z: 4.2, eye: 1.65, yaw: 0, pitch: 0 };
+    const MAP_BOUNDS = { minX: -6, maxX: 6, minZ: -6, maxZ: 6 };
+    const player = { x: 0, z: 2.5, eye: 1.65, yaw: 0, pitch: 0 };
     camera.position.set(player.x, player.eye, player.z);
 
     scene.add(new THREE.HemisphereLight(0xd9f1ff, 0x34432e, 2.0));
@@ -83,14 +84,9 @@
 
     const materials = {
       grass: new THREE.MeshStandardMaterial({ color: 0x667a4b, roughness: 1 }),
-      path: new THREE.MeshStandardMaterial({ color: 0x9b8463, roughness: 1 }),
       hill: new THREE.MeshStandardMaterial({ color: 0x7d694d, roughness: 1, side: THREE.DoubleSide }),
-      rock: new THREE.MeshStandardMaterial({ color: 0x626a6b, roughness: 1 }),
       bark: new THREE.MeshStandardMaterial({ color: 0x59442e, roughness: 1 }),
-      leaves: new THREE.MeshStandardMaterial({ color: 0x315f45, roughness: 1 }),
-      cliff: new THREE.MeshStandardMaterial({ color: 0x51463c, roughness: 1 }),
-      water: new THREE.MeshStandardMaterial({ color: 0x276d86, roughness: .35, metalness: .1 }),
-      marker: new THREE.MeshStandardMaterial({ color: 0xd3b54b, roughness: .8 })
+      leaves: new THREE.MeshStandardMaterial({ color: 0x315f45, roughness: 1 })
     };
 
     const lookables = [];
@@ -109,68 +105,63 @@
       return mesh;
     }
 
-    // Ilha simples: uma área de chão, uma encosta que pode ser subida ou descida e uma borda.
-    const ground = addMesh(new THREE.PlaneGeometry(26, 22), materials.grass, [0, -0.08, -1.8], null, false);
+    // Um pequeno pedaço de campo, com uma colina e uma árvore para testes.
+    const ground = addMesh(new THREE.PlaneGeometry(13, 13), materials.grass, [0, -0.08, 0], null, false);
     ground.rotation.x = -Math.PI / 2;
-    const path = addMesh(new THREE.PlaneGeometry(5.2, 20), materials.path, [0, -0.045, -1.7], null, false);
-    path.rotation.x = -Math.PI / 2;
 
     const rampGeometry = new THREE.BufferGeometry();
     rampGeometry.setAttribute('position', new THREE.Float32BufferAttribute([
-      -2.8, 0, -4,  2.8, 0, -4,  -2.8, 2.6, -9,  2.8, 2.6, -9
+      -2.1, 0, -1.1,  2.1, 0, -1.1,  -2.1, 1.8, -4.8,  2.1, 1.8, -4.8
     ], 3));
     rampGeometry.setIndex([0, 1, 2, 1, 3, 2]);
     rampGeometry.computeVertexNormals();
     const ramp = new THREE.Mesh(rampGeometry, materials.hill);
     ramp.receiveShadow = true;
     ramp.castShadow = true;
-    ramp.userData.lookDescription = 'Uma encosta de terra se estende à frente.';
+    ramp.userData.lookDescription = 'Uma colina se estende à frente.';
     scene.add(ramp);
     markLookable(ramp, ramp.userData.lookDescription);
 
-    const plateau = addMesh(new THREE.PlaneGeometry(5.6, 3), materials.hill, [0, 2.6, -10.5], 'Terreno elevado no topo da encosta.', false);
+    const plateau = addMesh(new THREE.PlaneGeometry(4.2, 2.4), materials.grass, [0, 1.8, -5.8], 'Você está olhando para o topo da colina.', false);
     plateau.rotation.x = -Math.PI / 2;
-    addMesh(new THREE.BoxGeometry(5.6, 3.5, .35), materials.cliff, [0, .85, -12.05], 'O terreno elevado termina numa parede íngreme.', false);
 
-    // Um obstáculo central ajuda a testar o olhar lateral e o contorno do caminho.
-    const boulder = addMesh(new THREE.DodecahedronGeometry(.82, 1), materials.rock, [0, .72, .2], 'Uma rocha grande bloqueia a passagem reta; há espaço para procurar um caminho ao redor.');
-    boulder.scale.set(1.2, .9, 1);
-
-    // Árvore com copa alta para testar o olhar para cima.
-    const treeX = 4.1, treeZ = -1.8;
-    const trunk = addMesh(new THREE.CylinderGeometry(.24, .34, 3.2, 8), materials.bark, [treeX, 1.6, treeZ], 'O tronco de uma árvore está à frente.');
+    // Árvore mantida como referência para testar o olhar para cima.
+    const treeX = 3.5, treeZ = -0.8;
+    addMesh(new THREE.CylinderGeometry(.24, .34, 3.2, 8), materials.bark, [treeX, 1.6, treeZ], 'O tronco de uma árvore está à frente.');
     const canopyA = addMesh(new THREE.ConeGeometry(1.55, 2.5, 8), materials.leaves, [treeX, 3.65, treeZ], 'A copa da árvore está acima de você; galhos e folhas entram no campo de visão.');
     const canopyB = addMesh(new THREE.ConeGeometry(1.15, 2.1, 8), materials.leaves, [treeX, 4.7, treeZ], 'A parte mais alta da copa aparece acima, se o olhar alcançar essa altura.');
     canopyA.rotation.y = .25;
     canopyB.rotation.y = -.2;
 
-    // Marcadores baixos destacam o limite seguro sem formar uma barreira visual alta.
-    const edgeZ = 7.6;
-    const edgeLine = addMesh(new THREE.BoxGeometry(24, .12, .14), materials.marker, [0, .03, edgeZ], 'À frente, a ilha termina numa borda alta; não há caminho seguro para descer.', false);
-    addMesh(new THREE.BoxGeometry(24, 3.8, .5), materials.cliff, [0, -1.9, 8.15], 'A ilha termina numa borda íngreme sobre o mar.', false);
-    const sea = addMesh(new THREE.PlaneGeometry(50, 30), materials.water, [0, -3.85, 20], null, false);
-    sea.rotation.x = -Math.PI / 2;
-
-    // Pequenos marcos no alto e no caminho ajudam na percepção de distância.
-    addMesh(new THREE.CylinderGeometry(.22, .35, .7, 8), materials.marker, [1.8, 2.95, -10.1], 'Um marco baixo está no topo da encosta.');
-    const horizonRock = addMesh(new THREE.DodecahedronGeometry(.65, 0), materials.rock, [-4.3, .56, -4.2], 'Uma pedra menor fica à esquerda da encosta.');
-    horizonRock.scale.set(1.2, .8, .9);
-
-    const blockers = [
-      { x: 0, z: .2, radius: 1.12 },
-      { x: treeX, z: treeZ, radius: .48 },
-      { x: -4.3, z: -4.2, radius: .75 }
-    ];
+    const blockers = [{ x: treeX, z: treeZ, radius: .52 }];
 
     function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
     function heightAt(x, z) {
-      if (Math.abs(x) <= 2.8 && z < -9 && z >= -11.9) return 2.6;
-      if (Math.abs(x) <= 2.8 && z >= -9 && z <= -4) return 2.6 * ((-z - 4) / 5);
+      if (Math.abs(x) <= 2.1 && z < -4.8 && z >= MAP_BOUNDS.minZ) return 1.8;
+      if (Math.abs(x) <= 2.1 && z >= -4.8 && z <= -1.1) return 1.8 * ((-z - 1.1) / 3.7);
       return 0;
     }
+    function isInsideMap(x, z) {
+      return x >= MAP_BOUNDS.minX && x <= MAP_BOUNDS.maxX && z >= MAP_BOUNDS.minZ && z <= MAP_BOUNDS.maxZ;
+    }
+    function boundarySide(x, z) {
+      if (x < MAP_BOUNDS.minX) return 'oeste';
+      if (x > MAP_BOUNDS.maxX) return 'leste';
+      if (z < MAP_BOUNDS.minZ) return 'norte';
+      if (z > MAP_BOUNDS.maxZ) return 'sul';
+      return null;
+    }
+    function boundaryAhead(x, z, direction) {
+      const candidates = [];
+      if (direction.x > 0) candidates.push({ side: 'leste', distance: (MAP_BOUNDS.maxX - x) / direction.x });
+      if (direction.x < 0) candidates.push({ side: 'oeste', distance: (MAP_BOUNDS.minX - x) / direction.x });
+      if (direction.z > 0) candidates.push({ side: 'sul', distance: (MAP_BOUNDS.maxZ - z) / direction.z });
+      if (direction.z < 0) candidates.push({ side: 'norte', distance: (MAP_BOUNDS.minZ - z) / direction.z });
+      return candidates.filter(item => item.distance >= 0).sort((a, b) => a.distance - b.distance)[0] || { side: 'campo', distance: Infinity };
+    }
     function isWalkable(x, z) {
-      if (x < -11.7 || x > 11.7 || z < -11.9 || z > 7.18) return false;
-      if (z < -9 && Math.abs(x) > 2.8) return false;
+      if (!isInsideMap(x, z)) return false;
+      if (z < -4.8 && Math.abs(x) > 2.1) return false;
       for (const item of blockers) {
         if (Math.hypot(x - item.x, z - item.z) < item.radius + .34) return false;
       }
@@ -191,6 +182,7 @@
     let audioReady = false;
     let nextStepAt = 0;
     let nextEdgeAt = 0;
+    let boundaryContactSide = null;
     let lastTerrainCue = '';
     let lastAnnouncement = '';
 
@@ -202,7 +194,8 @@
         for (const [name, path] of Object.entries({
           step: './assets/footstep.wav',
           up: './assets/slope-up.wav',
-          down: './assets/slope-down.wav'
+          down: './assets/slope-down.wav',
+          boundary: './assets/boundary.wav'
         })) {
           try {
             const response = await fetch(path);
@@ -256,10 +249,22 @@
       }
     }
     function playEdgeWarning(distance) {
-      const proximity = clamp(1 - distance / 3.4, 0, 1);
+      const proximity = clamp(1 - distance / 2.5, 0, 1);
       const frequency = 330 + proximity * 670;
-      // Timbre pulsante distinto dos tons contínuos de subida e descida.
+      // Alerta pulsante de aproximação, diferente dos tons de inclinação.
       playTone(frequency, .12, 'square', .035);
+    }
+    function playBoundarySound() {
+      // Dois tons descendentes confirmam o contato com o limite do campo.
+      if (playBuffer('boundary', .42)) return;
+      playTone(430, .1, 'triangle', .06);
+      window.setTimeout(() => playTone(310, .12, 'triangle', .06), 135);
+    }
+    function announceCoordinates() {
+      const x = player.x.toFixed(2);
+      const y = heightAt(player.x, player.z).toFixed(2);
+      const z = player.z.toFixed(2);
+      announce(`Coordenadas atuais: X ${x}, Y ${y}, Z ${z}, em unidades do cenário.`);
     }
 
     function setCamera() {
@@ -301,9 +306,9 @@
       }
       if (player.pitch > .28) return 'Acima, céu aberto; nenhum objeto está no centro do olhar neste campo de visão.';
       if (player.pitch < -.3) return 'Abaixo, o chão do caminho está dentro do olhar.';
-      if (player.yaw > 2.2 || player.yaw < -2.2) {
-        const distance = edgeZ - player.z;
-        if (distance < 12) return 'Na direção sul, o terreno termina numa borda íngreme; não há descida segura.';
+      if (Math.abs(direction.y) < .6) {
+        const boundary = boundaryAhead(player.x, player.z, { x: direction.x, z: direction.z });
+        if (boundary.distance < 2.5) return `O limite ${boundary.side} do campo está à frente.`;
       }
       return 'Na direção do olhar, há chão aberto. Continue virando para explorar os lados.';
     }
@@ -336,6 +341,11 @@
         }
         return;
       }
+      if (code === 'KeyC') {
+        event.preventDefault();
+        if (!event.repeat) announceCoordinates();
+        return;
+      }
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(code)) {
         event.preventDefault();
         if (event.repeat) return;
@@ -360,27 +370,37 @@
     function update(delta) {
       if (activeDirection) {
         const distance = 2.4 * delta;
-        const nx = player.x + activeDirection.x * distance;
-        const nz = player.z + activeDirection.z * distance;
+        let moved = false;
         // Dividir o deslocamento reduz a chance de atravessar um obstáculo num quadro lento.
         const steps = Math.max(1, Math.ceil(distance / .08));
         for (let i = 0; i < steps; i++) {
           const tx = player.x + activeDirection.x * distance / steps;
           const tz = player.z + activeDirection.z * distance / steps;
+          if (!isInsideMap(tx, tz)) {
+            const side = boundarySide(tx, tz);
+            if (side && boundaryContactSide !== side) {
+              boundaryContactSide = side;
+              playBoundarySound();
+              announce(`Você alcançou o limite ${side} do campo.`);
+            }
+            break;
+          }
           if (!isWalkable(tx, tz)) break;
           player.x = tx;
           player.z = tz;
+          moved = true;
+          boundaryContactSide = null;
         }
         const now = performance.now();
-        if (now >= nextStepAt) {
+        if (moved && now >= nextStepAt) {
           playStep();
           nextStepAt = now + 430;
         }
-        if (activeDirection.z > 0) {
-          const edgeDistance = edgeZ - player.z;
-          if (edgeDistance <= 3.4 && edgeDistance >= 0 && now >= nextEdgeAt) {
-            playEdgeWarning(edgeDistance);
-            nextEdgeAt = now + Math.max(150, 620 * edgeDistance / 3.4);
+        if (moved) {
+          const boundary = boundaryAhead(player.x, player.z, activeDirection);
+          if (boundary.distance <= 2.5 && boundary.distance >= 0 && now >= nextEdgeAt) {
+            playEdgeWarning(boundary.distance);
+            nextEdgeAt = now + Math.max(150, 620 * boundary.distance / 2.5);
           }
         }
       }
