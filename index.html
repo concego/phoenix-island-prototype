@@ -35,6 +35,7 @@
       <div id="instructions">
         <p><strong>Movimento:</strong> W norte, S sul, A oeste, D leste, sempre nos eixos fixos do cenário. Ao pressionar, o personagem vira para essa direção; enquanto a tecla fica pressionada, caminha. A tecla oposta substitui a direção anterior; soltar a tecla ativa para o movimento.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita giram a visão 45° por toque; cima/baixo inclinam o olhar 15° sem mover o personagem. A descrição separa o rumo do olhar do rumo de caminhada; quando diz que um objeto está à esquerda ou à direita, isso é relativo ao campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar as coordenadas X, Y e Z.</p>
+        <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos; com as mãos livres, aproxime-se, mire o tronco e pressione Espaço para se segurar. Enquanto estiver preso ao tronco, mantenha W pressionado para subir; ao alcançar o galho, a subida termina e você fica sobre ele. No galho, use W/S/A/D para caminhar até uma das quatro pontas; pressione Espaço na ponta para se segurar e mantenha S pressionado para descer até o chão. Espaço solta a qualquer momento em que você estiver se segurando na árvore.</p>
         <p><strong>Sons:</strong> passos ao caminhar; tom agudo para subir a colina, grave para descer; alerta pulsante que fica mais agudo ao se aproximar do limite do campo e um som distinto ao alcançá-lo. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
       </div>
     </header>
@@ -72,7 +73,7 @@
 
     const camera = new THREE.PerspectiveCamera(68, 1, 0.1, 100);
     const MAP_BOUNDS = { minX: -6, maxX: 6, minZ: -6, maxZ: 6 };
-    const player = { x: 0, z: 2.5, eye: 1.65, yaw: 0, pitch: 0 };
+    const player = { x: 0, z: 2.5, eye: 1.65, yaw: 0, pitch: 0, climbHeight: 0 };
     camera.position.set(player.x, player.eye, player.z);
 
     scene.add(new THREE.HemisphereLight(0xd9f1ff, 0x34432e, 2.0));
@@ -127,9 +128,16 @@
     plateau.rotation.x = -Math.PI / 2;
     plateau.receiveShadow = false;
 
-    // Árvore mantida como referência para testar o olhar para cima.
+    // Árvore, com um cruzamento de galhos que serve de patamar de teste.
     const treeX = 3.8, treeZ = .2;
-    addMesh(new THREE.CylinderGeometry(.2, .28, 2.7, 8), materials.bark, [treeX, 1.35, treeZ], 'O tronco de uma árvore está à frente.', true, 'tree');
+    const TREE_BRANCH_HEIGHT = 2.75;
+    const TREE_BRANCH_REACH = 1.8;
+    const TREE_BRANCH_HALF_WIDTH = .32;
+    const treeTrunk = addMesh(new THREE.CylinderGeometry(.2, .28, 2.7, 8), materials.bark, [treeX, 1.35, treeZ], 'O tronco de uma árvore está à frente.', true, 'tree');
+    const branchX = addMesh(new THREE.CylinderGeometry(.16, .22, TREE_BRANCH_REACH * 2, 8), materials.bark, [treeX, 2.56, treeZ], 'Um galho horizontal cruza o tronco.', true, 'tree');
+    branchX.rotation.z = Math.PI / 2;
+    const branchZ = addMesh(new THREE.CylinderGeometry(.16, .22, TREE_BRANCH_REACH * 2, 8), materials.bark, [treeX, 2.56, treeZ], 'Um galho horizontal cruza o tronco.', true, 'tree');
+    branchZ.rotation.x = Math.PI / 2;
     addMesh(new THREE.SphereGeometry(1.0, 12, 10), materials.leaves, [treeX, 3.0, treeZ], 'A copa da árvore está acima de você; galhos e folhas entram no campo de visão.', true, 'tree');
     addMesh(new THREE.SphereGeometry(.72, 12, 10), materials.leaves, [treeX, 3.8, treeZ], 'A parte mais alta da copa aparece acima, se o olhar alcançar essa altura.', true, 'tree');
 
@@ -168,6 +176,20 @@
       if (obstacleAt(x, z)) return false;
       return true;
     }
+    function isOnBranch(x, z) {
+      if (!isInsideMap(x, z)) return false;
+      const dx = x - treeX, dz = z - treeZ;
+      const centralFork = Math.abs(dx) <= TREE_BRANCH_HALF_WIDTH && Math.abs(dz) <= TREE_BRANCH_HALF_WIDTH;
+      const eastWestArm = Math.abs(dz) <= TREE_BRANCH_HALF_WIDTH && Math.abs(dx) <= TREE_BRANCH_REACH;
+      const northSouthArm = Math.abs(dx) <= TREE_BRANCH_HALF_WIDTH && Math.abs(dz) <= TREE_BRANCH_REACH;
+      return centralFork || eastWestArm || northSouthArm;
+    }
+    function branchEdgeAt(x, z) {
+      const dx = x - treeX, dz = z - treeZ;
+      if (Math.abs(dx) >= TREE_BRANCH_REACH - .12 && Math.abs(dz) <= TREE_BRANCH_HALF_WIDTH + .18) return dx < 0 ? 'oeste' : 'leste';
+      if (Math.abs(dz) >= TREE_BRANCH_REACH - .12 && Math.abs(dx) <= TREE_BRANCH_HALF_WIDTH + .18) return dz < 0 ? 'norte' : 'sul';
+      return null;
+    }
 
     const directionForKey = {
       KeyW: { name: 'norte', x: 0, z: -1, yaw: 0 },
@@ -177,7 +199,11 @@
     };
     let activeDirection = null;
     let activeCode = null;
+    let activeClimbDirection = 0;
+    let climbMode = 'ground';
+    let branchContact = false;
     let obstacleContact = false;
+    let heldItem = null;
     let audioContext = null;
     let audioBuffers = {};
     let audioReady = false;
@@ -258,13 +284,13 @@
     }
     function announceCoordinates() {
       const x = player.x.toFixed(2);
-      const y = heightAt(player.x, player.z).toFixed(2);
+      const y = (heightAt(player.x, player.z) + player.climbHeight).toFixed(2);
       const z = player.z.toFixed(2);
       announce(`Coordenadas atuais: X ${x}, Y ${y}, Z ${z}, em unidades do cenário.`);
     }
 
     function setCamera() {
-      camera.position.set(player.x, player.eye + heightAt(player.x, player.z), player.z);
+      camera.position.set(player.x, player.eye + heightAt(player.x, player.z) + player.climbHeight, player.z);
       const cp = Math.cos(player.pitch);
       const direction = new THREE.Vector3(
         Math.sin(player.yaw) * cp,
@@ -279,6 +305,55 @@
       lastAnnouncement = text;
       descriptionText.innerHTML = '<strong>Descrição:</strong> ' + text;
     }
+    function isLookingAtTreeTrunk() {
+      setCamera();
+      scene.updateMatrixWorld(true);
+      const direction = camera.getWorldDirection(new THREE.Vector3());
+      const raycaster = new THREE.Raycaster(camera.position, direction, 0, 2.2);
+      const hits = raycaster.intersectObject(treeTrunk, false);
+      return hits.length > 0 && hits[0].distance <= 2.2;
+    }
+    function stopMovement() {
+      activeDirection = null;
+      activeClimbDirection = 0;
+      activeCode = null;
+    }
+    function releaseTreeGrip(message = 'Você soltou a árvore e voltou ao chão.') {
+      climbMode = 'ground';
+      player.climbHeight = 0;
+      branchContact = false;
+      stopMovement();
+      announce(message);
+    }
+    function useAction() {
+      if (heldItem) {
+        announce(`Você usa ${heldItem}.`);
+        return;
+      }
+      if (climbMode === 'trunkGrip' || climbMode === 'branchGrip') {
+        releaseTreeGrip('Você soltou a árvore e voltou ao chão.');
+        return;
+      }
+      if (climbMode === 'branch') {
+        const edge = branchEdgeAt(player.x, player.z);
+        if (!edge) {
+          announce('Caminhe até uma ponta do galho antes de se segurar para descer.');
+          return;
+        }
+        climbMode = 'branchGrip';
+        stopMovement();
+        announce(`Você se segurou na ponta ${edge} do galho. Use S para descer.`);
+        return;
+      }
+      if (isLookingAtTreeTrunk()) {
+        climbMode = 'trunkGrip';
+        player.climbHeight = 0;
+        stopMovement();
+        announce('Você se segurou no tronco. W sobe; Espaço solta.');
+        return;
+      }
+      announce('Mãos livres: aproxime-se e olhe para o tronco para se segurar.');
+    }
     function lookDescription() {
       setCamera();
       scene.updateMatrixWorld(true);
@@ -289,6 +364,7 @@
       const heading = sectors[Math.round(degrees / 22.5) % 16];
       const targets = [
         { category: 'tree', name: 'o tronco da árvore', point: new THREE.Vector3(treeX, 1.35, treeZ) },
+        { category: 'tree', name: 'um galho horizontal', point: new THREE.Vector3(treeX, TREE_BRANCH_HEIGHT, treeZ) },
         { category: 'tree', name: 'a copa da árvore', point: new THREE.Vector3(treeX, 3.0, treeZ) },
         { category: 'tree', name: 'a parte mais alta da copa', point: new THREE.Vector3(treeX, 4.15, treeZ) },
         { category: 'hill', name: 'a encosta da colina', point: new THREE.Vector3(0, .9, -2.95) },
@@ -350,10 +426,17 @@
 
     function chooseDirection(code) {
       activeCode = code;
+      activeDirection = null;
+      activeClimbDirection = 0;
+      if (climbMode === 'trunkGrip' || climbMode === 'branchGrip') {
+        if (code === 'KeyW') activeClimbDirection = 1;
+        if (code === 'KeyS') activeClimbDirection = -1;
+        return;
+      }
       activeDirection = directionForKey[code] || null;
       if (!activeDirection) return;
       player.yaw = activeDirection.yaw;
-      terrainChange(activeDirection);
+      if (climbMode === 'ground') terrainChange(activeDirection);
       nextEdgeAt = 0;
     }
     function movementCodeFromEvent(event) {
@@ -364,6 +447,11 @@
 
     window.addEventListener('keydown', async event => {
       const code = event.code;
+      if (code === 'Space') {
+        event.preventDefault();
+        if (!event.repeat) useAction();
+        return;
+      }
       const movementCode = movementCodeFromEvent(event);
       if (movementCode) {
         event.preventDefault();
@@ -393,17 +481,44 @@
       const movementCode = movementCodeFromEvent(event);
       if (!movementCode || activeCode !== movementCode) return;
       activeDirection = null;
+      activeClimbDirection = 0;
       activeCode = null;
+      branchContact = false;
       obstacleContact = false;
     });
-    window.addEventListener('blur', () => { activeDirection = null; activeCode = null; obstacleContact = false; });
+    window.addEventListener('blur', () => { activeDirection = null; activeClimbDirection = 0; activeCode = null; branchContact = false; obstacleContact = false; });
 
     const clock = new THREE.Clock();
     function update(delta) {
+      if (activeClimbDirection !== 0 && (climbMode === 'trunkGrip' || climbMode === 'branchGrip')) {
+        player.climbHeight = clamp(player.climbHeight + activeClimbDirection * 2.4 * delta, 0, TREE_BRANCH_HEIGHT);
+        if (climbMode === 'trunkGrip' && activeClimbDirection > 0 && player.climbHeight >= TREE_BRANCH_HEIGHT) {
+          player.climbHeight = TREE_BRANCH_HEIGHT;
+          // A subida termina no cruzamento dos galhos, garantindo uma posição inicial caminhável.
+          player.x = treeX;
+          player.z = treeZ;
+          climbMode = 'branch';
+          branchContact = false;
+          stopMovement();
+          announce('Você concluiu a subida e está no galho. Caminhe até uma ponta para descer.');
+        } else if (activeClimbDirection < 0 && player.climbHeight <= 0) {
+          player.climbHeight = 0;
+          climbMode = 'ground';
+          branchContact = false;
+          stopMovement();
+          announce('Você desceu até o chão.');
+        } else if (climbMode === 'branchGrip' && activeClimbDirection > 0 && player.climbHeight >= TREE_BRANCH_HEIGHT) {
+          player.climbHeight = TREE_BRANCH_HEIGHT;
+          climbMode = 'branch';
+          branchContact = false;
+          stopMovement();
+          announce('Você voltou ao galho.');
+        }
+      }
+
       if (activeDirection) {
         const distance = 2.4 * delta;
         let moved = false;
-        // Dividir o deslocamento reduz a chance de atravessar um obstáculo num quadro lento.
         const steps = Math.max(1, Math.ceil(distance / .08));
         for (let i = 0; i < steps; i++) {
           const tx = player.x + activeDirection.x * distance / steps;
@@ -416,6 +531,21 @@
               announce(`Você alcançou o limite ${side} do campo.`);
             }
             break;
+          }
+          if (climbMode === 'branch') {
+            if (!isOnBranch(tx, tz)) {
+              if (!branchContact) {
+                const edge = branchEdgeAt(player.x, player.z);
+                announce(edge ? `Você chegou à ponta ${edge} do galho. Pressione Espaço para se segurar.` : 'O galho é estreito; mantenha-se sobre os galhos.');
+                branchContact = true;
+              }
+              break;
+            }
+            player.x = tx;
+            player.z = tz;
+            moved = true;
+            branchContact = false;
+            continue;
           }
           const obstacle = obstacleAt(tx, tz);
           if (obstacle) {
@@ -435,7 +565,7 @@
           playStep();
           nextStepAt = now + 430;
         }
-        if (moved) {
+        if (moved && climbMode === 'ground') {
           const boundary = boundaryAhead(player.x, player.z, activeDirection);
           if (boundary.distance <= 2.5 && boundary.distance >= 0 && now >= nextEdgeAt) {
             playEdgeWarning(boundary.distance);
