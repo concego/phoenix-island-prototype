@@ -55,11 +55,17 @@ def make_beep(frequency: float, duration: float = 0.19) -> list[float]:
     return samples
 
 
+def make_boundary() -> list[float]:
+    silence = [0.0] * int(RATE * 0.055)
+    return make_beep(430, 0.11) + silence + make_beep(315, 0.14)
+
+
 def main() -> None:
     ASSETS.mkdir(parents=True, exist_ok=True)
     write_wav(ASSETS / "footstep.wav", make_footstep())
     write_wav(ASSETS / "slope-up.wav", make_beep(760, 0.17))
     write_wav(ASSETS / "slope-down.wav", make_beep(245, 0.2))
+    write_wav(ASSETS / "boundary.wav", make_boundary())
     print("Sons WAV gerados em:", ASSETS)
 
 
