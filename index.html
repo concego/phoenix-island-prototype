@@ -33,8 +33,8 @@
     <header>
       <h1>Phoenix Island — teste de caminhada em 3D</h1>
       <div id="instructions">
-        <p><strong>Movimento:</strong> W norte, S sul, A oeste, D leste. Ao pressionar, o personagem vira para a direção fixa do cenário; mantendo a tecla pressionada, caminha.</p>
-        <p><strong>Olhar:</strong> setas esquerda/direita olham para os lados; cima/baixo olham para cima/baixo sem mover o personagem. A descrição aparece abaixo da cena e é anunciada pelo leitor de tela. Pressione C para anunciar as coordenadas X, Y e Z.</p>
+        <p><strong>Movimento:</strong> W norte, S sul, A oeste, D leste, sempre nos eixos fixos do cenário. Ao pressionar, o personagem vira para essa direção; enquanto a tecla fica pressionada, caminha. A tecla oposta substitui a direção anterior; soltar a tecla ativa para o movimento.</p>
+        <p><strong>Olhar:</strong> setas esquerda/direita olham para os lados; cima/baixo olham para cima/baixo sem mover o personagem. A descrição separa o rumo do olhar do rumo de caminhada; quando diz que um objeto está à esquerda ou à direita, isso é relativo ao campo de visão. Pressione C para anunciar as coordenadas X, Y e Z.</p>
         <p><strong>Sons:</strong> passos ao caminhar; tom agudo para subir a colina, grave para descer; alerta pulsante que fica mais agudo ao se aproximar do limite do campo e um som distinto ao alcançá-lo. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
       </div>
     </header>
@@ -128,12 +128,12 @@
     plateau.receiveShadow = false;
 
     // Árvore mantida como referência para testar o olhar para cima.
-    const treeX = 2.2, treeZ = -2.1;
+    const treeX = 3.8, treeZ = .2;
     addMesh(new THREE.CylinderGeometry(.2, .28, 2.7, 8), materials.bark, [treeX, 1.35, treeZ], 'O tronco de uma árvore está à frente.', true, 'tree');
     addMesh(new THREE.SphereGeometry(1.0, 12, 10), materials.leaves, [treeX, 3.0, treeZ], 'A copa da árvore está acima de você; galhos e folhas entram no campo de visão.', true, 'tree');
     addMesh(new THREE.SphereGeometry(.72, 12, 10), materials.leaves, [treeX, 3.8, treeZ], 'A parte mais alta da copa aparece acima, se o olhar alcançar essa altura.', true, 'tree');
 
-    const blockers = [{ x: treeX, z: treeZ, radius: .52 }];
+    const blockers = [{ x: treeX, z: treeZ, radius: 1.05, name: 'árvore' }];
 
     function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
     function heightAt(x, z) {
@@ -159,31 +159,31 @@
       if (direction.z < 0) candidates.push({ side: 'norte', distance: (MAP_BOUNDS.minZ - z) / direction.z });
       return candidates.filter(item => item.distance >= 0).sort((a, b) => a.distance - b.distance)[0] || { side: 'campo', distance: Infinity };
     }
+    function obstacleAt(x, z) {
+      return blockers.find(item => Math.hypot(x - item.x, z - item.z) < item.radius + .34) || null;
+    }
     function isWalkable(x, z) {
       if (!isInsideMap(x, z)) return false;
       if (z < -4.8 && Math.abs(x) > 2.1) return false;
-      for (const item of blockers) {
-        if (Math.hypot(x - item.x, z - item.z) < item.radius + .34) return false;
-      }
+      if (obstacleAt(x, z)) return false;
       return true;
     }
 
-    const keysDown = new Set();
     const directionForKey = {
       KeyW: { name: 'norte', x: 0, z: -1, yaw: 0 },
       KeyS: { name: 'sul', x: 0, z: 1, yaw: Math.PI },
       KeyA: { name: 'oeste', x: -1, z: 0, yaw: -Math.PI / 2 },
       KeyD: { name: 'leste', x: 1, z: 0, yaw: Math.PI / 2 }
     };
-    const moveOrder = [];
     let activeDirection = null;
+    let activeCode = null;
+    let obstacleContact = false;
     let audioContext = null;
     let audioBuffers = {};
     let audioReady = false;
     let nextStepAt = 0;
     let nextEdgeAt = 0;
     let boundaryContactSide = null;
-    let lastTerrainCue = '';
     let lastAnnouncement = '';
 
     async function unlockAudio() {
@@ -240,12 +240,8 @@
       const difference = ahead - here;
       if (difference > .035) {
         if (playBuffer('up', .3) === false) playTone(760, .18, 'sine', .055);
-        lastTerrainCue = 'subida';
       } else if (difference < -.035) {
         if (playBuffer('down', .3) === false) playTone(245, .2, 'sine', .055);
-        lastTerrainCue = 'descida';
-      } else {
-        lastTerrainCue = '';
       }
     }
     function playEdgeWarning(distance) {
@@ -289,8 +285,9 @@
       const direction = new THREE.Vector3();
       camera.getWorldDirection(direction);
       const degrees = (player.yaw * 180 / Math.PI + 360) % 360;
-      const sectors = ['norte', 'nordeste', 'leste', 'sudeste', 'sul', 'sudoeste', 'oeste', 'noroeste'];
-      const heading = `${sectors[Math.round(degrees / 45) % 8]}, aproximadamente ${Math.round(degrees)} graus a partir do norte no sentido horário`;
+      const sectors = ['norte', 'norte-nordeste', 'nordeste', 'leste-nordeste', 'leste', 'leste-sudeste', 'sudeste', 'sul-sudeste', 'sul', 'sul-sudoeste', 'sudoeste', 'oeste-sudoeste', 'oeste', 'oeste-noroeste', 'noroeste', 'norte-noroeste'];
+      const heading = sectors[Math.round(degrees / 22.5) % 16];
+      const movement = activeDirection ? `Direção de caminhada selecionada: ${activeDirection.name}.` : 'Movimento parado.';
       const targets = [
         { category: 'tree', name: 'o tronco da árvore', point: new THREE.Vector3(treeX, 1.35, treeZ) },
         { category: 'tree', name: 'a copa da árvore', point: new THREE.Vector3(treeX, 3.0, treeZ) },
@@ -315,60 +312,60 @@
         visible.push({ ...target, screen, distance, score });
       }
       visible.sort((a, b) => a.score - b.score);
-      if (visible.length && visible[0].score < .65) {
-        const target = visible[0];
-        const side = target.screen.x < -.22 ? 'à esquerda' : target.screen.x > .22 ? 'à direita' : 'à frente';
-        if (target.category === 'hill') {
+
+      if (player.pitch > .12) {
+        const canopy = visible.find(target => target.category === 'tree' && target.name.includes('copa') && Math.abs(target.screen.x) < .55 && Math.abs(target.screen.y) < .42);
+        if (canopy) return `Olhar para cima: ${canopy.name} no centro ou perto do centro, a ${canopy.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}. ${movement}`;
+        return `Olhar para cima: céu aberto no centro da visão, rumo ${heading}. ${movement}`;
+      }
+      if (player.pitch < -.12) {
+        const trunk = visible.find(target => target.category === 'tree' && target.name.includes('tronco') && Math.abs(target.screen.x) < .55 && Math.abs(target.screen.y) < .48);
+        if (trunk) return `Olhar para baixo: ${trunk.name} está no campo de visão, a ${trunk.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}. ${movement}`;
+        const surface = heightAt(player.x, player.z) > .05 ? 'a encosta da colina' : 'o chão do campo';
+        return `Olhar para baixo: ${surface} ocupa o centro da visão, rumo ${heading}. ${movement}`;
+      }
+
+      const centered = visible.find(target => target.score < .16);
+      if (centered) {
+        const side = Math.abs(centered.screen.x) < .18 ? 'no centro da visão' : centered.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
+        if (centered.category === 'hill') {
           const forwardX = player.x + Math.sin(player.yaw) * 4;
           const forwardZ = player.z - Math.cos(player.yaw) * 4;
           const slopeDelta = heightAt(forwardX, forwardZ) - heightAt(player.x, player.z);
-          let slopeText = 'A lateral da colina está no campo de visão.';
-          if (slopeDelta > .08) slopeText = 'A encosta sobe nessa direção.';
-          else if (slopeDelta < -.08) slopeText = 'A encosta desce nessa direção.';
-          return `A colina está ${side}, a aproximadamente ${target.distance.toFixed(1)} unidades. ${slopeText} O olhar aponta para ${heading}.`;
+          let slopeText = 'A lateral da colina está visível.';
+          if (slopeDelta > .08) slopeText = 'A encosta sobe na direção do olhar.';
+          else if (slopeDelta < -.08) slopeText = 'A encosta desce na direção do olhar.';
+          return `Olhar horizontal: a colina está ${side}, a ${centered.distance.toFixed(1)} unidades. ${slopeText} Rumo do olhar: ${heading}. ${movement}`;
         }
-        return `${target.name[0].toUpperCase()}${target.name.slice(1)} está ${side}, a aproximadamente ${target.distance.toFixed(1)} unidades. O olhar aponta para ${heading}.`;
+        return `Olhar horizontal: ${centered.name} está ${side}, a ${centered.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}. ${movement}`;
       }
       if (visible.length) {
         const target = visible[0];
-        const side = target.screen.x < 0 ? 'à esquerda' : 'à direita';
-        return `${target.name} aparece ${side} no campo de visão. O olhar aponta para ${heading}.`;
+        const side = target.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
+        return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro. Rumo do olhar: ${heading}. ${movement}`;
       }
-      if (player.pitch > .28) return `Céu aberto acima. O olhar aponta para ${heading}.`;
-      if (player.pitch < -.3) return `O chão do campo está abaixo. O olhar aponta para ${heading}.`;
-      if (Math.abs(direction.y) < .6) {
-        const boundary = boundaryAhead(player.x, player.z, { x: direction.x, z: direction.z });
-        if (boundary.distance < 3) return `O limite ${boundary.side} do campo está à frente. O olhar aponta para ${heading}.`;
-      }
-      return `Campo aberto à frente na direção ${heading}; a colina e a árvore não estão no centro do olhar.`;
+      const boundary = boundaryAhead(player.x, player.z, { x: direction.x, z: direction.z });
+      if (boundary.distance < 3) return `Olhar horizontal: o limite ${boundary.side} está a ${boundary.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}. ${movement}`;
+      return `Olhar horizontal: campo aberto no rumo ${heading}. ${movement}`;
     }
 
     function chooseDirection(code) {
+      activeCode = code;
       activeDirection = directionForKey[code] || null;
       if (!activeDirection) return;
       player.yaw = activeDirection.yaw;
       terrainChange(activeDirection);
       nextEdgeAt = 0;
     }
-    function restoreDirection() {
-      const last = [...moveOrder].reverse().find(code => keysDown.has(code));
-      activeDirection = last ? directionForKey[last] : null;
-      if (activeDirection) {
-        player.yaw = activeDirection.yaw;
-        terrainChange(activeDirection);
-      }
-    }
 
     window.addEventListener('keydown', async event => {
       const code = event.code;
       if (directionForKey[code]) {
         event.preventDefault();
-        if (!keysDown.has(code)) {
-          keysDown.add(code);
-          moveOrder.push(code);
-          chooseDirection(code);
-          await unlockAudio();
-        }
+        if (event.repeat) return;
+        chooseDirection(code);
+        announce(`Direção de caminhada selecionada: ${activeDirection.name}.`);
+        await unlockAudio();
         return;
       }
       if (code === 'KeyC') {
@@ -388,13 +385,13 @@
       }
     });
     window.addEventListener('keyup', event => {
-      if (!directionForKey[event.code]) return;
-      keysDown.delete(event.code);
-      const index = moveOrder.lastIndexOf(event.code);
-      if (index >= 0) moveOrder.splice(index, 1);
-      if (activeDirection && directionForKey[event.code] === activeDirection) restoreDirection();
+      if (!directionForKey[event.code] || activeCode !== event.code) return;
+      activeDirection = null;
+      activeCode = null;
+      obstacleContact = false;
+      announce('Movimento parado.');
     });
-    window.addEventListener('blur', () => { keysDown.clear(); moveOrder.length = 0; activeDirection = null; });
+    window.addEventListener('blur', () => { activeDirection = null; activeCode = null; obstacleContact = false; });
 
     const clock = new THREE.Clock();
     function update(delta) {
@@ -415,10 +412,17 @@
             }
             break;
           }
+          const obstacle = obstacleAt(tx, tz);
+          if (obstacle) {
+            if (!obstacleContact) announce(`A ${obstacle.name} bloqueia o caminho; é preciso contorná-la.`);
+            obstacleContact = true;
+            break;
+          }
           if (!isWalkable(tx, tz)) break;
           player.x = tx;
           player.z = tz;
           moved = true;
+          obstacleContact = false;
           boundaryContactSide = null;
         }
         const now = performance.now();
