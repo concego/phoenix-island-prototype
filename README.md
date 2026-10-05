@@ -11,8 +11,8 @@ Abra a página publicada no GitHub Pages. O navegador precisa permitir WebGL e c
 - W: avançar na direção do corpo; norte quando começa na orientação inicial.
 - S: recuar na direção oposta ao corpo; sul na orientação inicial.
 - A/D: deslocar lateralmente à esquerda/direita, sem girar o corpo.
-- Shift+A/D: girar o corpo 45° para a esquerda/direita, sem caminhar.
-- Shift+W: girar o corpo 180°, sem caminhar.
+- Shift+A/D: girar o corpo 45° para a esquerda/direita, sem caminhar; a descrição acessível anuncia para qual direção o corpo ficou voltado.
+- Shift+W: girar o corpo 180°, sem caminhar; a descrição acessível anuncia para qual direção o corpo ficou voltado (norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste).
 - Shift+S: recuo rápido de cerca de 1,35 unidade, equivalente a alguns passos para trás.
 - Setas esquerda/direita: desviar o olhar em passos de 15°, até ±45° em relação ao corpo. No limite, o olhar para; use Shift+A/D ou Shift+W para virar o corpo.
 - Setas cima/baixo: inclinar o olhar em passos de 15°, até ±30°. Para observar além desse limite, mude de posição.
