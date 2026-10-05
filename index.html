@@ -36,7 +36,7 @@
       <div id="instructions">
         <p><strong>Movimento:</strong> W norte, S sul, A oeste, D leste, sempre nos eixos fixos do cenário. Ao pressionar, o personagem vira para essa direção; enquanto a tecla fica pressionada, caminha. A tecla oposta substitui a direção anterior; soltar a tecla ativa para o movimento.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita giram a visão 45° por toque; cima/baixo inclinam o olhar 15° sem mover o personagem. A descrição separa o rumo do olhar do rumo de caminhada; quando diz que um objeto está à esquerda ou à direita, isso é relativo ao campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar as coordenadas X, Y e Z.</p>
-        <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos; com as mãos livres, aproxime-se, mire o tronco e pressione Espaço para se segurar. Enquanto estiver preso ao tronco, mantenha W pressionado para subir; ao alcançar o galho, a subida termina e você fica sobre ele. No galho, use W/S/A/D para caminhar até uma das quatro pontas; pressione Espaço na ponta para se segurar e mantenha S pressionado para descer até o chão. Espaço solta a qualquer momento em que você estiver se segurando na árvore.</p>
+        <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos; com as mãos livres, aproxime-se e vire o olhar na direção do tronco. Não precisa mirar no centro exato: basta estar perto e voltado para a árvore. Enquanto estiver preso ao tronco, mantenha W pressionado para subir; ao alcançar o galho, a subida termina e você fica sobre ele. No galho, use W/S/A/D para caminhar até uma das quatro pontas; pressione Espaço na ponta para se segurar e mantenha S pressionado para descer até o chão. Espaço solta a qualquer momento em que você estiver se segurando na árvore.</p>
         <p><strong>Sons:</strong> passos ao caminhar; tom agudo para subir a colina, grave para descer; alerta pulsante que fica mais agudo ao se aproximar do limite do campo e um som distinto ao alcançá-lo. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
       </div>
     </header>
@@ -306,13 +306,15 @@
       lastAnnouncement = text;
       descriptionText.innerHTML = '<strong>Descrição:</strong> ' + text;
     }
-    function isLookingAtTreeTrunk() {
-      setCamera();
-      scene.updateMatrixWorld(true);
-      const direction = camera.getWorldDirection(new THREE.Vector3());
-      const raycaster = new THREE.Raycaster(camera.position, direction, 0, 2.2);
-      const hits = raycaster.intersectObject(treeTrunk, false);
-      return hits.length > 0 && hits[0].distance <= 2.2;
+    function trunkTargetStatus() {
+      const dx = treeX - player.x, dz = treeZ - player.z;
+      if (Math.hypot(dx, dz) > 2.8) return 'far';
+      const targetYaw = Math.atan2(dx, -dz);
+      const angleDifference = Math.abs(Math.atan2(
+        Math.sin(targetYaw - player.yaw),
+        Math.cos(targetYaw - player.yaw)
+      ));
+      return angleDifference <= Math.PI / 3 ? 'ready' : 'not-facing';
     }
     function stopMovement() {
       activeDirection = null;
@@ -346,14 +348,17 @@
         announce(`Você se segurou na ponta ${edge} do galho. Use S para descer.`);
         return;
       }
-      if (isLookingAtTreeTrunk()) {
+      const targetStatus = trunkTargetStatus();
+      if (targetStatus === 'ready') {
         climbMode = 'trunkGrip';
         player.climbHeight = 0;
         stopMovement();
         announce('Você se segurou no tronco. W sobe; Espaço solta.');
         return;
       }
-      announce('Mãos livres: aproxime-se e olhe para o tronco para se segurar.');
+      announce(targetStatus === 'far'
+        ? 'O tronco está fora de alcance; aproxime-se para se segurar.'
+        : 'Gire o olhar em direção ao tronco e pressione Espaço para se segurar.');
     }
     function lookDescription() {
       setCamera();
