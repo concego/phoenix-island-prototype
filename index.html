@@ -34,9 +34,9 @@
     <header>
       <h1>Phoenix Island — teste de caminhada em 3D</h1>
       <div id="instructions">
-        <p><strong>Movimento:</strong> W norte, S sul, A oeste, D leste, sempre nos eixos fixos do cenário. Ao pressionar, o personagem vira para essa direção; enquanto a tecla fica pressionada, caminha. A tecla oposta substitui a direção anterior; soltar a tecla ativa para o movimento.</p>
-        <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use W/A/S/D para virar o corpo e caminhar. Setas cima/baixo inclinam o olhar 15° por toque, até 30°; para observar além, mude de posição. A descrição separa o rumo do olhar do rumo de caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
-        <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos; com as mãos livres, aproxime-se e vire o olhar na direção do tronco. Não precisa mirar no centro exato: basta estar perto e voltado para a árvore. Enquanto estiver preso ao tronco, mantenha W pressionado para subir; ao alcançar o galho, a subida termina e você fica sobre ele. No galho, use W/S/A/D para caminhar até uma das quatro pontas; pressione Espaço na ponta para se segurar e mantenha S pressionado para descer até o chão. Espaço solta a qualquer momento em que você estiver se segurando na árvore.</p>
+        <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Shift+A/D giram o corpo 45° para a esquerda/direita; Shift+W gira 180°; Shift+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo.</p>
+        <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift+A/D ou Shift+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°; para observar além, mude de posição. A descrição separa o rumo do olhar do rumo de caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
+        <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos; com as mãos livres, aproxime-se e vire o olhar na direção do tronco. Não precisa mirar no centro exato: basta estar perto e voltado para a árvore. Enquanto estiver preso ao tronco, mantenha W pressionado para subir; ao alcançar os galhos, a subida termina e você fica sobre eles. Caminhe até uma ponta e pressione Espaço para se segurar; mantenha S pressionado para descer até o chão. Enquanto estiver agarrado, W/S controlam a subida e a descida. Espaço solta a qualquer momento.</p>
         <p><strong>Sons:</strong> passos ao caminhar; tom agudo para subir a colina, grave para descer; alerta pulsante que fica mais agudo ao se aproximar do limite do campo e um som distinto ao alcançá-lo. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer, e um rangido leve ao apoiar-se no galho ou no chão. São efeitos conceituais provisórios. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
       </div>
     </header>
@@ -79,6 +79,9 @@
     const HORIZONTAL_LOOK_LIMIT = Math.PI / 4;
     const VERTICAL_LOOK_STEP = Math.PI / 12;
     const VERTICAL_LOOK_LIMIT = Math.PI / 6;
+    const WALK_SPEED = 2.4;
+    const BACKSTEP_SPEED = 4.2;
+    const BACKSTEP_DISTANCE = 1.35;
     camera.position.set(player.x, player.eye, player.z);
 
     scene.add(new THREE.HemisphereLight(0xd9f1ff, 0x34432e, 2.0));
@@ -139,10 +142,14 @@
     const TREE_BRANCH_REACH = 1.8;
     const TREE_BRANCH_HALF_WIDTH = .32;
     const treeTrunk = addMesh(new THREE.CylinderGeometry(.2, .28, 2.7, 8), materials.bark, [treeX, 1.35, treeZ], 'O tronco de uma árvore está à frente.', true, 'tree');
-    const branchX = addMesh(new THREE.CylinderGeometry(.16, .22, TREE_BRANCH_REACH * 2, 8), materials.bark, [treeX, 2.56, treeZ], 'Um galho horizontal cruza o tronco.', true, 'tree');
-    branchX.rotation.z = Math.PI / 2;
-    const branchZ = addMesh(new THREE.CylinderGeometry(.16, .22, TREE_BRANCH_REACH * 2, 8), materials.bark, [treeX, 2.56, treeZ], 'Um galho horizontal cruza o tronco.', true, 'tree');
-    branchZ.rotation.x = Math.PI / 2;
+    function addBranchArm(axisX, axisZ) {
+      const arm = addMesh(new THREE.CylinderGeometry(.16, .22, TREE_BRANCH_REACH * 2, 8), materials.bark, [treeX, 2.56, treeZ], 'Um galho elevado se estende para fora do tronco.', true, 'tree');
+      arm.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(axisX, 0, axisZ).normalize());
+    }
+    addBranchArm(1, 0);
+    addBranchArm(0, 1);
+    addBranchArm(1, 1);
+    addBranchArm(1, -1);
     addMesh(new THREE.SphereGeometry(1.0, 12, 10), materials.leaves, [treeX, 3.0, treeZ], 'A copa da árvore está acima de você; galhos e folhas entram no campo de visão.', true, 'tree');
     addMesh(new THREE.SphereGeometry(.72, 12, 10), materials.leaves, [treeX, 3.8, treeZ], 'A parte mais alta da copa aparece acima, se o olhar alcançar essa altura.', true, 'tree');
 
@@ -184,27 +191,35 @@
     function isOnBranch(x, z) {
       if (!isInsideMap(x, z)) return false;
       const dx = x - treeX, dz = z - treeZ;
-      const centralFork = Math.abs(dx) <= TREE_BRANCH_HALF_WIDTH && Math.abs(dz) <= TREE_BRANCH_HALF_WIDTH;
-      const eastWestArm = Math.abs(dz) <= TREE_BRANCH_HALF_WIDTH && Math.abs(dx) <= TREE_BRANCH_REACH;
-      const northSouthArm = Math.abs(dx) <= TREE_BRANCH_HALF_WIDTH && Math.abs(dz) <= TREE_BRANCH_REACH;
-      return centralFork || eastWestArm || northSouthArm;
+      if (Math.hypot(dx, dz) <= .42) return true;
+      const armAngles = [0, Math.PI / 4, Math.PI / 2, 3 * Math.PI / 4];
+      return armAngles.some(yaw => {
+        const axisX = Math.sin(yaw), axisZ = -Math.cos(yaw);
+        const along = dx * axisX + dz * axisZ;
+        const across = Math.abs(dx * axisZ - dz * axisX);
+        return Math.abs(along) <= TREE_BRANCH_REACH && across <= TREE_BRANCH_HALF_WIDTH;
+      });
     }
     function branchEdgeAt(x, z) {
       const dx = x - treeX, dz = z - treeZ;
-      if (Math.abs(dx) >= TREE_BRANCH_REACH - .12 && Math.abs(dz) <= TREE_BRANCH_HALF_WIDTH + .18) return dx < 0 ? 'oeste' : 'leste';
-      if (Math.abs(dz) >= TREE_BRANCH_REACH - .12 && Math.abs(dx) <= TREE_BRANCH_HALF_WIDTH + .18) return dz < 0 ? 'norte' : 'sul';
-      return null;
+      const distance = Math.hypot(dx, dz);
+      if (distance < TREE_BRANCH_REACH - .12 || distance > TREE_BRANCH_REACH + .18) return null;
+      const angle = (Math.atan2(dx, -dz) + 2 * Math.PI) % (2 * Math.PI);
+      const directionIndex = Math.round(angle / (Math.PI / 4)) % 8;
+      const yaw = directionIndex * Math.PI / 4;
+      const axisX = Math.sin(yaw), axisZ = -Math.cos(yaw);
+      const across = Math.abs(dx * axisZ - dz * axisX);
+      if (across > TREE_BRANCH_HALF_WIDTH + .18) return null;
+      return ['norte', 'nordeste', 'leste', 'sudeste', 'sul', 'sudoeste', 'oeste', 'noroeste'][directionIndex];
     }
 
-    const directionForKey = {
-      KeyW: { name: 'norte', x: 0, z: -1, yaw: 0 },
-      KeyS: { name: 'sul', x: 0, z: 1, yaw: Math.PI },
-      KeyA: { name: 'oeste', x: -1, z: 0, yaw: -Math.PI / 2 },
-      KeyD: { name: 'leste', x: 1, z: 0, yaw: Math.PI / 2 }
-    };
+    const movementKeys = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD']);
     let activeDirection = null;
     let activeCode = null;
     let activeClimbDirection = 0;
+    let activeMoveMode = 'walk';
+    let activeMoveSpeed = WALK_SPEED;
+    let activeMoveRemaining = 0;
     let climbMode = 'ground';
     let branchContact = false;
     let obstacleContact = false;
@@ -336,6 +351,11 @@
       activeDirection = null;
       activeClimbDirection = 0;
       activeCode = null;
+      activeMoveMode = 'walk';
+      activeMoveSpeed = WALK_SPEED;
+      activeMoveRemaining = 0;
+      branchContact = false;
+      obstacleContact = false;
     }
     function releaseTreeGrip(message = 'Você soltou a árvore e voltou ao chão.') {
       playBuffer('climbRelease', .25);
@@ -449,27 +469,67 @@
       return `Olhar horizontal: campo aberto no rumo ${heading}.`;
     }
 
+    function movementVector(code) {
+      const forwardX = Math.sin(player.yaw), forwardZ = -Math.cos(player.yaw);
+      const rightX = Math.cos(player.yaw), rightZ = Math.sin(player.yaw);
+      if (code === 'KeyW') return { name: 'frente', x: forwardX, z: forwardZ };
+      if (code === 'KeyS') return { name: 'trás', x: -forwardX, z: -forwardZ };
+      if (code === 'KeyA') return { name: 'lateral esquerda', x: -rightX, z: -rightZ };
+      if (code === 'KeyD') return { name: 'lateral direita', x: rightX, z: rightZ };
+      return null;
+    }
     function chooseDirection(code) {
       activeCode = code;
       activeDirection = null;
       activeClimbDirection = 0;
       if (climbMode === 'trunkGrip' || climbMode === 'branchGrip') {
+        activeMoveMode = 'walk';
+        activeMoveSpeed = WALK_SPEED;
+        activeMoveRemaining = 0;
         if (code === 'KeyW') activeClimbDirection = 1;
         if (code === 'KeyS') activeClimbDirection = -1;
         nextClimbSoundAt = 0;
         return;
       }
-      activeDirection = directionForKey[code] || null;
+      activeDirection = movementVector(code);
       if (!activeDirection) return;
-      player.yaw = activeDirection.yaw;
-      player.headYawOffset = 0;
+      activeMoveMode = 'walk';
+      activeMoveSpeed = WALK_SPEED;
+      activeMoveRemaining = Infinity;
       if (climbMode === 'ground') terrainChange(activeDirection);
       nextEdgeAt = 0;
+    }
+    function performShiftMovement(code) {
+      if (climbMode === 'trunkGrip' || climbMode === 'branchGrip') {
+        chooseDirection(code);
+        return;
+      }
+      stopMovement();
+      if (code === 'KeyA' || code === 'KeyD') {
+        const turn = code === 'KeyA' ? -Math.PI / 4 : Math.PI / 4;
+        player.yaw = normalizeAngle(player.yaw + turn);
+        announce(`Você girou o corpo 45 graus para ${turn < 0 ? 'a esquerda' : 'a direita'}. ${lookDescription()}`);
+        return;
+      }
+      if (code === 'KeyW') {
+        player.yaw = normalizeAngle(player.yaw + Math.PI);
+        announce(`Você virou o corpo 180 graus. ${lookDescription()}`);
+        return;
+      }
+      if (code === 'KeyS') {
+        activeDirection = movementVector('KeyS');
+        activeMoveMode = 'backstep';
+        activeMoveSpeed = BACKSTEP_SPEED;
+        activeMoveRemaining = BACKSTEP_DISTANCE;
+        if (climbMode === 'ground') terrainChange(activeDirection);
+        nextStepAt = 0;
+        nextEdgeAt = 0;
+      }
     }
     function movementCodeFromEvent(event) {
       const letter = String(event.key || '').toLowerCase();
       const byLetter = { w: 'KeyW', a: 'KeyA', s: 'KeyS', d: 'KeyD' };
-      return byLetter[letter] || (directionForKey[event.code] ? event.code : null);
+      return byLetter[letter] || (movementKeys.has(event.code) ? event.code : null);
     }
 
     window.addEventListener('keydown', async event => {
@@ -483,7 +543,8 @@
       if (movementCode) {
         event.preventDefault();
         if (event.repeat) return;
-        chooseDirection(movementCode);
+        if (event.shiftKey && climbMode !== 'trunkGrip' && climbMode !== 'branchGrip') performShiftMovement(movementCode);
+        else chooseDirection(movementCode);
         await unlockAudio();
         return;
       }
@@ -500,7 +561,7 @@
           const turn = code === 'ArrowLeft' ? -HORIZONTAL_LOOK_STEP : HORIZONTAL_LOOK_STEP;
           const nextOffset = clamp(player.headYawOffset + turn, -HORIZONTAL_LOOK_LIMIT, HORIZONTAL_LOOK_LIMIT);
           if (nextOffset === player.headYawOffset) {
-            limitMessage = 'Limite lateral do olhar; use W, A, S ou D para virar o corpo. ';
+            limitMessage = 'Limite lateral do olhar; use Shift+A, Shift+D ou Shift+W para virar o corpo. ';
           } else {
             player.headYawOffset = nextOffset;
           }
@@ -522,13 +583,9 @@
     window.addEventListener('keyup', event => {
       const movementCode = movementCodeFromEvent(event);
       if (!movementCode || activeCode !== movementCode) return;
-      activeDirection = null;
-      activeClimbDirection = 0;
-      activeCode = null;
-      branchContact = false;
-      obstacleContact = false;
+      stopMovement();
     });
-    window.addEventListener('blur', () => { activeDirection = null; activeClimbDirection = 0; activeCode = null; branchContact = false; obstacleContact = false; });
+    window.addEventListener('blur', () => stopMovement());
 
     const clock = new THREE.Clock();
     function update(delta) {
@@ -567,12 +624,16 @@
       }
 
       if (activeDirection) {
-        const distance = 2.4 * delta;
-        let moved = false;
+        const movement = activeDirection;
+        const moveMode = activeMoveMode;
+        const maxDistance = activeMoveSpeed * delta;
+        const distance = Number.isFinite(activeMoveRemaining) ? Math.min(maxDistance, activeMoveRemaining) : maxDistance;
+        let moved = false, blocked = false, movedDistance = 0;
         const steps = Math.max(1, Math.ceil(distance / .08));
+        const stepDistance = distance / steps;
         for (let i = 0; i < steps; i++) {
-          const tx = player.x + activeDirection.x * distance / steps;
-          const tz = player.z + activeDirection.z * distance / steps;
+          const tx = player.x + movement.x * stepDistance;
+          const tz = player.z + movement.z * stepDistance;
           if (!isInsideMap(tx, tz)) {
             const side = boundarySide(tx, tz);
             if (side && boundaryContactSide !== side) {
@@ -580,6 +641,7 @@
               playBoundarySound();
               announce(`Você alcançou o limite ${side} do campo.`);
             }
+            blocked = true;
             break;
           }
           if (climbMode === 'branch') {
@@ -589,11 +651,13 @@
                 announce(edge ? `Você chegou à ponta ${edge} do galho. Pressione Espaço para se segurar.` : 'O galho é estreito; mantenha-se sobre os galhos.');
                 branchContact = true;
               }
+              blocked = true;
               break;
             }
             player.x = tx;
             player.z = tz;
             moved = true;
+            movedDistance += stepDistance;
             branchContact = false;
             continue;
           }
@@ -601,27 +665,34 @@
           if (obstacle) {
             if (!obstacleContact) announce(`A ${obstacle.name} bloqueia o caminho; é preciso contorná-la.`);
             obstacleContact = true;
+            blocked = true;
             break;
           }
-          if (!isWalkable(tx, tz)) break;
+          if (!isWalkable(tx, tz)) {
+            blocked = true;
+            break;
+          }
           player.x = tx;
           player.z = tz;
           moved = true;
+          movedDistance += stepDistance;
           obstacleContact = false;
           boundaryContactSide = null;
         }
+        if (moveMode === 'backstep') activeMoveRemaining = Math.max(0, activeMoveRemaining - movedDistance);
         const now = performance.now();
         if (moved && now >= nextStepAt) {
           playStep();
-          nextStepAt = now + 430;
+          nextStepAt = now + (moveMode === 'backstep' ? 140 : 430);
         }
         if (moved && climbMode === 'ground') {
-          const boundary = boundaryAhead(player.x, player.z, activeDirection);
+          const boundary = boundaryAhead(player.x, player.z, movement);
           if (boundary.distance <= 2.5 && boundary.distance >= 0 && now >= nextEdgeAt) {
             playEdgeWarning(boundary.distance);
             nextEdgeAt = now + Math.max(150, 620 * boundary.distance / 2.5);
           }
         }
+        if (moveMode === 'backstep' && (blocked || activeMoveRemaining <= .001)) stopMovement();
       }
       setCamera();
     }
