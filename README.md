@@ -15,7 +15,7 @@ Abra a página publicada no GitHub Pages. O navegador precisa permitir WebGL e c
 - Setas esquerda/direita: girar o olhar 45° por toque, sem deslocar o personagem.
 - Setas cima/baixo: inclinar o olhar 15° para cima/baixo, sem deslocar o personagem.
 - C: anunciar as coordenadas atuais X, Y e Z em unidades do cenário.
-- Espaço: usa o item em mãos; com mãos livres, agarra o tronco somente se estiver próximo e mirando nele. Espaço solta enquanto estiver segurando a árvore.
+- Espaço: usa o item em mãos; com mãos livres, agarra o tronco se o personagem estiver próximo e voltado aproximadamente na direção da árvore. Não é necessário mirar no centro exato; o agarrar aceita uma área ampla de visão. Se estiver longe demais ou virado para outro lado, a descrição informa o que ajustar. Espaço solta enquanto estiver segurando a árvore.
 - Ao segurar o tronco: mantenha W pressionado para subir até o galho. A subida termina automaticamente no cruzamento dos galhos.
 - Sobre o galho: W/S/A/D caminham pelos braços estreitos nos eixos cardeais. Vá até uma das quatro pontas e pressione Espaço para se segurar.
 - Ao segurar a ponta do galho: mantenha S pressionado para descer ao chão; W retorna ao galho. Espaço também solta e retorna ao chão.
