@@ -35,7 +35,7 @@
       <h1>Phoenix Island — teste de caminhada em 3D</h1>
       <div id="instructions">
         <p><strong>Movimento:</strong> W norte, S sul, A oeste, D leste, sempre nos eixos fixos do cenário. Ao pressionar, o personagem vira para essa direção; enquanto a tecla fica pressionada, caminha. A tecla oposta substitui a direção anterior; soltar a tecla ativa para o movimento.</p>
-        <p><strong>Olhar:</strong> setas esquerda/direita giram a visão 45° por toque; cima/baixo inclinam o olhar 15° sem mover o personagem. A descrição separa o rumo do olhar do rumo de caminhada; quando diz que um objeto está à esquerda ou à direita, isso é relativo ao campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar as coordenadas X, Y e Z.</p>
+        <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, continuar nessa direção gira o corpo 15° sem caminhar. Setas cima/baixo inclinam o olhar 15° por toque, até 30°; para observar além, mude de posição. A descrição separa o rumo do olhar do rumo de caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
         <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos; com as mãos livres, aproxime-se e vire o olhar na direção do tronco. Não precisa mirar no centro exato: basta estar perto e voltado para a árvore. Enquanto estiver preso ao tronco, mantenha W pressionado para subir; ao alcançar o galho, a subida termina e você fica sobre ele. No galho, use W/S/A/D para caminhar até uma das quatro pontas; pressione Espaço na ponta para se segurar e mantenha S pressionado para descer até o chão. Espaço solta a qualquer momento em que você estiver se segurando na árvore.</p>
         <p><strong>Sons:</strong> passos ao caminhar; tom agudo para subir a colina, grave para descer; alerta pulsante que fica mais agudo ao se aproximar do limite do campo e um som distinto ao alcançá-lo. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer, e um rangido leve ao apoiar-se no galho ou no chão. São efeitos conceituais provisórios. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
       </div>
@@ -74,7 +74,11 @@
 
     const camera = new THREE.PerspectiveCamera(68, 1, 0.1, 100);
     const MAP_BOUNDS = { minX: -6, maxX: 6, minZ: -6, maxZ: 6 };
-    const player = { x: 0, z: 2.5, eye: 1.65, yaw: 0, pitch: 0, climbHeight: 0 };
+    const player = { x: 0, z: 2.5, eye: 1.65, yaw: 0, headYawOffset: 0, pitch: 0, climbHeight: 0 };
+    const HORIZONTAL_LOOK_STEP = Math.PI / 12;
+    const HORIZONTAL_LOOK_LIMIT = Math.PI / 4;
+    const VERTICAL_LOOK_STEP = Math.PI / 12;
+    const VERTICAL_LOOK_LIMIT = Math.PI / 6;
     camera.position.set(player.x, player.eye, player.z);
 
     scene.add(new THREE.HemisphereLight(0xd9f1ff, 0x34432e, 2.0));
@@ -299,13 +303,16 @@
       announce(`Coordenadas atuais: X ${x}, Y ${y}, Z ${z}, em unidades do cenário.`);
     }
 
+    function normalizeAngle(angle) { return Math.atan2(Math.sin(angle), Math.cos(angle)); }
+    function getLookYaw() { return normalizeAngle(player.yaw + player.headYawOffset); }
     function setCamera() {
       camera.position.set(player.x, player.eye + heightAt(player.x, player.z) + player.climbHeight, player.z);
       const cp = Math.cos(player.pitch);
+      const viewYaw = getLookYaw();
       const direction = new THREE.Vector3(
-        Math.sin(player.yaw) * cp,
+        Math.sin(viewYaw) * cp,
         Math.sin(player.pitch),
-        -Math.cos(player.yaw) * cp
+        -Math.cos(viewYaw) * cp
       );
       camera.lookAt(camera.position.clone().add(direction));
       camera.updateMatrixWorld(true);
@@ -320,8 +327,8 @@
       if (Math.hypot(dx, dz) > 2.8) return 'far';
       const targetYaw = Math.atan2(dx, -dz);
       const angleDifference = Math.abs(Math.atan2(
-        Math.sin(targetYaw - player.yaw),
-        Math.cos(targetYaw - player.yaw)
+        Math.sin(targetYaw - getLookYaw()),
+        Math.cos(targetYaw - getLookYaw())
       ));
       return angleDifference <= Math.PI / 3 ? 'ready' : 'not-facing';
     }
@@ -377,7 +384,7 @@
       scene.updateMatrixWorld(true);
       const direction = new THREE.Vector3();
       camera.getWorldDirection(direction);
-      const degrees = (player.yaw * 180 / Math.PI + 360) % 360;
+      const degrees = ((getLookYaw() * 180 / Math.PI) % 360 + 360) % 360;
       const sectors = ['norte', 'norte-nordeste', 'nordeste', 'leste-nordeste', 'leste', 'leste-sudeste', 'sudeste', 'sul-sudeste', 'sul', 'sul-sudoeste', 'sudoeste', 'oeste-sudoeste', 'oeste', 'oeste-noroeste', 'noroeste', 'norte-noroeste'];
       const heading = sectors[Math.round(degrees / 22.5) % 16];
       const targets = [
@@ -422,8 +429,8 @@
       if (centered) {
         const side = Math.abs(centered.screen.x) < .18 ? 'no centro da visão' : centered.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
         if (centered.category === 'hill') {
-          const forwardX = player.x + Math.sin(player.yaw) * 4;
-          const forwardZ = player.z - Math.cos(player.yaw) * 4;
+          const forwardX = player.x + Math.sin(getLookYaw()) * 4;
+          const forwardZ = player.z - Math.cos(getLookYaw()) * 4;
           const slopeDelta = heightAt(forwardX, forwardZ) - heightAt(player.x, player.z);
           let slopeText = 'A lateral da colina está visível.';
           if (slopeDelta > .08) slopeText = 'A encosta sobe na direção do olhar.';
@@ -455,6 +462,7 @@
       activeDirection = directionForKey[code] || null;
       if (!activeDirection) return;
       player.yaw = activeDirection.yaw;
+      player.headYawOffset = 0;
       if (climbMode === 'ground') terrainChange(activeDirection);
       nextEdgeAt = 0;
     }
@@ -487,13 +495,29 @@
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(code)) {
         event.preventDefault();
         if (event.repeat) return;
-        const horizontalTurn = Math.PI / 4;
-        const verticalTurn = Math.PI / 12;
-        if (code === 'ArrowLeft') player.yaw -= horizontalTurn;
-        if (code === 'ArrowRight') player.yaw += horizontalTurn;
-        if (code === 'ArrowUp') player.pitch = clamp(player.pitch + verticalTurn, -1.2, 1.2);
-        if (code === 'ArrowDown') player.pitch = clamp(player.pitch - verticalTurn, -1.2, 1.2);
-        announce(lookDescription());
+        let limitMessage = '';
+        if (code === 'ArrowLeft' || code === 'ArrowRight') {
+          const turn = code === 'ArrowLeft' ? -HORIZONTAL_LOOK_STEP : HORIZONTAL_LOOK_STEP;
+          const nextOffset = clamp(player.headYawOffset + turn, -HORIZONTAL_LOOK_LIMIT, HORIZONTAL_LOOK_LIMIT);
+          if (nextOffset === player.headYawOffset) {
+            player.yaw = normalizeAngle(player.yaw + turn);
+            limitMessage = `O limite lateral foi alcançado; o corpo girou 15 graus para ${turn < 0 ? 'a esquerda' : 'a direita'}. `;
+          } else {
+            player.headYawOffset = nextOffset;
+          }
+        }
+        if (code === 'ArrowUp' || code === 'ArrowDown') {
+          const turn = code === 'ArrowUp' ? VERTICAL_LOOK_STEP : -VERTICAL_LOOK_STEP;
+          const nextPitch = clamp(player.pitch + turn, -VERTICAL_LOOK_LIMIT, VERTICAL_LOOK_LIMIT);
+          if (nextPitch === player.pitch) {
+            limitMessage = code === 'ArrowUp'
+              ? 'O olhar chegou ao limite superior; mude de posição para observar mais acima. '
+              : 'O olhar chegou ao limite inferior; mude de posição para observar mais abaixo. ';
+          } else {
+            player.pitch = nextPitch;
+          }
+        }
+        announce(limitMessage + lookDescription());
       }
     });
     window.addEventListener('keyup', event => {
