@@ -31,7 +31,10 @@ O tronco também bloqueia a caminhada: não é possível subir simplesmente cami
 - Tom grave ao iniciar movimento descendo a colina.
 - Alerta pulsante cuja altura aumenta ao se aproximar dos limites do campo.
 - Sinal de dois tons descendentes ao alcançar um limite. O sinal e a descrição acessível do limite são emitidos uma vez até o personagem voltar a se mover dentro do campo.
+- Agarrar e soltar a árvore: fricção curta e abafada de mãos na casca.
+- Subida e descida: contatos ritmados com timbres diferentes, sem fala ou anúncio a cada movimento.
+- Chegada ao galho ou ao chão: rangido leve seguido de apoio suave.
 
-Os WAVs de passos, inclinação e limite foram sintetizados em Python para validação. São sons provisórios, não a mixagem final do jogo.
+Os WAVs de passos, inclinação, limite e escalada foram sintetizados em Python para validação conceitual. São sons provisórios, não a mixagem final do jogo.
 
 Para regenerar os WAVs: `python3 tools/generate_sounds.py`.

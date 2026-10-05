@@ -37,7 +37,7 @@
         <p><strong>Movimento:</strong> W norte, S sul, A oeste, D leste, sempre nos eixos fixos do cenário. Ao pressionar, o personagem vira para essa direção; enquanto a tecla fica pressionada, caminha. A tecla oposta substitui a direção anterior; soltar a tecla ativa para o movimento.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita giram a visão 45° por toque; cima/baixo inclinam o olhar 15° sem mover o personagem. A descrição separa o rumo do olhar do rumo de caminhada; quando diz que um objeto está à esquerda ou à direita, isso é relativo ao campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar as coordenadas X, Y e Z.</p>
         <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos; com as mãos livres, aproxime-se e vire o olhar na direção do tronco. Não precisa mirar no centro exato: basta estar perto e voltado para a árvore. Enquanto estiver preso ao tronco, mantenha W pressionado para subir; ao alcançar o galho, a subida termina e você fica sobre ele. No galho, use W/S/A/D para caminhar até uma das quatro pontas; pressione Espaço na ponta para se segurar e mantenha S pressionado para descer até o chão. Espaço solta a qualquer momento em que você estiver se segurando na árvore.</p>
-        <p><strong>Sons:</strong> passos ao caminhar; tom agudo para subir a colina, grave para descer; alerta pulsante que fica mais agudo ao se aproximar do limite do campo e um som distinto ao alcançá-lo. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
+        <p><strong>Sons:</strong> passos ao caminhar; tom agudo para subir a colina, grave para descer; alerta pulsante que fica mais agudo ao se aproximar do limite do campo e um som distinto ao alcançá-lo. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer, e um rangido leve ao apoiar-se no galho ou no chão. São efeitos conceituais provisórios. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
       </div>
     </header>
     <section id="stage" aria-label="Cena tridimensional do protótipo">
@@ -209,6 +209,7 @@
     let audioBuffers = {};
     let audioReady = false;
     let nextStepAt = 0;
+    let nextClimbSoundAt = 0;
     let nextEdgeAt = 0;
     let boundaryContactSide = null;
     let lastAnnouncement = '';
@@ -222,7 +223,12 @@
           step: './assets/footstep.wav',
           up: './assets/slope-up.wav',
           down: './assets/slope-down.wav',
-          boundary: './assets/boundary.wav'
+          boundary: './assets/boundary.wav',
+          climbGrip: './assets/climb-grip.wav',
+          climbUp: './assets/climb-up.wav',
+          climbDown: './assets/climb-down.wav',
+          climbSettle: './assets/climb-settle.wav',
+          climbRelease: './assets/climb-release.wav'
         })) {
           try {
             const response = await fetch(path);
@@ -260,6 +266,9 @@
     }
     function playStep() {
       if (!playBuffer('step', .32)) playTone(105, .09, 'triangle', .035);
+    }
+    function playClimbStroke(direction) {
+      playBuffer(direction > 0 ? 'climbUp' : 'climbDown', direction > 0 ? .25 : .22);
     }
     function terrainChange(direction) {
       const here = heightAt(player.x, player.z);
@@ -322,6 +331,7 @@
       activeCode = null;
     }
     function releaseTreeGrip(message = 'Você soltou a árvore e voltou ao chão.') {
+      playBuffer('climbRelease', .25);
       climbMode = 'ground';
       player.climbHeight = 0;
       branchContact = false;
@@ -345,6 +355,7 @@
         }
         climbMode = 'branchGrip';
         stopMovement();
+        playBuffer('climbGrip', .26);
         announce(`Você se segurou na ponta ${edge} do galho. Use S para descer.`);
         return;
       }
@@ -353,6 +364,7 @@
         climbMode = 'trunkGrip';
         player.climbHeight = 0;
         stopMovement();
+        playBuffer('climbGrip', .3);
         announce('Você se segurou no tronco. W sobe; Espaço solta.');
         return;
       }
@@ -437,6 +449,7 @@
       if (climbMode === 'trunkGrip' || climbMode === 'branchGrip') {
         if (code === 'KeyW') activeClimbDirection = 1;
         if (code === 'KeyS') activeClimbDirection = -1;
+        nextClimbSoundAt = 0;
         return;
       }
       activeDirection = directionForKey[code] || null;
@@ -497,6 +510,11 @@
     const clock = new THREE.Clock();
     function update(delta) {
       if (activeClimbDirection !== 0 && (climbMode === 'trunkGrip' || climbMode === 'branchGrip')) {
+        const now = performance.now();
+        if (now >= nextClimbSoundAt) {
+          playClimbStroke(activeClimbDirection);
+          nextClimbSoundAt = now + 430;
+        }
         player.climbHeight = clamp(player.climbHeight + activeClimbDirection * 2.4 * delta, 0, TREE_BRANCH_HEIGHT);
         if (climbMode === 'trunkGrip' && activeClimbDirection > 0 && player.climbHeight >= TREE_BRANCH_HEIGHT) {
           player.climbHeight = TREE_BRANCH_HEIGHT;
@@ -506,18 +524,21 @@
           climbMode = 'branch';
           branchContact = false;
           stopMovement();
+          playBuffer('climbSettle', .36);
           announce('Você concluiu a subida e está no galho. Caminhe até uma ponta para descer.');
         } else if (activeClimbDirection < 0 && player.climbHeight <= 0) {
           player.climbHeight = 0;
           climbMode = 'ground';
           branchContact = false;
           stopMovement();
+          playBuffer('climbSettle', .34);
           announce('Você desceu até o chão.');
         } else if (climbMode === 'branchGrip' && activeClimbDirection > 0 && player.climbHeight >= TREE_BRANCH_HEIGHT) {
           player.climbHeight = TREE_BRANCH_HEIGHT;
           climbMode = 'branch';
           branchContact = false;
           stopMovement();
+          playBuffer('climbSettle', .30);
           announce('Você voltou ao galho.');
         }
       }
