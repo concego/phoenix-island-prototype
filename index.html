@@ -337,10 +337,10 @@
       camera.lookAt(camera.position.clone().add(direction));
       camera.updateMatrixWorld(true);
     }
-    function announce(text) {
+    function announce(text, includeLabel = true) {
       if (text === lastAnnouncement) text += ' ';
       lastAnnouncement = text;
-      descriptionText.innerHTML = '<strong>Descrição:</strong> ' + text;
+      descriptionText.innerHTML = includeLabel ? '<strong>Descrição:</strong> ' + text : text;
     }
     function trunkTargetStatus() {
       const dx = treeX - player.x, dz = treeZ - player.z;
@@ -513,12 +513,12 @@
       if (code === 'KeyA' || code === 'KeyD') {
         const turn = code === 'KeyA' ? -Math.PI / 4 : Math.PI / 4;
         player.yaw = normalizeAngle(player.yaw + turn);
-        announce(`Você girou o corpo 45 graus para ${turn < 0 ? 'a esquerda' : 'a direita'}. Agora está voltado para ${getBodyHeading()}. ${lookDescription()}`);
+        announce(getBodyHeading(), false);
         return;
       }
       if (code === 'KeyW') {
         player.yaw = normalizeAngle(player.yaw + Math.PI);
-        announce(`Você virou o corpo 180 graus. Agora está voltado para ${getBodyHeading()}. ${lookDescription()}`);
+        announce(getBodyHeading(), false);
         return;
       }
       if (code === 'KeyS') {
