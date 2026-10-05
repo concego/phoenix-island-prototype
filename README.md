@@ -12,7 +12,7 @@ Abra a página publicada no GitHub Pages. O navegador precisa permitir WebGL e c
 - S: virar para sul e caminhar enquanto estiver pressionada.
 - A: virar para oeste e caminhar enquanto estiver pressionada.
 - D: virar para leste e caminhar enquanto estiver pressionada.
-- Setas esquerda/direita: desviar o olhar 15° por toque, até ±45° em relação ao corpo. Ao pressionar além do limite lateral, o corpo gira 15° sem caminhar, mantendo o olhar no limite.
+- Setas esquerda/direita: desviar o olhar 15° por toque, até ±45° em relação ao corpo. No limite, o olhar para; use W/A/S/D para virar o corpo e caminhar.
 - Setas cima/baixo: inclinar o olhar 15° por toque, até ±30°. Para observar além desse limite, mude de posição.
 - C: anunciar as coordenadas atuais X, Y e Z em unidades do cenário.
 - Espaço: usa o item em mãos; com mãos livres, agarra o tronco se o personagem estiver próximo e voltado aproximadamente na direção da árvore. Não é necessário mirar no centro exato; o agarrar aceita uma área ampla de visão. Se estiver longe demais ou virado para outro lado, a descrição informa o que ajustar. Espaço solta enquanto estiver segurando a árvore.
