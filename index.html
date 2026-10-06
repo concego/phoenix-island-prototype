@@ -36,7 +36,7 @@
       <div id="instructions">
         <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Shift+A/D giram o corpo 45° para a esquerda/direita; Shift+W gira 180°; Shift+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift+A/D ou Shift+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°; para observar além, mude de posição. A descrição separa o rumo do olhar do rumo de caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
-        <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos; com as mãos livres, aproxime-se e vire o olhar na direção do tronco. Não precisa mirar no centro exato: basta estar perto e voltado para a árvore. Enquanto estiver preso ao tronco, mantenha W pressionado para subir; ao alcançar os galhos, a subida termina e você fica sobre eles. Caminhe até uma ponta e pressione Espaço para se segurar; mantenha S pressionado para descer até o chão. Enquanto estiver agarrado, W/S controlam a subida e a descida. Espaço solta a qualquer momento.</p>
+        <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S controlam a escalada enquanto estiver agarrado; Espaço solta.</p>
         <p><strong>Sons:</strong> passos ao caminhar; tom agudo para subir a colina, grave para descer; alerta pulsante que fica mais agudo ao se aproximar do limite do campo e um som distinto ao alcançá-lo. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer, e um rangido leve ao apoiar-se no galho ou no chão. São efeitos conceituais provisórios. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
       </div>
     </header>
@@ -95,7 +95,8 @@
       grass: new THREE.MeshStandardMaterial({ color: 0x667a4b, roughness: 1 }),
       hill: new THREE.MeshStandardMaterial({ color: 0x7d694d, roughness: 1, side: THREE.DoubleSide }),
       bark: new THREE.MeshStandardMaterial({ color: 0x59442e, roughness: 1 }),
-      leaves: new THREE.MeshStandardMaterial({ color: 0x315f45, roughness: 1 })
+      leaves: new THREE.MeshStandardMaterial({ color: 0x315f45, roughness: 1 }),
+      fruit: new THREE.MeshStandardMaterial({ color: 0xc84f3d, roughness: .78 })
     };
 
     const lookables = [];
@@ -141,6 +142,10 @@
     const TREE_BRANCH_HEIGHT = 2.75;
     const TREE_BRANCH_REACH = 1.8;
     const TREE_BRANCH_HALF_WIDTH = .32;
+    const TREE_GATHER_REACH = 2.3;
+    const TREE_AIM_MIN_ALIGNMENT = Math.cos(Math.PI / 3);
+    const treeFruitTargets = []; // Filled by addTreeFruitTarget for fruit-bearing trees.
+    const treeHarvest = { sticks: 0, fruits: {} };
     const treeTrunk = addMesh(new THREE.CylinderGeometry(.2, .28, 2.7, 8), materials.bark, [treeX, 1.35, treeZ], 'O tronco de uma árvore está à frente.', true, 'tree');
     function addBranchArm(axisX, axisZ) {
       const arm = addMesh(new THREE.CylinderGeometry(.16, .22, TREE_BRANCH_REACH * 2, 8), materials.bark, [treeX, 2.56, treeZ], 'Um galho elevado se estende para fora do tronco.', true, 'tree');
@@ -152,6 +157,14 @@
     addBranchArm(1, -1);
     addMesh(new THREE.SphereGeometry(1.0, 12, 10), materials.leaves, [treeX, 3.0, treeZ], 'A copa da árvore está acima de você; galhos e folhas entram no campo de visão.', true, 'tree');
     addMesh(new THREE.SphereGeometry(.72, 12, 10), materials.leaves, [treeX, 3.8, treeZ], 'A parte mais alta da copa aparece acima, se o olhar alcançar essa altura.', true, 'tree');
+
+    function addTreeFruitTarget(name, x, y, z) {
+      const mesh = addMesh(new THREE.SphereGeometry(.14, 10, 8), materials.fruit, [x, y, z], `Um fruto ${name} está na árvore.`, true, 'fruit');
+      const target = { name, point: new THREE.Vector3(x, y, z), mesh, harvested: false };
+      treeFruitTargets.push(target);
+      return target;
+    }
+    // Esta árvore de teste não tem frutos; árvores frutíferas podem adicionar alvos aqui.
 
     const blockers = [{ x: treeX, z: treeZ, radius: 1.05, name: 'árvore' }];
 
@@ -342,15 +355,34 @@
       lastAnnouncement = text;
       descriptionText.innerHTML = includeLabel ? '<strong>Descrição:</strong> ' + text : text;
     }
-    function trunkTargetStatus() {
-      const dx = treeX - player.x, dz = treeZ - player.z;
-      if (Math.hypot(dx, dz) > 2.8) return 'far';
-      const targetYaw = Math.atan2(dx, -dz);
-      const angleDifference = Math.abs(Math.atan2(
-        Math.sin(targetYaw - getLookYaw()),
-        Math.cos(targetYaw - getLookYaw())
-      ));
-      return angleDifference <= Math.PI / 3 ? 'ready' : 'not-facing';
+    function getTreeActionTarget() {
+      setCamera();
+      const viewDirection = camera.getWorldDirection(new THREE.Vector3()).normalize();
+      const candidates = [
+        { kind: 'trunk', point: new THREE.Vector3(treeX, 1.35, treeZ) },
+        { kind: 'sticks', point: new THREE.Vector3(treeX, 2.56, treeZ) },
+        { kind: 'sticks', point: new THREE.Vector3(treeX, 3.0, treeZ) },
+        { kind: 'sticks', point: new THREE.Vector3(treeX, 3.8, treeZ) }
+      ];
+      for (let index = 0; index < 8; index++) {
+        const yaw = index * Math.PI / 4;
+        candidates.push({
+          kind: 'sticks',
+          point: new THREE.Vector3(treeX + Math.sin(yaw) * 1.05, 2.56, treeZ - Math.cos(yaw) * 1.05)
+        });
+      }
+      for (const fruit of treeFruitTargets) {
+        if (!fruit.harvested) candidates.push({ kind: 'fruit', name: fruit.name, fruit, point: fruit.point });
+      }
+      const aimed = candidates.map(target => {
+        const offset = target.point.clone().sub(camera.position);
+        const distance = offset.length();
+        return { ...target, distance, alignment: viewDirection.dot(offset.normalize()) };
+      }).sort((a, b) => b.alignment - a.alignment || a.distance - b.distance);
+      const bestNonFruit = aimed.find(target => target.kind !== 'fruit');
+      const bestFruit = aimed.find(target => target.kind === 'fruit');
+      if (bestFruit && (!bestNonFruit || bestFruit.alignment >= bestNonFruit.alignment - .05)) return bestFruit;
+      return aimed[0] || null;
     }
     function stopMovement() {
       activeDirection = null;
@@ -379,20 +411,28 @@
         releaseTreeGrip('Você soltou a árvore e voltou ao chão.');
         return;
       }
-      if (climbMode === 'branch') {
-        const edge = branchEdgeAt(player.x, player.z);
-        if (!edge) {
-          announce('Caminhe até uma ponta do galho antes de se segurar para descer.');
-          return;
-        }
+
+      const target = getTreeActionTarget();
+      const branchEdge = climbMode === 'branch' ? branchEdgeAt(player.x, player.z) : null;
+      if (branchEdge && target?.kind !== 'fruit') {
         climbMode = 'branchGrip';
         stopMovement();
         playBuffer('climbGrip', .26);
-        announce(`Você se segurou na ponta ${edge} do galho. Use S para descer.`);
+        announce(`Você se segurou na ponta ${branchEdge} do galho. Use S para descer.`);
         return;
       }
-      const targetStatus = trunkTargetStatus();
-      if (targetStatus === 'ready') {
+      if (!target || target.alignment < TREE_AIM_MIN_ALIGNMENT) {
+        const horizontalDistance = Math.hypot(player.x - treeX, player.z - treeZ);
+        announce(horizontalDistance > 2.8
+          ? 'Aproxime-se da árvore para agir.'
+          : 'Olhe para o tronco para se segurar ou para os galhos e a copa para extrair gravetos.');
+        return;
+      }
+      if (target.kind === 'trunk') {
+        if (target.distance > 2.8) {
+          announce('O tronco está fora de alcance; aproxime-se para se segurar.');
+          return;
+        }
         climbMode = 'trunkGrip';
         player.climbHeight = 0;
         stopMovement();
@@ -400,9 +440,28 @@
         announce('Você se segurou no tronco. W sobe; Espaço solta.');
         return;
       }
-      announce(targetStatus === 'far'
-        ? 'O tronco está fora de alcance; aproxime-se para se segurar.'
-        : 'Gire o olhar em direção ao tronco e pressione Espaço para se segurar.');
+      if (target.kind === 'fruit') {
+        if (target.distance > TREE_GATHER_REACH) {
+          announce('O fruto está fora de alcance; aproxime-se da posição dele ou suba.');
+          return;
+        }
+        const fruit = target.fruit;
+        fruit.harvested = true;
+        treeHarvest.fruits[fruit.name] = (treeHarvest.fruits[fruit.name] || 0) + 1;
+        if (fruit.mesh) {
+          fruit.mesh.visible = false;
+          const index = lookables.indexOf(fruit.mesh);
+          if (index >= 0) lookables.splice(index, 1);
+        }
+        announce(`Você colheu ${fruit.name}. Total: ${treeHarvest.fruits[fruit.name]}.`);
+        return;
+      }
+      if (target.distance > TREE_GATHER_REACH) {
+        announce('Os galhos estão fora de alcance; aproxime-se ou suba até eles.');
+        return;
+      }
+      treeHarvest.sticks += 1;
+      announce(`Você extraiu um graveto. Total de gravetos: ${treeHarvest.sticks}.`);
     }
     function lookDescription() {
       setCamera();
