@@ -36,7 +36,7 @@
       <div id="instructions">
         <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Shift+A/D giram o corpo 45° para a esquerda/direita; Shift+W gira 180°; Shift+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift+A/D ou Shift+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°; para observar além, mude de posição. A descrição separa o rumo do olhar do rumo de caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
-        <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S controlam a escalada enquanto estiver agarrado; Espaço solta.</p>
+        <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S fazem impulsos ritmados de escalada, aproximadamente a cada 0,43 segundo enquanto a tecla estiver mantida; soltar interrompe o movimento. Espaço solta.</p>
         <p><strong>Sons:</strong> passos com variações na grama e timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina; alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
       </div>
     </header>
@@ -109,6 +109,9 @@
     const WALK_SPEED = 2.4;
     const BACKSTEP_SPEED = 4.2;
     const BACKSTEP_DISTANCE = 1.35;
+    const CLIMB_STROKE_DISTANCE = .36;
+    const CLIMB_STROKE_SPEED = 2.4;
+    const CLIMB_STROKE_INTERVAL = 430;
     camera.position.set(player.x, player.eye, player.z);
 
     scene.add(new THREE.HemisphereLight(0xe5f5ff, 0x46583b, 2.25));
@@ -417,7 +420,9 @@
     let audioReady = false;
     let lastStepBufferName = null;
     let nextStepAt = 0;
-    let nextClimbSoundAt = 0;
+    let nextClimbStrokeAt = 0;
+    let climbStrokeDirection = 0;
+    let climbStrokeRemaining = 0;
     let boundaryContactSide = null;
     let lastAnnouncement = '';
 
@@ -591,6 +596,9 @@
     function stopMovement() {
       activeDirection = null;
       activeClimbDirection = 0;
+      climbStrokeDirection = 0;
+      climbStrokeRemaining = 0;
+      nextClimbStrokeAt = 0;
       activeCode = null;
       activeMoveMode = 'walk';
       activeMoveSpeed = WALK_SPEED;
@@ -757,7 +765,9 @@
         activeMoveRemaining = 0;
         if (code === 'KeyW') activeClimbDirection = 1;
         if (code === 'KeyS') activeClimbDirection = -1;
-        nextClimbSoundAt = 0;
+        climbStrokeDirection = activeClimbDirection;
+        climbStrokeRemaining = 0;
+        nextClimbStrokeAt = 0;
         return;
       }
       activeDirection = movementVector(code);
@@ -857,11 +867,17 @@
     function update(delta) {
       if (activeClimbDirection !== 0 && (climbMode === 'trunkGrip' || climbMode === 'branchGrip')) {
         const now = performance.now();
-        if (now >= nextClimbSoundAt) {
-          playClimbStroke(activeClimbDirection);
-          nextClimbSoundAt = now + 430;
+        if (climbStrokeRemaining <= .001 && now >= nextClimbStrokeAt) {
+          climbStrokeDirection = activeClimbDirection;
+          climbStrokeRemaining = CLIMB_STROKE_DISTANCE;
+          nextClimbStrokeAt = now + CLIMB_STROKE_INTERVAL;
+          playClimbStroke(climbStrokeDirection);
         }
-        player.climbHeight = clamp(player.climbHeight + activeClimbDirection * 2.4 * delta, 0, TREE_BRANCH_HEIGHT);
+        if (climbStrokeRemaining > 0) {
+          const strokeDistance = Math.min(CLIMB_STROKE_SPEED * delta, climbStrokeRemaining);
+          player.climbHeight = clamp(player.climbHeight + climbStrokeDirection * strokeDistance, 0, TREE_BRANCH_HEIGHT);
+          climbStrokeRemaining = Math.max(0, climbStrokeRemaining - strokeDistance);
+        }
         if (climbMode === 'trunkGrip' && activeClimbDirection > 0 && player.climbHeight >= TREE_BRANCH_HEIGHT) {
           player.climbHeight = TREE_BRANCH_HEIGHT;
           // A subida termina no cruzamento dos galhos, garantindo uma posição inicial caminhável.

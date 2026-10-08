@@ -22,7 +22,7 @@ Abra a página publicada no GitHub Pages. O navegador precisa permitir WebGL e c
 - Setas cima/baixo: inclinar o olhar em passos de 15°, até ±30°. Para observar além desse limite, mude de posição.
 - C: anunciar as coordenadas atuais X, Y e Z em unidades do cenário.
 - Espaço: usa o item em mãos. Com mãos livres, perto da árvore, olhar para o tronco agarra; olhar para um galho ou copa ao alcance extrai um graveto e informa o total coletado. Em árvores com frutos, mire o fruto específico; se estiver fora de alcance, aproxime-se da posição dele ou suba. A árvore deste teste não tem frutos. Espaço solta enquanto estiver segurando a árvore.
-- Ao segurar o tronco ou a ponta do galho, W/S continuam controlando a subida e a descida.
+- Ao segurar o tronco ou a ponta do galho, W/S produzem impulsos ritmados de subida/descida, cerca de um a cada 0,43 s enquanto a tecla estiver mantida; soltar interrompe o movimento.
 - A subida termina automaticamente no cruzamento dos galhos. Sobre os galhos, W/S/A/D permitem caminhar até uma ponta; pressione Espaço para se segurar e use S para descer. Espaço também solta e retorna ao chão.
 
 No chão, W/S seguem a frente e a parte de trás do corpo; A/D são deslocamentos laterais. As teclas de movimento só giram o corpo quando usadas com Shift conforme a lista acima. A descrição separa o rumo do olhar do rumo de caminhada; “à esquerda” e “à direita” referem-se sempre à posição de um objeto no campo de visão, não à caminhada. A descrição aparece numa região acessível para leitor de tela, mas caminhar não narra cada tecla ou passo. Soltar a tecla ativa interrompe o deslocamento.
