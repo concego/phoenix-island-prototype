@@ -33,8 +33,8 @@ O tronco também bloqueia a caminhada: não é possível subir simplesmente cami
 
 - Caminhada na grama: quatro variações curtas de impacto macio e ruído vegetal; a escolha varia para reduzir a repetição.
 - Caminhada sobre os galhos: três variações de contato de madeira, separadas das pisadas no chão.
-- Subida e descida da colina: pistas ressonantes com movimento ascendente ou descendente, mantendo a indicação de direção.
-- Aproximação ao limite: alerta pulsante com altura crescente; o contato final usa dois impactos descendentes e distintos.
+- Subida e descida da colina: pistas ressonantes ascendentes ou descendentes, sincronizadas aos passos no terreno inclinado.
+- Limite do campo: alerta pulsante uma vez por passo ao caminhar na direção da borda; ao tocá-la, dois impactos curtos confirmam o contato. No máximo um aviso direcional é tocado por passo, e os alertas não usam temporizador independente.
 - Coleta de graveto: estalo seco seguido de um roçar breve de folhas.
 - Escalada: agarrar e soltar com fricção abafada; subir e descer com contatos ritmados diferentes; apoiar-se no galho ou no chão com rangido leve. Esses efeitos foram preservados sem alteração.
 

@@ -37,7 +37,7 @@
         <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Shift+A/D giram o corpo 45° para a esquerda/direita; Shift+W gira 180°; Shift+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift+A/D ou Shift+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°; para observar além, mude de posição. A descrição separa o rumo do olhar do rumo de caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
         <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S controlam a escalada enquanto estiver agarrado; Espaço solta.</p>
-        <p><strong>Sons:</strong> passos com variações na grama e timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes ao começar a subir ou descer a colina; alerta pulsante que aumenta de altura conforme você se aproxima do limite e dois impactos descendentes ao alcançá-lo. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
+        <p><strong>Sons:</strong> passos com variações na grama e timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina; alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
       </div>
     </header>
     <section id="stage" aria-label="Cena tridimensional do protótipo">
@@ -418,7 +418,6 @@
     let lastStepBufferName = null;
     let nextStepAt = 0;
     let nextClimbSoundAt = 0;
-    let nextEdgeAt = 0;
     let boundaryContactSide = null;
     let lastAnnouncement = '';
 
@@ -512,22 +511,22 @@
       const ahead = heightAt(player.x + direction.x * .75, player.z + direction.z * .75);
       const difference = ahead - here;
       if (difference > .035) {
-        if (playBuffer('up', .3) === false) playTone(760, .18, 'sine', .055);
+        if (playBuffer('up', .3) === false) playTone(760, .095, 'sine', .045);
       } else if (difference < -.035) {
-        if (playBuffer('down', .3) === false) playTone(245, .2, 'sine', .055);
+        if (playBuffer('down', .3) === false) playTone(245, .095, 'sine', .045);
       }
     }
     function playEdgeWarning(distance) {
       const proximity = clamp(1 - distance / 2.5, 0, 1);
       const frequency = 330 + proximity * 670;
-      // Alerta pulsante de aproximação, diferente dos tons de inclinação.
-      playTone(frequency, .12, 'triangle', .028);
+      // Um pulso curto por passo, distinto das pistas de inclinação.
+      playTone(frequency, .09, 'triangle', .028);
     }
     function playBoundarySound() {
-      // Dois tons descendentes confirmam o contato com o limite do campo.
+      // Dois impactos curtos confirmam o contato; o som só toca uma vez por contato.
       if (playBuffer('boundary', .42)) return;
-      playTone(430, .1, 'triangle', .06);
-      window.setTimeout(() => playTone(310, .12, 'triangle', .06), 135);
+      playTone(430, .045, 'triangle', .055);
+      window.setTimeout(() => playTone(310, .055, 'triangle', .055), 65);
     }
     function announceCoordinates() {
       const x = player.x.toFixed(2);
@@ -766,8 +765,7 @@
       activeMoveMode = 'walk';
       activeMoveSpeed = WALK_SPEED;
       activeMoveRemaining = Infinity;
-      if (climbMode === 'ground') terrainChange(activeDirection);
-      nextEdgeAt = 0;
+
     }
     function performShiftMovement(code) {
       if (climbMode === 'trunkGrip' || climbMode === 'branchGrip') {
@@ -791,9 +789,7 @@
         activeMoveMode = 'backstep';
         activeMoveSpeed = BACKSTEP_SPEED;
         activeMoveRemaining = BACKSTEP_DISTANCE;
-        if (climbMode === 'ground') terrainChange(activeDirection);
-        nextStepAt = 0;
-        nextEdgeAt = 0;
+
       }
     }
     function movementCodeFromEvent(event) {
@@ -953,14 +949,15 @@
         const now = performance.now();
         if (moved && now >= nextStepAt) {
           playStep();
-          nextStepAt = now + (moveMode === 'backstep' ? 140 : 430);
-        }
-        if (moved && climbMode === 'ground') {
-          const boundary = boundaryAhead(player.x, player.z, movement);
-          if (boundary.distance <= 2.5 && boundary.distance >= 0 && now >= nextEdgeAt) {
-            playEdgeWarning(boundary.distance);
-            nextEdgeAt = now + Math.max(150, 620 * boundary.distance / 2.5);
+          if (climbMode === 'ground') {
+            const boundary = boundaryAhead(player.x, player.z, movement);
+            if (boundary.distance <= 2.5 && boundary.distance >= 0) {
+              playEdgeWarning(boundary.distance);
+            } else {
+              terrainChange(movement);
+            }
           }
+          nextStepAt = now + (moveMode === 'backstep' ? 230 : 430);
         }
         if (moveMode === 'backstep' && (blocked || activeMoveRemaining <= .001)) stopMovement();
       }

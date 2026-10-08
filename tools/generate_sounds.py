@@ -87,14 +87,15 @@ def make_wood_pulse(frequency: float, duration: float, seed: int) -> list[float]
 
 
 def make_boundary() -> list[float]:
-    silence = [0.0] * int(RATE * 0.06)
-    return make_wood_pulse(455, .15, 151) + silence + make_wood_pulse(325, .18, 157)
+    """Confirmação curta em dois impactos, para não invadir o passo seguinte."""
+    silence = [0.0] * int(RATE * 0.025)
+    return make_wood_pulse(455, .045, 151) + silence + make_wood_pulse(325, .055, 157)
 
 
 def make_slope_cue(upward: bool) -> list[float]:
     """Pista suave e ressonante; sobe em registro ou desce para indicar inclinação."""
     rng = random.Random(163 if upward else 167)
-    duration = .24
+    duration = .11
     count = int(RATE * duration)
     lowpass = 0.0
     phase = 0.0
