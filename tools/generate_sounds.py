@@ -27,17 +27,29 @@ def write_wav(path: Path, samples: list[float]) -> None:
         output.writeframes(pcm)
 
 
-def make_footstep() -> list[float]:
-    rng = random.Random(31)
-    duration = 0.16
+def make_footstep(seed: int = 31) -> list[float]:
+    """Passo macio na grama: impacto abafado, contato da sola e ruído vegetal."""
+    rng = random.Random(seed)
+    duration = 0.205
     count = int(RATE * duration)
+    lowpass = 0.0
+    toe_start = .045 + rng.random() * .008
     samples = []
     for index in range(count):
         t = index / RATE
-        envelope = math.exp(-25 * t) * min(1.0, t * 180)
-        low_thump = math.sin(2 * math.pi * 82 * t) * 0.34
-        gritty_surface = rng.uniform(-1, 1) * 0.48
-        samples.append((low_thump + gritty_surface) * envelope)
+        raw = rng.uniform(-1, 1)
+        lowpass += 0.075 * (raw - lowpass)
+        grit = raw - lowpass
+        heel = 0.0
+        if t >= 0:
+            heel = 0.25 * math.sin(2 * math.pi * (84 - 18 * min(1.0, t / .09)) * t) * math.exp(-31 * t)
+        toe_elapsed = t - toe_start
+        toe = 0.0
+        if toe_elapsed >= 0:
+            toe = 0.12 * math.sin(2 * math.pi * 116 * toe_elapsed) * math.exp(-36 * toe_elapsed)
+        surface_env = math.exp(-20 * t) * min(1.0, t * 130)
+        leafy_contact = grit * (.16 + .04 * rng.random()) * surface_env
+        samples.append(heel + toe + leafy_contact)
     return samples
 
 
@@ -55,9 +67,108 @@ def make_beep(frequency: float, duration: float = 0.19) -> list[float]:
     return samples
 
 
+def make_wood_pulse(frequency: float, duration: float, seed: int) -> list[float]:
+    """Impacto curto de madeira, com ressonância e ataque de ruído filtrado."""
+    rng = random.Random(seed)
+    count = int(RATE * duration)
+    lowpass = 0.0
+    phase = 0.0
+    samples = []
+    for index in range(count):
+        t = index / RATE
+        raw = rng.uniform(-1, 1)
+        lowpass += .19 * (raw - lowpass)
+        phase += 2 * math.pi * (frequency - 24 * min(1.0, t / duration)) / RATE
+        envelope = math.exp(-15 * t) * min(1.0, t * 150)
+        resonance = .28 * math.sin(phase) + .065 * math.sin(phase * 2.31)
+        attack_noise = (raw - lowpass) * .055 * math.exp(-52 * t)
+        samples.append((resonance * envelope) + attack_noise)
+    return samples
+
+
 def make_boundary() -> list[float]:
-    silence = [0.0] * int(RATE * 0.055)
-    return make_beep(430, 0.11) + silence + make_beep(315, 0.14)
+    silence = [0.0] * int(RATE * 0.06)
+    return make_wood_pulse(455, .15, 151) + silence + make_wood_pulse(325, .18, 157)
+
+
+def make_slope_cue(upward: bool) -> list[float]:
+    """Pista suave e ressonante; sobe em registro ou desce para indicar inclinação."""
+    rng = random.Random(163 if upward else 167)
+    duration = .24
+    count = int(RATE * duration)
+    lowpass = 0.0
+    phase = 0.0
+    samples = []
+    start_frequency, end_frequency = (390, 610) if upward else (410, 255)
+    for index in range(count):
+        t = index / RATE
+        progress = t / duration
+        frequency = start_frequency + (end_frequency - start_frequency) * progress
+        phase += 2 * math.pi * frequency / RATE
+        raw = rng.uniform(-1, 1)
+        lowpass += .11 * (raw - lowpass)
+        filtered = raw - lowpass
+        envelope = math.sin(math.pi * progress) ** 1.25
+        resonance = .24 * math.sin(phase) + .055 * math.sin(phase * 1.98 + .2)
+        texture = filtered * (.045 if upward else .035) * envelope
+        samples.append(resonance * envelope + texture)
+    return samples
+
+
+def make_twig_harvest() -> list[float]:
+    """Estalo seco de graveto, seguido por um breve roçar de folhas."""
+    rng = random.Random(173)
+    duration = .31
+    count = int(RATE * duration)
+    lowpass = 0.0
+    samples = []
+    for index in range(count):
+        t = index / RATE
+        raw = rng.uniform(-1, 1)
+        lowpass += .12 * (raw - lowpass)
+        high_noise = raw - lowpass
+        first = t - .012
+        second = t - .047
+        snap = 0.0
+        if first >= 0:
+            snap += .18 * math.sin(2 * math.pi * 1280 * first) * math.exp(-95 * first)
+            snap += .12 * math.sin(2 * math.pi * 510 * first) * math.exp(-55 * first)
+            snap += high_noise * .22 * math.exp(-88 * first)
+        if second >= 0:
+            snap += .09 * math.sin(2 * math.pi * 760 * second) * math.exp(-72 * second)
+            snap += high_noise * .11 * math.exp(-70 * second)
+        rustle_start = max(0.0, t - .052)
+        rustle_env = min(1.0, rustle_start * 42) * math.exp(-12 * rustle_start)
+        rustle = high_noise * .065 * rustle_env
+        samples.append(snap + rustle)
+    return samples
+
+
+def make_branch_step(seed: int = 181) -> list[float]:
+    """Passo leve sobre madeira, distinto do contato abafado com a grama."""
+    rng = random.Random(seed)
+    duration = .22
+    count = int(RATE * duration)
+    lowpass = 0.0
+    phase = 0.0
+    samples = []
+    for index in range(count):
+        t = index / RATE
+        raw = rng.uniform(-1, 1)
+        lowpass += .16 * (raw - lowpass)
+        grain = raw - lowpass
+        hit = 0.0
+        for start, frequency, strength in ((.004, 112, .22), (.058, 168, .1)):
+            elapsed = t - start
+            if elapsed >= 0:
+                hit += strength * math.sin(2 * math.pi * frequency * elapsed) * math.exp(-34 * elapsed)
+        progress = t / duration
+        frequency = 188 - 48 * progress
+        phase += 2 * math.pi * frequency / RATE
+        creak = .045 * math.sin(phase) * math.sin(math.pi * progress) ** 1.2
+        contact = grain * .035 * math.exp(-17 * t)
+        samples.append(hit + creak + contact)
+    return samples
 
 
 def make_grip() -> list[float]:
@@ -151,10 +262,17 @@ def make_release() -> list[float]:
 
 def main() -> None:
     ASSETS.mkdir(parents=True, exist_ok=True)
-    write_wav(ASSETS / "footstep.wav", make_footstep())
-    write_wav(ASSETS / "slope-up.wav", make_beep(760, 0.17))
-    write_wav(ASSETS / "slope-down.wav", make_beep(245, 0.2))
+    for variant, seed in enumerate((31, 47, 53, 59), start=1):
+        filename = "footstep.wav" if variant == 1 else f"footstep-{variant}.wav"
+        write_wav(ASSETS / filename, make_footstep(seed))
+    write_wav(ASSETS / "slope-up.wav", make_slope_cue(upward=True))
+    write_wav(ASSETS / "slope-down.wav", make_slope_cue(upward=False))
     write_wav(ASSETS / "boundary.wav", make_boundary())
+    for variant, seed in enumerate((181, 193, 197), start=1):
+        filename = "branch-step.wav" if variant == 1 else f"branch-step-{variant}.wav"
+        write_wav(ASSETS / filename, make_branch_step(seed))
+    write_wav(ASSETS / "twig-harvest.wav", make_twig_harvest())
+    # Os efeitos de escalada já aprovados permanecem sem alteração.
     write_wav(ASSETS / "climb-grip.wav", make_grip())
     write_wav(ASSETS / "climb-up.wav", make_climb_step(upward=True))
     write_wav(ASSETS / "climb-down.wav", make_climb_step(upward=False))

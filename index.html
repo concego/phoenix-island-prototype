@@ -415,6 +415,7 @@
     let audioContext = null;
     let audioBuffers = {};
     let audioReady = false;
+    let lastStepBufferName = null;
     let nextStepAt = 0;
     let nextClimbSoundAt = 0;
     let nextEdgeAt = 0;
@@ -426,8 +427,15 @@
       if (audioContext.state === 'suspended') await audioContext.resume();
       if (!audioReady) {
         audioReady = true;
-        for (const [name, path] of Object.entries({
+        const audioFiles = {
           step: './assets/footstep.wav',
+          step2: './assets/footstep-2.wav',
+          step3: './assets/footstep-3.wav',
+          step4: './assets/footstep-4.wav',
+          branchStep: './assets/branch-step.wav',
+          branchStep2: './assets/branch-step-2.wav',
+          branchStep3: './assets/branch-step-3.wav',
+          stickHarvest: './assets/twig-harvest.wav',
           up: './assets/slope-up.wav',
           down: './assets/slope-down.wav',
           boundary: './assets/boundary.wav',
@@ -436,15 +444,16 @@
           climbDown: './assets/climb-down.wav',
           climbSettle: './assets/climb-settle.wav',
           climbRelease: './assets/climb-release.wav'
-        })) {
+        };
+        await Promise.all(Object.entries(audioFiles).map(async ([name, path]) => {
           try {
             const response = await fetch(path);
-            if (!response.ok) continue;
+            if (!response.ok) return;
             audioBuffers[name] = await audioContext.decodeAudioData(await response.arrayBuffer());
           } catch (_) {
             // Se um arquivo não carregar, o protótipo continua e usa tons sintetizados como reserva.
           }
-        }
+        }));
       }
     }
     function playBuffer(name, volume = .42) {
@@ -472,6 +481,22 @@
       oscillator.stop(now + duration + .02);
     }
     function playStep() {
+      const onBranch = climbMode === 'branch';
+      let variants = onBranch
+        ? ['branchStep', 'branchStep2', 'branchStep3']
+        : ['step', 'step2', 'step3', 'step4'];
+      let available = variants.filter(name => audioBuffers[name]);
+      if (!available.length && onBranch) available = ['step', 'step2', 'step3', 'step4'].filter(name => audioBuffers[name]);
+      if (available.length > 1 && lastStepBufferName) {
+        const withoutLast = available.filter(name => name !== lastStepBufferName);
+        if (withoutLast.length) available = withoutLast;
+      }
+      if (available.length) {
+        const name = available[Math.floor(Math.random() * available.length)];
+        lastStepBufferName = name;
+        playBuffer(name, onBranch ? .29 : .32);
+        return;
+      }
       if (!playBuffer('step', .32)) playTone(105, .09, 'triangle', .035);
     }
     function playClimbStroke(direction) {
@@ -491,7 +516,7 @@
       const proximity = clamp(1 - distance / 2.5, 0, 1);
       const frequency = 330 + proximity * 670;
       // Alerta pulsante de aproximação, diferente dos tons de inclinação.
-      playTone(frequency, .12, 'square', .035);
+      playTone(frequency, .12, 'triangle', .028);
     }
     function playBoundarySound() {
       // Dois tons descendentes confirmam o contato com o limite do campo.
@@ -636,6 +661,7 @@
         return;
       }
       treeHarvest.sticks += 1;
+      playBuffer('stickHarvest', .31);
       announce(`Você extraiu um graveto. Total de gravetos: ${treeHarvest.sticks}.`);
     }
     function lookDescription() {

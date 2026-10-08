@@ -31,15 +31,11 @@ O tronco também bloqueia a caminhada: não é possível subir simplesmente cami
 
 ## Pistas sonoras provisórias
 
-- Passos durante a caminhada.
-- Tom agudo ao iniciar movimento subindo a colina.
-- Tom grave ao iniciar movimento descendo a colina.
-- Alerta pulsante cuja altura aumenta ao se aproximar dos limites do campo.
-- Sinal de dois tons descendentes ao alcançar um limite. O sinal e a descrição acessível do limite são emitidos uma vez até o personagem voltar a se mover dentro do campo.
-- Agarrar e soltar a árvore: fricção curta e abafada de mãos na casca.
-- Subida e descida: contatos ritmados com timbres diferentes, sem fala ou anúncio a cada movimento.
-- Chegada ao galho ou ao chão: rangido leve seguido de apoio suave.
+- Caminhada na grama: quatro variações curtas de impacto macio e ruído vegetal; a escolha varia para reduzir a repetição.
+- Caminhada sobre os galhos: três variações de contato de madeira, separadas das pisadas no chão.
+- Subida e descida da colina: pistas ressonantes com movimento ascendente ou descendente, mantendo a indicação de direção.
+- Aproximação ao limite: alerta pulsante com altura crescente; o contato final usa dois impactos descendentes e distintos.
+- Coleta de graveto: estalo seco seguido de um roçar breve de folhas.
+- Escalada: agarrar e soltar com fricção abafada; subir e descer com contatos ritmados diferentes; apoiar-se no galho ou no chão com rangido leve. Esses efeitos foram preservados sem alteração.
 
-Os WAVs de passos, inclinação, limite e escalada foram sintetizados em Python para validação conceitual. São sons provisórios, não a mixagem final do jogo.
-
-Para regenerar os WAVs: `python3 tools/generate_sounds.py`.
+Os efeitos são sintetizados em Python e continuam provisórios; ainda precisam de avaliação auditiva e refinamento. Para regenerar os WAVs: `python3 tools/generate_sounds.py`.
