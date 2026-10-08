@@ -29,6 +29,12 @@ No chão, W/S seguem a frente e a parte de trás do corpo; A/D são deslocamento
 
 O tronco também bloqueia a caminhada: não é possível subir simplesmente caminhando contra ele.
 
+## Percepção vertical — teste inicial
+
+Cada ator usa um perfil de percepção com altura ocular própria e campo vertical. O perfil humano atual usa olhos a 1,60 m da base e campo vertical de 68°. Para um ponto-alvo, o protótipo calcula o ângulo de elevação com `atan2(Z_alvo - Z_olhos, distância_horizontal)` e o compara com a inclinação atual do olhar.
+
+A linha entre os olhos e o alvo é verificada contra a função numérica de altitude do terreno, em amostras de até 1 cm. O alvo é bloqueado se o relevo ultrapassar a linha de visão por mais de 1 cm. Assim, o limite angular e a oclusão pelo relevo são testes separados; o alcance máximo continua independente. Nesta etapa, o filtro é aplicado aos pontos de interesse que a descrição acessível já examina, não a um sistema completo de descoberta do mundo.
+
 ## Pistas sonoras provisórias
 
 - Caminhada na grama: quatro variações curtas de impacto macio e ruído vegetal; a escolha varia para reduzir a repetição.

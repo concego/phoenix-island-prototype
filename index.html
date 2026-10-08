@@ -103,9 +103,12 @@
     }
     addProceduralSky();
 
-    const camera = new THREE.PerspectiveCamera(68, 1, 0.1, 100);
+    const HUMAN_VERTICAL_FOV_DEGREES = 68;
+    const PERCEPTION_TERRAIN_CLEARANCE_METERS = .01;
+    const PERCEPTION_TERRAIN_SAMPLE_METERS = .01;
+    const humanPerceptionProfile = Object.freeze({ eyeHeight: 1.60, verticalFovDegrees: HUMAN_VERTICAL_FOV_DEGREES });
+    const camera = new THREE.PerspectiveCamera(humanPerceptionProfile.verticalFovDegrees, 1, 0.1, 100);
     const MAP_BOUNDS = { minX: -6, maxX: 6, minY: -6, maxY: 6 };
-    const humanPerceptionProfile = Object.freeze({ eyeHeight: 1.60 });
     const player = { x: 0, y: -2.5, perceptionProfile: humanPerceptionProfile, yaw: 0, headYawOffset: 0, pitch: 0, climbHeight: 0 };
     const HORIZONTAL_LOOK_STEP = Math.PI / 12;
     const HORIZONTAL_LOOK_LIMIT = Math.PI / 4;
@@ -360,6 +363,32 @@
     }
     function playerBaseAltitude() { return terrainHeightAt(player.x, player.y) + player.climbHeight; }
     function playerEyeAltitude() { return playerBaseAltitude() + player.perceptionProfile.eyeHeight; }
+    function targetWithinVerticalFov(targetPoint) {
+      const target = threeToDesign(targetPoint);
+      const horizontalDistance = Math.hypot(target.x - player.x, target.y - player.y);
+      const targetElevation = Math.atan2(target.z - playerEyeAltitude(), horizontalDistance);
+      const halfFov = player.perceptionProfile.verticalFovDegrees * Math.PI / 360;
+      return Math.abs(targetElevation - player.pitch) <= halfFov;
+    }
+    function terrainBlocksSightline(targetPoint) {
+      const target = threeToDesign(targetPoint);
+      const dx = target.x - player.x, dy = target.y - player.y;
+      const horizontalDistance = Math.hypot(dx, dy);
+      if (horizontalDistance <= PERCEPTION_TERRAIN_SAMPLE_METERS) return false;
+      const samples = Math.ceil(horizontalDistance / PERCEPTION_TERRAIN_SAMPLE_METERS);
+      const eyeZ = playerEyeAltitude();
+      for (let index = 1; index < samples; index++) {
+        const t = index / samples;
+        const x = player.x + dx * t;
+        const y = player.y + dy * t;
+        const sightZ = eyeZ + (target.z - eyeZ) * t;
+        if (terrainHeightAt(x, y) > sightZ + PERCEPTION_TERRAIN_CLEARANCE_METERS) return true;
+      }
+      return false;
+    }
+    function isPerceivedByVerticalField(targetPoint) {
+      return targetWithinVerticalFov(targetPoint) && !terrainBlocksSightline(targetPoint);
+    }
     function isInsideMap(x, y) {
       return x >= MAP_BOUNDS.minX && x <= MAP_BOUNDS.maxX && y >= MAP_BOUNDS.minY && y <= MAP_BOUNDS.maxY;
     }
@@ -556,6 +585,10 @@
     }
     function getLookYaw() { return normalizeAngle(player.yaw + player.headYawOffset); }
     function setCamera() {
+      if (camera.fov !== player.perceptionProfile.verticalFovDegrees) {
+        camera.fov = player.perceptionProfile.verticalFovDegrees;
+        camera.updateProjectionMatrix();
+      }
       camera.position.copy(designToThree(player.x, player.y, playerEyeAltitude()));
       const cp = Math.cos(player.pitch);
       const viewYaw = getLookYaw();
@@ -705,6 +738,7 @@
       for (const target of targets) {
         const screen = target.point.clone().project(camera);
         if (screen.z < -1 || screen.z > 1 || Math.abs(screen.x) > 1 || Math.abs(screen.y) > 1) continue;
+        if (!isPerceivedByVerticalField(target.point)) continue;
         const offset = target.point.clone().sub(camera.position);
         const distance = offset.length();
         raycaster.set(camera.position, offset.normalize());
