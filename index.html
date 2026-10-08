@@ -71,6 +71,10 @@
     renderer.domElement.setAttribute('aria-hidden', 'true');
 
     const scene = new THREE.Scene();
+    // Coordenadas lógicas do jogo: X/Y no plano e Z na altitude.
+    // Three.js continua Y-up; esta conversão ocorre somente na camada de renderização.
+    function designToThree(x, y, z) { return new THREE.Vector3(x, z, -y); }
+    function threeToDesign(vector) { return { x: vector.x, y: -vector.z, z: vector.y }; }
     const horizonColor = new THREE.Color(0xbcd4c8);
     scene.background = horizonColor;
     scene.fog = new THREE.Fog(horizonColor, 22, 48);
@@ -100,8 +104,9 @@
     addProceduralSky();
 
     const camera = new THREE.PerspectiveCamera(68, 1, 0.1, 100);
-    const MAP_BOUNDS = { minX: -6, maxX: 6, minZ: -6, maxZ: 6 };
-    const player = { x: 0, z: 2.5, eye: 1.65, yaw: 0, headYawOffset: 0, pitch: 0, climbHeight: 0 };
+    const MAP_BOUNDS = { minX: -6, maxX: 6, minY: -6, maxY: 6 };
+    const humanPerceptionProfile = Object.freeze({ eyeHeight: 1.60 });
+    const player = { x: 0, y: -2.5, perceptionProfile: humanPerceptionProfile, yaw: 0, headYawOffset: 0, pitch: 0, climbHeight: 0 };
     const HORIZONTAL_LOOK_STEP = Math.PI / 12;
     const HORIZONTAL_LOOK_LIMIT = Math.PI / 4;
     const VERTICAL_LOOK_STEP = Math.PI / 12;
@@ -112,7 +117,7 @@
     const CLIMB_STROKE_DISTANCE = .36;
     const CLIMB_STROKE_SPEED = 2.4;
     const CLIMB_STROKE_INTERVAL = 430;
-    camera.position.set(player.x, player.eye, player.z);
+    camera.position.copy(designToThree(player.x, player.y, player.perceptionProfile.eyeHeight));
 
     scene.add(new THREE.HemisphereLight(0xe5f5ff, 0x46583b, 2.25));
     const sun = new THREE.DirectionalLight(0xffe2b3, 2.3);
@@ -227,7 +232,7 @@
     }
     function addMesh(geometry, material, position, description = null, castShadow = true, category = 'other') {
       const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(...position);
+      mesh.position.copy(designToThree(...position));
       mesh.castShadow = castShadow;
       mesh.receiveShadow = true;
       scene.add(mesh);
@@ -236,13 +241,14 @@
     }
 
     // Um pequeno pedaço de campo, com uma colina e uma árvore para testes.
-    const ground = addMesh(new THREE.PlaneGeometry(13, 13), materials.grass, [0, -0.08, 0], null, false);
+    const ground = addMesh(new THREE.PlaneGeometry(13, 13), materials.grass, [0, 0, -.08], null, false);
     ground.rotation.x = -Math.PI / 2;
 
     const rampGeometry = new THREE.BufferGeometry();
-    rampGeometry.setAttribute('position', new THREE.Float32BufferAttribute([
-      -2.1, 0, -1.1,  2.1, 0, -1.1,  -2.1, 1.8, -4.8,  2.1, 1.8, -4.8
-    ], 3));
+    const rampVertices = [
+      [-2.1, 1.1, 0], [2.1, 1.1, 0], [-2.1, 4.8, 1.8], [2.1, 4.8, 1.8]
+    ].flatMap(point => designToThree(...point).toArray());
+    rampGeometry.setAttribute('position', new THREE.Float32BufferAttribute(rampVertices, 3));
     rampGeometry.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 1, 0, 0, 1, 1, 1], 2));
     rampGeometry.setIndex([0, 1, 2, 1, 3, 2]);
     rampGeometry.computeVertexNormals();
@@ -253,7 +259,7 @@
     scene.add(ramp);
     markLookable(ramp, ramp.userData.lookDescription, 'hill');
 
-    const plateau = addMesh(new THREE.PlaneGeometry(4.2, 1.2), materials.grass, [0, 1.8, -5.4], 'Você está olhando para o topo da colina.', false, 'hill');
+    const plateau = addMesh(new THREE.PlaneGeometry(4.2, 1.2), materials.grass, [0, 5.4, 1.8], 'Você está olhando para o topo da colina.', false, 'hill');
     plateau.rotation.x = -Math.PI / 2;
     plateau.receiveShadow = false;
 
@@ -267,12 +273,12 @@
       let count = 0;
       for (let attempt = 0; attempt < 80 && count < 84; attempt++) {
         const x = -5.5 + random() * 11;
-        const z = -5.5 + random() * 11;
-        if (Math.abs(x) <= 2.1 && z < -1.1) continue;
-        if (Math.hypot(x - treeX, z - treeZ) < 1.55) continue;
-        if (Math.hypot(x - player.x, z - player.z) < 1.2) continue;
+        const y = 5.5 - random() * 11;
+        if (Math.abs(x) <= 2.1 && y > 1.1) continue;
+        if (Math.hypot(x - treeX, y - treeY) < 1.55) continue;
+        if (Math.hypot(x - player.x, y - player.y) < 1.2) continue;
         for (let blade = 0; blade < 3 && count < 84; blade++) {
-          dummy.position.set(x + (random() - .5) * .13, -.08, z + (random() - .5) * .13);
+          dummy.position.copy(designToThree(x + (random() - .5) * .13, y + (random() - .5) * .13, -.08));
           dummy.rotation.set((random() - .5) * .24, random() * Math.PI * 2, (random() - .5) * .24);
           const scale = .72 + random() * .5;
           dummy.scale.set(scale, .7 + random() * .65, scale);
@@ -290,7 +296,7 @@
       scene.add(mesh);
     }
     // Árvore, com um cruzamento de galhos que serve de patamar de teste.
-    const treeX = 3.8, treeZ = .2;
+    const treeX = 3.8, treeY = -.2;
     const TREE_BRANCH_HEIGHT = 2.75;
     const TREE_BRANCH_REACH = 1.8;
     const TREE_BRANCH_HALF_WIDTH = .32;
@@ -299,19 +305,19 @@
     const treeFruitTargets = []; // Filled by addTreeFruitTarget for fruit-bearing trees.
     const treeHarvest = { sticks: 0, fruits: {} };
     addGrassTufts();
-    const treeTrunk = addMesh(new THREE.CylinderGeometry(.2, .28, 2.7, 8), materials.bark, [treeX, 1.35, treeZ], 'O tronco de uma árvore está à frente.', true, 'tree');
+    const treeTrunk = addMesh(new THREE.CylinderGeometry(.2, .28, 2.7, 8), materials.bark, [treeX, treeY, 1.35], 'O tronco de uma árvore está à frente.', true, 'tree');
     for (let index = 0; index < 6; index++) {
       const angle = index * Math.PI / 3;
-      const direction = new THREE.Vector3(Math.sin(angle), 0, -Math.cos(angle));
+      const directionX = Math.sin(angle), directionY = Math.cos(angle);
       const length = .95 + (index % 2) * .16;
       const root = addMesh(new THREE.CylinderGeometry(.035, .14, length, 6), materials.bark, [
-        treeX + direction.x * length * .42, .1, treeZ + direction.z * length * .42
+        treeX + directionX * length * .42, treeY + directionY * length * .42, .1
       ], null, true);
-      root.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
+      root.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), designToThree(directionX, directionY, 0).normalize());
     }
-    function addBranchArm(axisX, axisZ) {
-      const arm = addMesh(new THREE.CylinderGeometry(.16, .22, TREE_BRANCH_REACH * 2, 8), materials.bark, [treeX, 2.56, treeZ], 'Um galho elevado se estende para fora do tronco.', true, 'tree');
-      arm.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(axisX, 0, axisZ).normalize());
+    function addBranchArm(axisX, axisY) {
+      const arm = addMesh(new THREE.CylinderGeometry(.16, .22, TREE_BRANCH_REACH * 2, 8), materials.bark, [treeX, treeY, 2.56], 'Um galho elevado se estende para fora do tronco.', true, 'tree');
+      arm.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), designToThree(axisX, axisY, 0).normalize());
     }
     addBranchArm(1, 0);
     addBranchArm(0, 1);
@@ -319,87 +325,89 @@
     addBranchArm(1, -1);
     const leafGeometry = new THREE.IcosahedronGeometry(1, 1);
     const canopyClusters = [
-      [0, 3.0, 0, 1.0, .82, .9, materials.leaves],
-      [-.56, 2.93, -.08, .68, .62, .66, materials.leavesLight],
-      [.58, 2.95, .06, .7, .65, .68, materials.leavesShade],
-      [0, 2.9, .56, .72, .6, .66, materials.leavesLight],
-      [0, 3.08, -.55, .68, .62, .65, materials.leavesShade],
-      [-.34, 3.62, -.1, .62, .68, .6, materials.leavesLight],
-      [.38, 3.62, .18, .66, .72, .63, materials.leaves],
-      [0, 4.08, 0, .52, .58, .5, materials.leavesLight]
+      [0, 0, 3.0, 1.0, .82, .9, materials.leaves],
+      [-.56, .08, 2.93, .68, .62, .66, materials.leavesLight],
+      [.58, -.06, 2.95, .7, .65, .68, materials.leavesShade],
+      [0, -.56, 2.9, .72, .6, .66, materials.leavesLight],
+      [0, .55, 3.08, .68, .62, .65, materials.leavesShade],
+      [-.34, .1, 3.62, .62, .68, .6, materials.leavesLight],
+      [.38, -.18, 3.62, .66, .72, .63, materials.leaves],
+      [0, 0, 4.08, .52, .58, .5, materials.leavesLight]
     ];
-    for (const [offsetX, y, offsetZ, scaleX, scaleY, scaleZ, material] of canopyClusters) {
-      const description = y > 3.5
+    for (const [offsetX, offsetY, altitude, scaleX, scaleY, scaleZ, material] of canopyClusters) {
+      const description = altitude > 3.5
         ? 'A parte mais alta da copa aparece acima, se o olhar alcançar essa altura.'
         : 'A copa da árvore está acima de você; galhos e folhas entram no campo de visão.';
-      const cluster = addMesh(leafGeometry, material, [treeX + offsetX, y, treeZ + offsetZ], description, true, 'tree');
+      const cluster = addMesh(leafGeometry, material, [treeX + offsetX, treeY + offsetY, altitude], description, true, 'tree');
       cluster.scale.set(scaleX, scaleY, scaleZ);
     }
 
     function addTreeFruitTarget(name, x, y, z) {
       const mesh = addMesh(new THREE.SphereGeometry(.14, 10, 8), materials.fruit, [x, y, z], `Um fruto ${name} está na árvore.`, true, 'fruit');
-      const target = { name, point: new THREE.Vector3(x, y, z), mesh, harvested: false };
+      const target = { name, point: designToThree(x, y, z), mesh, harvested: false };
       treeFruitTargets.push(target);
       return target;
     }
     // Esta árvore de teste não tem frutos; árvores frutíferas podem adicionar alvos aqui.
 
-    const blockers = [{ x: treeX, z: treeZ, radius: 1.05, name: 'árvore' }];
+    const blockers = [{ x: treeX, y: treeY, radius: 1.05, name: 'árvore' }];
 
     function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
-    function heightAt(x, z) {
-      if (Math.abs(x) <= 2.1 && z < -4.8 && z >= MAP_BOUNDS.minZ) return 1.8;
-      if (Math.abs(x) <= 2.1 && z >= -4.8 && z <= -1.1) return 1.8 * ((-z - 1.1) / 3.7);
+    function terrainHeightAt(x, y) {
+      if (Math.abs(x) <= 2.1 && y > 4.8 && y <= MAP_BOUNDS.maxY) return 1.8;
+      if (Math.abs(x) <= 2.1 && y >= 1.1 && y <= 4.8) return 1.8 * ((y - 1.1) / 3.7);
       return 0;
     }
-    function isInsideMap(x, z) {
-      return x >= MAP_BOUNDS.minX && x <= MAP_BOUNDS.maxX && z >= MAP_BOUNDS.minZ && z <= MAP_BOUNDS.maxZ;
+    function playerBaseAltitude() { return terrainHeightAt(player.x, player.y) + player.climbHeight; }
+    function playerEyeAltitude() { return playerBaseAltitude() + player.perceptionProfile.eyeHeight; }
+    function isInsideMap(x, y) {
+      return x >= MAP_BOUNDS.minX && x <= MAP_BOUNDS.maxX && y >= MAP_BOUNDS.minY && y <= MAP_BOUNDS.maxY;
     }
-    function boundarySide(x, z) {
+    function boundarySide(x, y) {
       if (x < MAP_BOUNDS.minX) return 'oeste';
       if (x > MAP_BOUNDS.maxX) return 'leste';
-      if (z < MAP_BOUNDS.minZ) return 'norte';
-      if (z > MAP_BOUNDS.maxZ) return 'sul';
+      if (y > MAP_BOUNDS.maxY) return 'norte';
+      if (y < MAP_BOUNDS.minY) return 'sul';
       return null;
     }
-    function boundaryAhead(x, z, direction) {
+    function boundaryAhead(x, y, direction) {
       const candidates = [];
       if (direction.x > 0) candidates.push({ side: 'leste', distance: (MAP_BOUNDS.maxX - x) / direction.x });
       if (direction.x < 0) candidates.push({ side: 'oeste', distance: (MAP_BOUNDS.minX - x) / direction.x });
-      if (direction.z > 0) candidates.push({ side: 'sul', distance: (MAP_BOUNDS.maxZ - z) / direction.z });
-      if (direction.z < 0) candidates.push({ side: 'norte', distance: (MAP_BOUNDS.minZ - z) / direction.z });
+      if (direction.y > 0) candidates.push({ side: 'norte', distance: (MAP_BOUNDS.maxY - y) / direction.y });
+      if (direction.y < 0) candidates.push({ side: 'sul', distance: (MAP_BOUNDS.minY - y) / direction.y });
       return candidates.filter(item => item.distance >= 0).sort((a, b) => a.distance - b.distance)[0] || { side: 'campo', distance: Infinity };
     }
-    function obstacleAt(x, z) {
-      return blockers.find(item => Math.hypot(x - item.x, z - item.z) < item.radius + .34) || null;
+    function obstacleAt(x, y) {
+      return blockers.find(item => Math.hypot(x - item.x, y - item.y) < item.radius + .34) || null;
     }
-    function isWalkable(x, z) {
-      if (!isInsideMap(x, z)) return false;
-      if (z < -4.8 && Math.abs(x) > 2.1) return false;
-      if (obstacleAt(x, z)) return false;
+    function isWalkable(x, y) {
+      if (!isInsideMap(x, y)) return false;
+      if (y > 4.8 && Math.abs(x) > 2.1) return false;
+      if (obstacleAt(x, y)) return false;
       return true;
     }
-    function isOnBranch(x, z) {
-      if (!isInsideMap(x, z)) return false;
-      const dx = x - treeX, dz = z - treeZ;
-      if (Math.hypot(dx, dz) <= .42) return true;
+    function isOnBranch(x, y) {
+      if (!isInsideMap(x, y)) return false;
+      const dx = x - treeX, dy = y - treeY;
+      if (Math.hypot(dx, dy) <= .42) return true;
       const armAngles = [0, Math.PI / 4, Math.PI / 2, 3 * Math.PI / 4];
       return armAngles.some(yaw => {
-        const axisX = Math.sin(yaw), axisZ = -Math.cos(yaw);
-        const along = dx * axisX + dz * axisZ;
-        const across = Math.abs(dx * axisZ - dz * axisX);
+        const axisX = Math.sin(yaw), axisY = Math.cos(yaw);
+        const along = dx * axisX + dy * axisY;
+        const across = Math.abs(dx * axisY - dy * axisX);
         return Math.abs(along) <= TREE_BRANCH_REACH && across <= TREE_BRANCH_HALF_WIDTH;
       });
     }
-    function branchEdgeAt(x, z) {
-      const dx = x - treeX, dz = z - treeZ;
-      const distance = Math.hypot(dx, dz);
+    function branchEdgeAt(x, y) {
+      const dx = x - treeX, dy = y - treeY;
+      const distance = Math.hypot(dx, dy);
       if (distance < TREE_BRANCH_REACH - .12 || distance > TREE_BRANCH_REACH + .18) return null;
-      const angle = (Math.atan2(dx, -dz) + 2 * Math.PI) % (2 * Math.PI);
+      const angle = (Math.atan2(dx, dy) + 2 * Math.PI) % (2 * Math.PI);
       const directionIndex = Math.round(angle / (Math.PI / 4)) % 8;
       const yaw = directionIndex * Math.PI / 4;
-      const axisX = Math.sin(yaw), axisZ = -Math.cos(yaw);
-      const across = Math.abs(dx * axisZ - dz * axisX);
+      const axisX = Math.sin(yaw), axisY = Math.cos(yaw);
+      const across = Math.abs(dx * axisY - dy * axisX);
       if (across > TREE_BRANCH_HALF_WIDTH + .18) return null;
       return ['norte', 'nordeste', 'leste', 'sudeste', 'sul', 'sudoeste', 'oeste', 'noroeste'][directionIndex];
     }
@@ -512,8 +520,8 @@
       playBuffer(direction > 0 ? 'climbUp' : 'climbDown', direction > 0 ? .25 : .22);
     }
     function terrainChange(direction) {
-      const here = heightAt(player.x, player.z);
-      const ahead = heightAt(player.x + direction.x * .75, player.z + direction.z * .75);
+      const here = terrainHeightAt(player.x, player.y);
+      const ahead = terrainHeightAt(player.x + direction.x * .75, player.y + direction.y * .75);
       const difference = ahead - here;
       if (difference > .035) {
         if (playBuffer('up', .3) === false) playTone(760, .095, 'sine', .045);
@@ -535,9 +543,9 @@
     }
     function announceCoordinates() {
       const x = player.x.toFixed(2);
-      const y = (heightAt(player.x, player.z) + player.climbHeight).toFixed(2);
-      const z = player.z.toFixed(2);
-      announce(`Coordenadas atuais: X ${x}, Y ${y}, Z ${z}, em unidades do cenário.`);
+      const y = player.y.toFixed(2);
+      const z = playerBaseAltitude().toFixed(2);
+      announce(`Coordenadas atuais: X ${x} m, Y ${y} m, Z ${z} m.`);
     }
 
     function normalizeAngle(angle) { return Math.atan2(Math.sin(angle), Math.cos(angle)); }
@@ -548,13 +556,13 @@
     }
     function getLookYaw() { return normalizeAngle(player.yaw + player.headYawOffset); }
     function setCamera() {
-      camera.position.set(player.x, player.eye + heightAt(player.x, player.z) + player.climbHeight, player.z);
+      camera.position.copy(designToThree(player.x, player.y, playerEyeAltitude()));
       const cp = Math.cos(player.pitch);
       const viewYaw = getLookYaw();
-      const direction = new THREE.Vector3(
+      const direction = designToThree(
         Math.sin(viewYaw) * cp,
-        Math.sin(player.pitch),
-        -Math.cos(viewYaw) * cp
+        Math.cos(viewYaw) * cp,
+        Math.sin(player.pitch)
       );
       camera.lookAt(camera.position.clone().add(direction));
       camera.updateMatrixWorld(true);
@@ -568,16 +576,16 @@
       setCamera();
       const viewDirection = camera.getWorldDirection(new THREE.Vector3()).normalize();
       const candidates = [
-        { kind: 'trunk', point: new THREE.Vector3(treeX, 1.35, treeZ) },
-        { kind: 'sticks', point: new THREE.Vector3(treeX, 2.56, treeZ) },
-        { kind: 'sticks', point: new THREE.Vector3(treeX, 3.0, treeZ) },
-        { kind: 'sticks', point: new THREE.Vector3(treeX, 3.8, treeZ) }
+        { kind: 'trunk', point: designToThree(treeX, treeY, 1.35) },
+        { kind: 'sticks', point: designToThree(treeX, treeY, 2.56) },
+        { kind: 'sticks', point: designToThree(treeX, treeY, 3.0) },
+        { kind: 'sticks', point: designToThree(treeX, treeY, 3.8) }
       ];
       for (let index = 0; index < 8; index++) {
         const yaw = index * Math.PI / 4;
         candidates.push({
           kind: 'sticks',
-          point: new THREE.Vector3(treeX + Math.sin(yaw) * 1.05, 2.56, treeZ - Math.cos(yaw) * 1.05)
+          point: designToThree(treeX + Math.sin(yaw) * 1.05, treeY + Math.cos(yaw) * 1.05, 2.56)
         });
       }
       for (const fruit of treeFruitTargets) {
@@ -625,7 +633,7 @@
       }
 
       const target = getTreeActionTarget();
-      const branchEdge = climbMode === 'branch' ? branchEdgeAt(player.x, player.z) : null;
+      const branchEdge = climbMode === 'branch' ? branchEdgeAt(player.x, player.y) : null;
       if (branchEdge && target?.kind !== 'fruit') {
         climbMode = 'branchGrip';
         stopMovement();
@@ -634,7 +642,7 @@
         return;
       }
       if (!target || target.alignment < TREE_AIM_MIN_ALIGNMENT) {
-        const horizontalDistance = Math.hypot(player.x - treeX, player.z - treeZ);
+        const horizontalDistance = Math.hypot(player.x - treeX, player.y - treeY);
         announce(horizontalDistance > 2.8
           ? 'Aproxime-se da árvore para agir.'
           : 'Olhe para o tronco para se segurar ou para os galhos e a copa para extrair gravetos.');
@@ -685,12 +693,12 @@
       const sectors = ['norte', 'norte-nordeste', 'nordeste', 'leste-nordeste', 'leste', 'leste-sudeste', 'sudeste', 'sul-sudeste', 'sul', 'sul-sudoeste', 'sudoeste', 'oeste-sudoeste', 'oeste', 'oeste-noroeste', 'noroeste', 'norte-noroeste'];
       const heading = sectors[Math.round(degrees / 22.5) % 16];
       const targets = [
-        { category: 'tree', name: 'o tronco da árvore', point: new THREE.Vector3(treeX, 1.35, treeZ) },
-        { category: 'tree', name: 'um galho horizontal', point: new THREE.Vector3(treeX, TREE_BRANCH_HEIGHT, treeZ) },
-        { category: 'tree', name: 'a copa da árvore', point: new THREE.Vector3(treeX, 3.0, treeZ) },
-        { category: 'tree', name: 'a parte mais alta da copa', point: new THREE.Vector3(treeX, 4.15, treeZ) },
-        { category: 'hill', name: 'a encosta da colina', point: new THREE.Vector3(0, .9, -2.95) },
-        { category: 'hill', name: 'o topo da colina', point: new THREE.Vector3(0, 1.8, -5.4) }
+        { category: 'tree', name: 'o tronco da árvore', point: designToThree(treeX, treeY, 1.35) },
+        { category: 'tree', name: 'um galho horizontal', point: designToThree(treeX, treeY, TREE_BRANCH_HEIGHT) },
+        { category: 'tree', name: 'a copa da árvore', point: designToThree(treeX, treeY, 3.0) },
+        { category: 'tree', name: 'a parte mais alta da copa', point: designToThree(treeX, treeY, 4.15) },
+        { category: 'hill', name: 'a encosta da colina', point: designToThree(0, 2.95, .9) },
+        { category: 'hill', name: 'o topo da colina', point: designToThree(0, 5.4, 1.8) }
       ];
       const raycaster = new THREE.Raycaster();
       const visible = [];
@@ -718,7 +726,7 @@
       if (player.pitch < -.12) {
         const trunk = visible.find(target => target.category === 'tree' && target.name.includes('tronco') && Math.abs(target.screen.x) < .55 && Math.abs(target.screen.y) < .48);
         if (trunk) return `Olhar para baixo: ${trunk.name} está no campo de visão, a ${trunk.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
-        const surface = heightAt(player.x, player.z) > .05 ? 'a encosta da colina' : 'o chão do campo';
+        const surface = terrainHeightAt(player.x, player.y) > .05 ? 'a encosta da colina' : 'o chão do campo';
         return `Olhar para baixo: ${surface} ocupa o centro da visão, rumo ${heading}.`;
       }
 
@@ -727,8 +735,8 @@
         const side = Math.abs(centered.screen.x) < .18 ? 'no centro da visão' : centered.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
         if (centered.category === 'hill') {
           const forwardX = player.x + Math.sin(getLookYaw()) * 4;
-          const forwardZ = player.z - Math.cos(getLookYaw()) * 4;
-          const slopeDelta = heightAt(forwardX, forwardZ) - heightAt(player.x, player.z);
+          const forwardY = player.y + Math.cos(getLookYaw()) * 4;
+          const slopeDelta = terrainHeightAt(forwardX, forwardY) - terrainHeightAt(player.x, player.y);
           let slopeText = 'A lateral da colina está visível.';
           if (slopeDelta > .08) slopeText = 'A encosta sobe na direção do olhar.';
           else if (slopeDelta < -.08) slopeText = 'A encosta desce na direção do olhar.';
@@ -741,18 +749,19 @@
         const side = target.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
         return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro. Rumo do olhar: ${heading}.`;
       }
-      const boundary = boundaryAhead(player.x, player.z, { x: direction.x, z: direction.z });
+      const lookDirection = threeToDesign(direction);
+      const boundary = boundaryAhead(player.x, player.y, { x: lookDirection.x, y: lookDirection.y });
       if (boundary.distance < 3) return `Olhar horizontal: o limite ${boundary.side} está a ${boundary.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
       return `Olhar horizontal: campo aberto no rumo ${heading}.`;
     }
 
     function movementVector(code) {
-      const forwardX = Math.sin(player.yaw), forwardZ = -Math.cos(player.yaw);
-      const rightX = Math.cos(player.yaw), rightZ = Math.sin(player.yaw);
-      if (code === 'KeyW') return { name: 'frente', x: forwardX, z: forwardZ };
-      if (code === 'KeyS') return { name: 'trás', x: -forwardX, z: -forwardZ };
-      if (code === 'KeyA') return { name: 'lateral esquerda', x: -rightX, z: -rightZ };
-      if (code === 'KeyD') return { name: 'lateral direita', x: rightX, z: rightZ };
+      const forwardX = Math.sin(player.yaw), forwardY = Math.cos(player.yaw);
+      const rightX = Math.cos(player.yaw), rightY = -Math.sin(player.yaw);
+      if (code === 'KeyW') return { name: 'frente', x: forwardX, y: forwardY };
+      if (code === 'KeyS') return { name: 'trás', x: -forwardX, y: -forwardY };
+      if (code === 'KeyA') return { name: 'lateral esquerda', x: -rightX, y: -rightY };
+      if (code === 'KeyD') return { name: 'lateral direita', x: rightX, y: rightY };
       return null;
     }
     function chooseDirection(code) {
@@ -882,7 +891,7 @@
           player.climbHeight = TREE_BRANCH_HEIGHT;
           // A subida termina no cruzamento dos galhos, garantindo uma posição inicial caminhável.
           player.x = treeX;
-          player.z = treeZ;
+          player.y = treeY;
           climbMode = 'branch';
           branchContact = false;
           stopMovement();
@@ -915,9 +924,9 @@
         const stepDistance = distance / steps;
         for (let i = 0; i < steps; i++) {
           const tx = player.x + movement.x * stepDistance;
-          const tz = player.z + movement.z * stepDistance;
-          if (!isInsideMap(tx, tz)) {
-            const side = boundarySide(tx, tz);
+          const ty = player.y + movement.y * stepDistance;
+          if (!isInsideMap(tx, ty)) {
+            const side = boundarySide(tx, ty);
             if (side && boundaryContactSide !== side) {
               boundaryContactSide = side;
               playBoundarySound();
@@ -927,9 +936,9 @@
             break;
           }
           if (climbMode === 'branch') {
-            if (!isOnBranch(tx, tz)) {
+            if (!isOnBranch(tx, ty)) {
               if (!branchContact) {
-                const edge = branchEdgeAt(player.x, player.z);
+                const edge = branchEdgeAt(player.x, player.y);
                 announce(edge ? `Você chegou à ponta ${edge} do galho. Pressione Espaço para se segurar.` : 'O galho é estreito; mantenha-se sobre os galhos.');
                 branchContact = true;
               }
@@ -937,25 +946,25 @@
               break;
             }
             player.x = tx;
-            player.z = tz;
+            player.y = ty;
             moved = true;
             movedDistance += stepDistance;
             branchContact = false;
             continue;
           }
-          const obstacle = obstacleAt(tx, tz);
+          const obstacle = obstacleAt(tx, ty);
           if (obstacle) {
             if (!obstacleContact) announce(`A ${obstacle.name} bloqueia o caminho; é preciso contorná-la.`);
             obstacleContact = true;
             blocked = true;
             break;
           }
-          if (!isWalkable(tx, tz)) {
+          if (!isWalkable(tx, ty)) {
             blocked = true;
             break;
           }
           player.x = tx;
-          player.z = tz;
+          player.y = ty;
           moved = true;
           movedDistance += stepDistance;
           obstacleContact = false;
@@ -966,7 +975,7 @@
         if (moved && now >= nextStepAt) {
           playStep();
           if (climbMode === 'ground') {
-            const boundary = boundaryAhead(player.x, player.z, movement);
+            const boundary = boundaryAhead(player.x, player.y, movement);
             if (boundary.distance <= 2.5 && boundary.distance >= 0) {
               playEdgeWarning(boundary.distance);
             } else {
