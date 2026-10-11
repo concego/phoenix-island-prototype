@@ -37,7 +37,7 @@ A linha entre os olhos e o alvo é verificada contra a função numérica de alt
 
 ## Pistas sonoras provisórias
 
-- Caminhada na grama: quatro variações curtas de impacto macio e ruído vegetal; a escolha varia para reduzir a repetição.
+- Caminhada na grama: quatro variações curtas e mais distinguíveis, com diferenças de impacto, contato da ponta e ruído vegetal; os níveis médios foram mantidos próximos e a seleção evita repetição imediata.
 - Caminhada sobre os galhos: três variações de contato de madeira, separadas das pisadas no chão.
 - Subida e descida da colina: pistas ressonantes ascendentes ou descendentes, sincronizadas aos passos no terreno inclinado.
 - Limite do campo: alerta pulsante uma vez por passo ao caminhar na direção da borda; ao tocá-la, dois impactos curtos confirmam o contato. No máximo um aviso direcional é tocado por passo, e os alertas não usam temporizador independente.

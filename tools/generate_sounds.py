@@ -27,29 +27,62 @@ def write_wav(path: Path, samples: list[float]) -> None:
         output.writeframes(pcm)
 
 
-def make_footstep(seed: int = 31) -> list[float]:
-    """Passo macio na grama: impacto abafado, contato da sola e ruído vegetal."""
+FOOTSTEP_PROFILES: tuple[dict[str, float], ...] = (
+    # Compacto e macio: impacto baixo, pouco arrasto de folhas.
+    {"duration": .19, "heel": .25, "heel_start": 76, "heel_end": 54, "heel_decay": 32,
+     "toe_delay": .035, "toe": .08, "toe_hz": 100, "toe_decay": 42,
+     "leaf": .12, "lowpass": .07, "surface_decay": 25, "surface_attack": 130,
+     "scuff": 0, "scuff_delay": .07, "scuff_decay": 26},
+    # Mais firme, com contato de ponta mais agudo e uma pequena escovada.
+    {"duration": .215, "heel": .34, "heel_start": 96, "heel_end": 70, "heel_decay": 27,
+     "toe_delay": .055, "toe": .13, "toe_hz": 136, "toe_decay": 32,
+     "leaf": .24, "lowpass": .13, "surface_decay": 20, "surface_attack": 170,
+     "scuff": .045, "scuff_delay": .085, "scuff_decay": 30},
+    # Mais leve e rápido, com ruído vegetal mais nítido.
+    {"duration": .20, "heel": .20, "heel_start": 108, "heel_end": 80, "heel_decay": 40,
+     "toe_delay": .03, "toe": .15, "toe_hz": 152, "toe_decay": 45,
+     "leaf": .30, "lowpass": .055, "surface_decay": 29, "surface_attack": 145,
+     "scuff": .12, "scuff_delay": .065, "scuff_decay": 24},
+    # Apoio mais pesado e abafado, seguido de arrasto curto na grama.
+    {"duration": .235, "heel": .32, "heel_start": 68, "heel_end": 48, "heel_decay": 24,
+     "toe_delay": .075, "toe": .10, "toe_hz": 88, "toe_decay": 31,
+     "leaf": .19, "lowpass": .17, "surface_decay": 17, "surface_attack": 110,
+     "scuff": .18, "scuff_delay": .09, "scuff_decay": 18},
+)
+
+
+def make_footstep(seed: int = 31, profile: dict[str, float] | None = None) -> list[float]:
+    """Gera passos de grama com timbres e articulações distinguíveis, mas coerentes."""
     rng = random.Random(seed)
-    duration = 0.205
-    count = int(RATE * duration)
+    profile = profile or FOOTSTEP_PROFILES[0]
+    count = int(RATE * profile["duration"])
     lowpass = 0.0
-    toe_start = .045 + rng.random() * .008
+    toe_start = profile["toe_delay"] + rng.uniform(-.004, .004)
     samples = []
     for index in range(count):
         t = index / RATE
         raw = rng.uniform(-1, 1)
-        lowpass += 0.075 * (raw - lowpass)
+        lowpass += profile["lowpass"] * (raw - lowpass)
         grit = raw - lowpass
-        heel = 0.0
-        if t >= 0:
-            heel = 0.25 * math.sin(2 * math.pi * (84 - 18 * min(1.0, t / .09)) * t) * math.exp(-31 * t)
+        heel_progress = min(1.0, t / .09)
+        heel_hz = profile["heel_start"] + (profile["heel_end"] - profile["heel_start"]) * heel_progress
+        heel = profile["heel"] * math.sin(2 * math.pi * heel_hz * t) * math.exp(-profile["heel_decay"] * t)
         toe_elapsed = t - toe_start
         toe = 0.0
         if toe_elapsed >= 0:
-            toe = 0.12 * math.sin(2 * math.pi * 116 * toe_elapsed) * math.exp(-36 * toe_elapsed)
-        surface_env = math.exp(-20 * t) * min(1.0, t * 130)
-        leafy_contact = grit * (.16 + .04 * rng.random()) * surface_env
-        samples.append(heel + toe + leafy_contact)
+            toe = profile["toe"] * math.sin(2 * math.pi * profile["toe_hz"] * toe_elapsed) * math.exp(-profile["toe_decay"] * toe_elapsed)
+        surface_env = math.exp(-profile["surface_decay"] * t) * min(1.0, t * profile["surface_attack"])
+        leafy_contact = grit * (profile["leaf"] + .04 * rng.random()) * surface_env
+        scuff_elapsed = t - profile["scuff_delay"]
+        scuff = 0.0
+        if profile["scuff"] and scuff_elapsed >= 0:
+            scuff_env = math.exp(-profile["scuff_decay"] * scuff_elapsed) * min(1.0, scuff_elapsed * 90)
+            scuff = grit * profile["scuff"] * scuff_env
+        samples.append(heel + toe + leafy_contact + scuff)
+    rms = math.sqrt(sum(sample * sample for sample in samples) / len(samples))
+    if rms:
+        level_match = .064 / rms
+        samples = [sample * level_match for sample in samples]
     return samples
 
 
@@ -263,9 +296,9 @@ def make_release() -> list[float]:
 
 def main() -> None:
     ASSETS.mkdir(parents=True, exist_ok=True)
-    for variant, seed in enumerate((31, 47, 53, 59), start=1):
+    for variant, (seed, profile) in enumerate(zip((31, 47, 53, 59), FOOTSTEP_PROFILES), start=1):
         filename = "footstep.wav" if variant == 1 else f"footstep-{variant}.wav"
-        write_wav(ASSETS / filename, make_footstep(seed))
+        write_wav(ASSETS / filename, make_footstep(seed, profile))
     write_wav(ASSETS / "slope-up.wav", make_slope_cue(upward=True))
     write_wav(ASSETS / "slope-down.wav", make_slope_cue(upward=False))
     write_wav(ASSETS / "boundary.wav", make_boundary())
