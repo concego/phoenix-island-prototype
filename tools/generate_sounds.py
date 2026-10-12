@@ -50,6 +50,25 @@ FOOTSTEP_PROFILES: tuple[dict[str, float], ...] = (
      "scuff": .18, "scuff_delay": .09, "scuff_decay": 18},
 )
 
+WATER_STEP_PROFILES: tuple[dict[str, object], ...] = (
+    {"duration": .22, "impact_hz": 82, "impact_level": .18, "impact_decay": 35,
+     "lowpass": .20, "splashes": ((.003, .27, 32), (.065, .075, 48)),
+     "bubble_delay": .035, "bubble_hz": 190, "bubble_level": .11, "bubble_decay": 24,
+     "foam_mix": .20},
+    {"duration": .235, "impact_hz": 96, "impact_level": .21, "impact_decay": 31,
+     "lowpass": .15, "splashes": ((.004, .22, 28), (.035, .13, 38), (.095, .065, 52)),
+     "bubble_delay": .06, "bubble_hz": 245, "bubble_level": .085, "bubble_decay": 27,
+     "foam_mix": .14},
+    {"duration": .215, "impact_hz": 72, "impact_level": .24, "impact_decay": 29,
+     "lowpass": .25, "splashes": ((.006, .20, 35), (.078, .11, 35)),
+     "bubble_delay": .025, "bubble_hz": 158, "bubble_level": .13, "bubble_decay": 21,
+     "foam_mix": .28},
+    {"duration": .23, "impact_hz": 108, "impact_level": .16, "impact_decay": 39,
+     "lowpass": .12, "splashes": ((.003, .31, 34), (.052, .085, 58)),
+     "bubble_delay": .075, "bubble_hz": 285, "bubble_level": .075, "bubble_decay": 30,
+     "foam_mix": .12},
+)
+
 
 def make_footstep(seed: int = 31, profile: dict[str, float] | None = None) -> list[float]:
     """Gera passos de grama com timbres e articulações distinguíveis, mas coerentes."""
@@ -82,6 +101,59 @@ def make_footstep(seed: int = 31, profile: dict[str, float] | None = None) -> li
     rms = math.sqrt(sum(sample * sample for sample in samples) / len(samples))
     if rms:
         level_match = .064 / rms
+        samples = [sample * level_match for sample in samples]
+    return samples
+
+
+def make_water_step(seed: int = 211, profile: dict[str, object] | None = None) -> list[float]:
+    """Gera um passo curto de água rasa, com impacto molhado, respingo e pequeno redemoinho."""
+    rng = random.Random(seed)
+    profile = profile or WATER_STEP_PROFILES[0]
+    duration = float(profile["duration"])
+    count = int(RATE * duration)
+    lowpass = 0.0
+    samples = []
+    for index in range(count):
+        t = index / RATE
+        raw = rng.uniform(-1, 1)
+        lowpass += float(profile["lowpass"]) * (raw - lowpass)
+        splash_noise = raw - lowpass
+
+        impact_elapsed = t - .006
+        impact = 0.0
+        if impact_elapsed >= 0:
+            frequency = float(profile["impact_hz"]) - 22 * min(1.0, impact_elapsed / .055)
+            envelope = math.exp(-float(profile["impact_decay"]) * impact_elapsed)
+            impact = float(profile["impact_level"]) * (
+                math.sin(2 * math.pi * frequency * impact_elapsed)
+                + .16 * math.sin(2 * math.pi * frequency * 2.13 * impact_elapsed)
+            ) * envelope
+
+        splash = 0.0
+        for start, level, decay in profile["splashes"]:
+            elapsed = t - float(start)
+            if elapsed >= 0:
+                envelope = math.exp(float(-decay) * elapsed) * min(1.0, elapsed * 130)
+                wet_noise = splash_noise + float(profile["foam_mix"]) * lowpass
+                splash += float(level) * wet_noise * envelope
+
+        bubble_elapsed = t - float(profile["bubble_delay"])
+        bubble = 0.0
+        if bubble_elapsed >= 0:
+            frequency = float(profile["bubble_hz"]) + 75 * min(1.0, bubble_elapsed / .12)
+            envelope = math.exp(-float(profile["bubble_decay"]) * bubble_elapsed) * min(1.0, bubble_elapsed * 100)
+            bubble = float(profile["bubble_level"]) * math.sin(2 * math.pi * frequency * bubble_elapsed) * envelope
+
+        ripple_elapsed = t - .045
+        ripple = 0.0
+        if ripple_elapsed >= 0:
+            ripple_env = math.exp(-21 * ripple_elapsed) * min(1.0, ripple_elapsed * 55)
+            ripple = (.035 * splash_noise + .045 * lowpass) * ripple_env
+        samples.append(impact + splash + bubble + ripple)
+
+    rms = math.sqrt(sum(sample * sample for sample in samples) / len(samples))
+    if rms:
+        level_match = .058 / rms
         samples = [sample * level_match for sample in samples]
     return samples
 
@@ -299,6 +371,9 @@ def main() -> None:
     for variant, (seed, profile) in enumerate(zip((31, 47, 53, 59), FOOTSTEP_PROFILES), start=1):
         filename = "footstep.wav" if variant == 1 else f"footstep-{variant}.wav"
         write_wav(ASSETS / filename, make_footstep(seed, profile))
+    for variant, (seed, profile) in enumerate(zip((211, 223, 227, 229), WATER_STEP_PROFILES), start=1):
+        filename = "water-step.wav" if variant == 1 else f"water-step-{variant}.wav"
+        write_wav(ASSETS / filename, make_water_step(seed, profile))
     write_wav(ASSETS / "slope-up.wav", make_slope_cue(upward=True))
     write_wav(ASSETS / "slope-down.wav", make_slope_cue(upward=False))
     write_wav(ASSETS / "boundary.wav", make_boundary())

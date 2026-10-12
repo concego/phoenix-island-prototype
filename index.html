@@ -38,7 +38,7 @@
         <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Segure Shift direito junto com W/S/A/D para correr a 3,6 m/s; também pode pressionar Shift direito depois de iniciar o movimento. Ao soltá-lo, volta a caminhar a 2,4 m/s. A corrida não se aplica à escalada nem à caminhada pelos galhos. Shift esquerdo+A/D giram o corpo 45° para a esquerda/direita; Shift esquerdo+W gira 180°; Shift esquerdo+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°; para observar além, mude de posição. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
         <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S fazem impulsos ritmados de escalada, aproximadamente a cada 0,43 segundo enquanto a tecla estiver mantida; soltar interrompe o movimento. Espaço solta.</p>
-        <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina. Caminhando, a cadência sonora é de cerca de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; isso não muda a velocidade da caminhada. Correndo, os intervalos são cerca de 0,30 s no plano, 0,37 s subindo e 0,27 s descendo. O recuo rápido mantém seu próprio ritmo. Há também um alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
+        <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; quatro respingos curtos diferentes ao caminhar na faixa rasa do lago; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina. Caminhando, a cadência sonora é de cerca de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; isso não muda a velocidade da caminhada. Correndo, os intervalos são cerca de 0,30 s no plano, 0,37 s subindo e 0,27 s descendo. O recuo rápido mantém seu próprio ritmo. Há também um alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
       </div>
     </header>
     <section id="stage" aria-label="Cena tridimensional do protótipo">
@@ -685,6 +685,10 @@
           step2: './assets/footstep-2.wav',
           step3: './assets/footstep-3.wav',
           step4: './assets/footstep-4.wav',
+          waterStep: './assets/water-step.wav',
+          waterStep2: './assets/water-step-2.wav',
+          waterStep3: './assets/water-step-3.wav',
+          waterStep4: './assets/water-step-4.wav',
           branchStep: './assets/branch-step.wav',
           branchStep2: './assets/branch-step-2.wav',
           branchStep3: './assets/branch-step-3.wav',
@@ -714,7 +718,7 @@
       const source = audioContext.createBufferSource();
       const gain = audioContext.createGain();
       source.buffer = audioBuffers[name];
-      if (name.startsWith('step') || name.startsWith('branchStep')) {
+      if (name.startsWith('step') || name.startsWith('branchStep') || name.startsWith('waterStep')) {
         source.playbackRate.setValueAtTime(.95 + Math.random() * .1, audioContext.currentTime);
       } else if (name === 'stickHarvest') {
         source.playbackRate.setValueAtTime(.97 + Math.random() * .06, audioContext.currentTime);
@@ -740,11 +744,14 @@
     }
     function playStep() {
       const onBranch = climbMode === 'branch';
+      const inShallowWater = !onBranch && climbMode === 'ground' && isInLakeWater(player.x, player.y) && !isDeepLakeWater(player.x, player.y);
       let variants = onBranch
         ? ['branchStep', 'branchStep2', 'branchStep3']
-        : ['step', 'step2', 'step3', 'step4'];
+        : inShallowWater
+          ? ['waterStep', 'waterStep2', 'waterStep3', 'waterStep4']
+          : ['step', 'step2', 'step3', 'step4'];
       let available = variants.filter(name => audioBuffers[name]);
-      if (!available.length && onBranch) available = ['step', 'step2', 'step3', 'step4'].filter(name => audioBuffers[name]);
+      if (!available.length && (onBranch || inShallowWater)) available = ['step', 'step2', 'step3', 'step4'].filter(name => audioBuffers[name]);
       if (available.length > 1 && lastStepBufferName) {
         const withoutLast = available.filter(name => name !== lastStepBufferName);
         if (withoutLast.length) available = withoutLast;
@@ -752,7 +759,7 @@
       if (available.length) {
         const name = available[Math.floor(Math.random() * available.length)];
         lastStepBufferName = name;
-        playBuffer(name, onBranch ? .29 : .32);
+        playBuffer(name, onBranch ? .29 : inShallowWater ? .30 : .32);
         return;
       }
       if (!playBuffer('step', .32)) playTone(105, .09, 'triangle', .035);

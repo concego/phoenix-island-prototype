@@ -45,6 +45,7 @@ A linha entre os olhos e o alvo é verificada contra a função numérica de alt
 ## Pistas sonoras provisórias
 
 - Caminhada na grama: quatro variações curtas e mais distinguíveis, com diferenças de impacto, contato da ponta e ruído vegetal; os níveis médios foram mantidos próximos e a seleção evita repetição imediata.
+- Caminhada na água rasa: quatro variações sintetizadas de impacto molhado, respingo e pequena ondulação; usadas somente na faixa caminhável do lago, sem repetição imediata.
 - Caminhada sobre os galhos: três variações de contato de madeira, separadas das pisadas no chão.
 - Cadência no terreno: caminhando, intervalo de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; correndo, 0,30 s, 0,37 s e 0,27 s, respectivamente. A direção é calculada pela diferença de altitude nos próximos 0,75 m, com limiar de 0,035 m; o recuo rápido mantém 0,23 s. A cadência ajusta apenas os sons; Shift direito altera a velocidade de deslocamento para 3,6 m/s.
 - Subida e descida da colina: pistas ressonantes ascendentes ou descendentes, sincronizadas aos passos no terreno inclinado.
