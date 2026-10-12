@@ -357,7 +357,12 @@
     }
     function createLakeBedGeometry() {
       const segments = 96;
-      const ratios = [LAKE_DEEP_BASIN_RATIO, .48, .54, .60, LAKE_WADING_LIMIT_RATIO, .76, .84, .92, 1];
+      const deepSlopeRings = Array.from(
+        { length: 17 },
+        (_, index) => LAKE_DEEP_BASIN_RATIO + (LAKE_WADING_LIMIT_RATIO - LAKE_DEEP_BASIN_RATIO) * index / 16
+      );
+      const outerShelfRings = [.72, .76, .80, .84, .88, .92, .96, 1];
+      const ratios = [...deepSlopeRings, ...outerShelfRings];
       const positions = [], uvs = [], indices = [];
       positions.push(...designToThree(LAKE.centerX, LAKE.centerY, -LAKE_MAX_DEPTH_METERS).toArray());
       uvs.push(.5, .5);
