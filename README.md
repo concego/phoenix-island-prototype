@@ -1,6 +1,10 @@
 # Phoenix Island — protótipo de caminhada 3D
 
-Protótipo web em primeira pessoa para testar movimentação, olhar e pistas sonoras num pequeno campo 3D com uma colina e uma árvore. A cena usa Three.js e WebGL; céu, texturas e detalhes da vegetação são gerados proceduralmente no navegador, sem arquivos de arte externos. Este ainda não é o jogo nem implementa sistemas completos de RPG ou sobrevivência.
+Protótipo web em primeira pessoa para testar movimentação, olhar e pistas sonoras num mapa 3D de 24 × 24 m, com colina, árvore e lago. A cena usa Three.js e WebGL; céu, texturas e detalhes da vegetação são gerados proceduralmente no navegador, sem arquivos de arte externos. Este ainda não é o jogo nem implementa sistemas completos de RPG ou sobrevivência.
+
+## Mapa ampliado e lago
+
+O campo passou de 12 × 12 m para 24 × 24 m, com X e Y entre −12 m e +12 m. A colina e a árvore mantêm suas posições no setor central. A colina agora tem uma descida posterior até o terreno baixo. O lago elíptico fica ao norte e a leste, na parte posterior do mapa, centrado em X=6,5 m, Y=9,0 m, com dimensões aproximadas de 8,4 × 4,6 m. A água bloqueia a passagem e anuncia que a natação ainda não foi implementada; não há mecânica de natação nesta etapa.
 
 ## Estilo visual do protótipo
 
