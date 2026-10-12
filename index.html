@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Protótipo 3D de Phoenix Island em um mapa de 36 × 36 m, com colina, árvore, margem lamacenta e lago com faixa rasa caminhável; natação ainda não implementada.">
-  <title>Phoenix Island — Teste de caminhada 3D</title>
+  <meta name="description" content="Protótipo 3D acessível de Phoenix Island com colina, árvore, margem lamacenta, lago, caminhada na água rasa e natação testável.">
+  <title>Phoenix Island — Teste de caminhada e natação 3D</title>
   <link rel="icon" href="data:,">
   <style>
     :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #111820; color: #f3f6f8; }
@@ -32,18 +32,18 @@
 <body>
   <main>
     <header>
-      <h1>Phoenix Island — teste de caminhada em 3D</h1>
+      <h1>Phoenix Island — teste de caminhada e natação em 3D</h1>
       <div id="instructions">
-        <p><strong>Mapa:</strong> área de 36 × 36 m, com X e Y entre −18 m e +18 m. A colina e a árvore ficam na região central; o lago fica ao norte e a leste, centrado em X=5,0 m e Y=13,2 m, com cerca de 12 × 6,4 m de água. Uma margem lamacenta de 1,2 m contorna o lago. A faixa rasa ao redor permite caminhar sobre um fundo de até 0,55 m; depois, o fundo desce até 2,7 m na bacia central. A região profunda bloqueia a passagem. A natação ainda não está implementada.</p>
+        <p><strong>Mapa:</strong> área de 36 × 36 m, com X e Y entre −18 m e +18 m. A colina e a árvore ficam na região central; o lago fica ao norte e a leste, centrado em X=5,0 m e Y=13,2 m, com cerca de 12 × 6,4 m de água. Uma margem lamacenta de 1,2 m contorna o lago. A faixa rasa ao redor permite caminhar sobre um fundo de até 0,55 m; depois, o fundo desce até 2,7 m na bacia central. A região profunda bloqueia a passagem a pé. A natação está implementada para o lago de teste; ainda não há passagens subaquáticas.</p>
         <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Segure Shift direito junto com W/S/A/D para correr a 3,6 m/s; também pode pressionar Shift direito depois de iniciar o movimento. Ao soltá-lo, volta a caminhar a 2,4 m/s. A corrida não se aplica à escalada nem à caminhada pelos galhos. Shift esquerdo+A/D giram o corpo 45° para a esquerda/direita; Shift esquerdo+W gira 180°; Shift esquerdo+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
-        <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°; para observar além, mude de posição. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
-        <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S fazem impulsos ritmados de escalada, aproximadamente a cada 0,43 segundo enquanto a tecla estiver mantida; soltar interrompe o movimento. Espaço solta.</p>
-        <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; quatro respingos curtos diferentes ao caminhar na faixa rasa do lago; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina. Caminhando, a cadência sonora é de cerca de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; isso não muda a velocidade da caminhada. Correndo, os intervalos são cerca de 0,30 s no plano, 0,37 s subindo e 0,27 s descendo. O recuo rápido mantém seu próprio ritmo. Há também um alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
+        <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°. Durante a natação, essa inclinação também controla a trajetória de W/S: olhar para baixo faz avançar e descer; para cima, avançar e subir; olhar no horizonte mantém a profundidade. A/D deslocam lateralmente. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
+        <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com mãos vazias, na faixa rasa e voltado para águas profundas, Espaço inicia a natação. Para sair, mantenha as mãos vazias, nade até a superfície e aproxime-se da faixa rasa ou de uma saída para terra, então pressione Espaço; sair não é automático. Um canal subaquático conectado manterá a natação, mas ainda não há passagens no mapa. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S fazem impulsos ritmados de escalada, aproximadamente a cada 0,43 segundo enquanto a tecla estiver mantida; soltar interrompe o movimento. Espaço solta.</p>
+        <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; quatro respingos curtos diferentes ao caminhar na faixa rasa do lago; quatro passos próprios na margem lamacenta; quatro variações sintetizadas para braçadas à superfície e quatro para braçadas submersas; efeitos distintos de entrada/saída e bipes em sequência ascendente para subir e descendente para descer; sem pontos de passagem, indicam a superfície; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina. Caminhando, a cadência sonora é de cerca de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; isso não muda a velocidade da caminhada. Correndo, os intervalos são cerca de 0,30 s no plano, 0,37 s subindo e 0,27 s descendo. O recuo rápido mantém seu próprio ritmo. Há também um alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento ou Espaço, conforme a política do navegador.</p>
       </div>
     </header>
     <section id="stage" aria-label="Cena tridimensional do protótipo">
       <div id="webgl-warning" hidden>Este navegador ou dispositivo não disponibilizou WebGL para a cena 3D.</div>
-      <div id="readout" role="status" aria-live="polite" aria-atomic="true">Posição inicial na porção sul de um mapa de 36 por 36 metros, com X e Y entre menos 18 e mais 18 metros. O lago fica ao norte e a leste, centrado em X=5,0 m e Y=13,2 m, e mede cerca de 12 por 6,4 metros na água. Uma margem lamacenta de 1,2 m envolve a faixa rasa caminhável, que desce até 0,55 m; a bacia central chega a 2,7 m e bloqueia a passagem. A natação ainda não está implementada. Use as setas para olhar, ou C para anunciar as coordenadas.</div>
+      <div id="readout" role="status" aria-live="polite" aria-atomic="true">Posição inicial ao sul do lago em Phoenix Island. A margem lamacenta tem passos próprios; a faixa rasa permite caminhar, e Espaço inicia a natação somente com mãos vazias, na água rasa e voltado para o fundo. Na natação, W/S seguem a inclinação do olhar para subir ou descer; no horizonte mantêm a profundidade. Para sair, chegue à superfície e à faixa rasa ou a uma saída para terra e pressione Espaço. Não há passagem subaquática construída neste mapa. Use as setas para olhar, ou C para anunciar as coordenadas.</div>
     </section>
   </main>
 
@@ -77,8 +77,11 @@
     function designToThree(x, y, z) { return new THREE.Vector3(x, z, -y); }
     function threeToDesign(vector) { return { x: vector.x, y: -vector.z, z: vector.y }; }
     const horizonColor = new THREE.Color(0xbcd4c8);
+    const underwaterColor = new THREE.Color(0x0d4658);
+    const surfaceFog = new THREE.Fog(horizonColor, 22, 48);
+    const underwaterFog = new THREE.Fog(underwaterColor, .6, 12);
     scene.background = horizonColor;
-    scene.fog = new THREE.Fog(horizonColor, 22, 48);
+    scene.fog = surfaceFog;
 
     function addProceduralSky() {
       const geometry = new THREE.SphereGeometry(90, 48, 24);
@@ -121,7 +124,17 @@
     const LAKE_DEEP_BASIN_RATIO = .42;
     const LAKE_WADING_DEPTH_METERS = .55;
     const LAKE_MAX_DEPTH_METERS = 2.7;
-    const player = { x: 0, y: -2.5, perceptionProfile: humanPerceptionProfile, yaw: 0, headYawOffset: 0, pitch: 0, climbHeight: 0 };
+    const SWIM_SPEED = 1.5;
+    const SWIM_STROKE_INTERVAL_MS = 580;
+    const SWIM_GUIDANCE_INTERVAL_MS = 1800;
+    const SWIM_ENTRY_LOOKAHEAD_METERS = 1.0;
+    const SWIM_BOTTOM_CLEARANCE_METERS = .14;
+    const SWIM_SURFACE_TOLERANCE_METERS = .08;
+    const SWIM_EXIT_MAX_DEPTH_METERS = LAKE_WADING_DEPTH_METERS;
+    // Futuros conectores subaquáticos: {x, y, z, destination: 'water'|'land', radius}.
+    // Conectores de água mantêm a natação; os de terra só permitem sair perto da superfície.
+    const SWIM_PASSAGE_GUIDES = Object.freeze([]);
+    const player = { x: 0, y: -2.5, perceptionProfile: humanPerceptionProfile, yaw: 0, headYawOffset: 0, pitch: 0, climbHeight: 0, swimEyeAltitude: null };
     const HORIZONTAL_LOOK_STEP = Math.PI / 12;
     const HORIZONTAL_LOOK_LIMIT = Math.PI / 4;
     const VERTICAL_LOOK_STEP = Math.PI / 12;
@@ -555,6 +568,33 @@
     function isDeepLakeWater(x, y) {
       return isInLakeWater(x, y) && lakeDistanceSquared(x, y) < LAKE_WADING_LIMIT_RATIO * LAKE_WADING_LIMIT_RATIO;
     }
+    function isNearSwimEntry(x, y) {
+      return isInLakeWater(x, y) && !isDeepLakeWater(x, y);
+    }
+    function isFacingDeepWater(x, y) {
+      if (!isNearSwimEntry(x, y)) return false;
+      const forwardX = Math.sin(player.yaw), forwardY = Math.cos(player.yaw);
+      for (let distance = .2; distance <= SWIM_ENTRY_LOOKAHEAD_METERS; distance += .1) {
+        if (isDeepLakeWater(x + forwardX * distance, y + forwardY * distance)) return true;
+      }
+      return false;
+    }
+    function isSwimmingAtSurface() {
+      return climbMode === 'swimming' && player.swimEyeAltitude >= LAKE.waterZ + player.perceptionProfile.eyeHeight - SWIM_SURFACE_TOLERANCE_METERS;
+    }
+    function isNearSwimmingExit(x, y) {
+      if (isInLakeWater(x, y) && lakeDepthAt(x, y) <= SWIM_EXIT_MAX_DEPTH_METERS) return true;
+      return SWIM_PASSAGE_GUIDES.some(passage => passage.destination === 'land'
+        && Math.hypot(x - passage.x, y - passage.y) <= (passage.radius || .8));
+    }
+    function swimGuidanceTarget() {
+      const passages = [...SWIM_PASSAGE_GUIDES].sort((a, b) => {
+        const distanceA = Math.hypot(player.x - a.x, player.y - a.y, player.swimEyeAltitude - a.z);
+        const distanceB = Math.hypot(player.x - b.x, player.y - b.y, player.swimEyeAltitude - b.z);
+        return distanceA - distanceB;
+      });
+      return passages[0] || { x: player.x, y: player.y, z: LAKE.waterZ + player.perceptionProfile.eyeHeight, destination: 'surface' };
+    }
     function terrainHeightAt(x, y) {
       if (isInLakeWater(x, y)) return -lakeDepthAt(x, y);
       if (Math.abs(x) > HILL_HALF_WIDTH) return 0;
@@ -567,8 +607,14 @@
       }
       return 0;
     }
-    function playerBaseAltitude() { return terrainHeightAt(player.x, player.y) + player.climbHeight; }
-    function playerEyeAltitude() { return playerBaseAltitude() + player.perceptionProfile.eyeHeight; }
+    function playerBaseAltitude() {
+      return climbMode === 'swimming'
+        ? player.swimEyeAltitude - player.perceptionProfile.eyeHeight
+        : terrainHeightAt(player.x, player.y) + player.climbHeight;
+    }
+    function playerEyeAltitude() {
+      return climbMode === 'swimming' ? player.swimEyeAltitude : playerBaseAltitude() + player.perceptionProfile.eyeHeight;
+    }
     function targetWithinVerticalFov(targetPoint) {
       const target = threeToDesign(targetPoint);
       const horizontalDistance = Math.hypot(target.x - player.x, target.y - player.y);
@@ -663,11 +709,17 @@
     let mudContact = false;
     let lakeWading = false;
     let deepWaterContact = false;
+    let swimExitContact = false;
+    let swimBottomContact = false;
+    let swimSurfaceContact = false;
+    let nextSwimStrokeAt = 0;
+    let nextSwimGuidanceAt = 0;
     let heldItem = null;
     let audioContext = null;
     let audioBuffers = {};
     let audioReady = false;
     let lastStepBufferName = null;
+    let lastSwimBufferName = null;
     let nextStepAt = 0;
     let nextClimbStrokeAt = 0;
     let climbStrokeDirection = 0;
@@ -689,6 +741,22 @@
           waterStep2: './assets/water-step-2.wav',
           waterStep3: './assets/water-step-3.wav',
           waterStep4: './assets/water-step-4.wav',
+          mudStep: './assets/mud-step.wav',
+          mudStep2: './assets/mud-step-2.wav',
+          mudStep3: './assets/mud-step-3.wav',
+          mudStep4: './assets/mud-step-4.wav',
+          swimSurface: './assets/swim-surface.wav',
+          swimSurface2: './assets/swim-surface-2.wav',
+          swimSurface3: './assets/swim-surface-3.wav',
+          swimSurface4: './assets/swim-surface-4.wav',
+          swimUnderwater: './assets/swim-underwater.wav',
+          swimUnderwater2: './assets/swim-underwater-2.wav',
+          swimUnderwater3: './assets/swim-underwater-3.wav',
+          swimUnderwater4: './assets/swim-underwater-4.wav',
+          swimEnter: './assets/swim-enter.wav',
+          swimExit: './assets/swim-exit.wav',
+          swimGuideUp: './assets/swim-guide-up.wav',
+          swimGuideDown: './assets/swim-guide-down.wav',
           branchStep: './assets/branch-step.wav',
           branchStep2: './assets/branch-step-2.wav',
           branchStep3: './assets/branch-step-3.wav',
@@ -718,7 +786,7 @@
       const source = audioContext.createBufferSource();
       const gain = audioContext.createGain();
       source.buffer = audioBuffers[name];
-      if (name.startsWith('step') || name.startsWith('branchStep') || name.startsWith('waterStep')) {
+      if (name.startsWith('step') || name.startsWith('branchStep') || name.startsWith('waterStep') || name.startsWith('mudStep') || name.startsWith('swimSurface') || name.startsWith('swimUnderwater')) {
         source.playbackRate.setValueAtTime(.95 + Math.random() * .1, audioContext.currentTime);
       } else if (name === 'stickHarvest') {
         source.playbackRate.setValueAtTime(.97 + Math.random() * .06, audioContext.currentTime);
@@ -745,13 +813,16 @@
     function playStep() {
       const onBranch = climbMode === 'branch';
       const inShallowWater = !onBranch && climbMode === 'ground' && isInLakeWater(player.x, player.y) && !isDeepLakeWater(player.x, player.y);
+      const onMud = !onBranch && !inShallowWater && climbMode === 'ground' && isMuddyGround(player.x, player.y);
       let variants = onBranch
         ? ['branchStep', 'branchStep2', 'branchStep3']
         : inShallowWater
           ? ['waterStep', 'waterStep2', 'waterStep3', 'waterStep4']
-          : ['step', 'step2', 'step3', 'step4'];
+          : onMud
+            ? ['mudStep', 'mudStep2', 'mudStep3', 'mudStep4']
+            : ['step', 'step2', 'step3', 'step4'];
       let available = variants.filter(name => audioBuffers[name]);
-      if (!available.length && (onBranch || inShallowWater)) available = ['step', 'step2', 'step3', 'step4'].filter(name => audioBuffers[name]);
+      if (!available.length && (onBranch || inShallowWater || onMud)) available = ['step', 'step2', 'step3', 'step4'].filter(name => audioBuffers[name]);
       if (available.length > 1 && lastStepBufferName) {
         const withoutLast = available.filter(name => name !== lastStepBufferName);
         if (withoutLast.length) available = withoutLast;
@@ -759,10 +830,44 @@
       if (available.length) {
         const name = available[Math.floor(Math.random() * available.length)];
         lastStepBufferName = name;
-        playBuffer(name, onBranch ? .29 : inShallowWater ? .30 : .32);
+        playBuffer(name, onBranch ? .29 : inShallowWater || onMud ? .30 : .32);
         return;
       }
       if (!playBuffer('step', .32)) playTone(105, .09, 'triangle', .035);
+    }
+    function playSwimStroke() {
+      const atSurface = isSwimmingAtSurface();
+      const variants = atSurface
+        ? ['swimSurface', 'swimSurface2', 'swimSurface3', 'swimSurface4']
+        : ['swimUnderwater', 'swimUnderwater2', 'swimUnderwater3', 'swimUnderwater4'];
+      let available = variants.filter(name => audioBuffers[name]);
+      if (available.length > 1 && lastSwimBufferName) {
+        const withoutLast = available.filter(name => name !== lastSwimBufferName);
+        if (withoutLast.length) available = withoutLast;
+      }
+      if (!available.length) {
+        if (atSurface) playTone(170, .12, 'sine', .035);
+        else playTone(115, .14, 'sine', .025);
+        return;
+      }
+      const name = available[Math.floor(Math.random() * available.length)];
+      lastSwimBufferName = name;
+      playBuffer(name, atSurface ? .30 : .26);
+    }
+    function playSwimGuidanceCue() {
+      const target = swimGuidanceTarget();
+      const verticalDifference = target.z - player.swimEyeAltitude;
+      if (verticalDifference > .14) {
+        if (!playBuffer('swimGuideUp', .28)) {
+          playTone(470, .07, 'sine', .04);
+          window.setTimeout(() => playTone(760, .07, 'sine', .04), 105);
+        }
+      } else if (verticalDifference < -.14) {
+        if (!playBuffer('swimGuideDown', .28)) {
+          playTone(760, .07, 'sine', .04);
+          window.setTimeout(() => playTone(470, .07, 'sine', .04), 105);
+        }
+      }
     }
     function playClimbStroke(direction) {
       playBuffer(direction > 0 ? 'climbUp' : 'climbDown', direction > 0 ? .25 : .22);
@@ -808,6 +913,9 @@
     }
     function getLookYaw() { return normalizeAngle(player.yaw + player.headYawOffset); }
     function setCamera() {
+      const underwater = climbMode === 'swimming' && player.swimEyeAltitude < LAKE.waterZ - .04;
+      scene.background = underwater ? underwaterColor : horizonColor;
+      scene.fog = underwater ? underwaterFog : surfaceFog;
       if (camera.fov !== player.perceptionProfile.verticalFovDegrees) {
         camera.fov = player.perceptionProfile.verticalFovDegrees;
         camera.updateProjectionMatrix();
@@ -878,13 +986,72 @@
       stopMovement();
       announce(message);
     }
+    function enterSwimming() {
+      stopMovement();
+      climbMode = 'swimming';
+      player.climbHeight = 0;
+      // A entrada começa na superfície; a inclinação do olhar permite mergulhar com W/S.
+      player.swimEyeAltitude = LAKE.waterZ + player.perceptionProfile.eyeHeight;
+      swimExitContact = false;
+      swimBottomContact = false;
+      swimSurfaceContact = true;
+      nextSwimStrokeAt = 0;
+      nextSwimGuidanceAt = performance.now();
+      playBuffer('swimEnter', .34);
+      announce('Você entrou na natação. W/S avançam na direção do olhar e acompanham sua inclinação; A/D deslocam lateralmente. Olhe para cima para subir.');
+    }
+    function leaveSwimming() {
+      stopMovement();
+      climbMode = 'ground';
+      player.swimEyeAltitude = null;
+      player.climbHeight = 0;
+      swimExitContact = false;
+      swimBottomContact = false;
+      swimSurfaceContact = false;
+      nextStepAt = 0;
+      playBuffer('swimExit', .34);
+      announce('Você saiu da natação e está na faixa rasa.');
+    }
+    function useSwimmingAction() {
+      if (heldItem) {
+        announce(`Você precisa deixar ${heldItem} para nadar ou sair da água.`);
+        return;
+      }
+      if (isSwimmingAtSurface() && isNearSwimmingExit(player.x, player.y)) {
+        leaveSwimming();
+        return;
+      }
+      if (!isSwimmingAtSurface()) {
+        announce(isNearSwimmingExit(player.x, player.y)
+          ? 'Você está longe da superfície. Olhe para cima e avance para subir antes de sair.'
+          : 'Para sair, suba até a superfície e aproxime-se da faixa rasa ou de uma saída para terra.');
+        return;
+      }
+      if (!isNearSwimmingExit(player.x, player.y)) {
+        announce('Você está na superfície, mas longe de uma saída. Aproxime-se da faixa rasa ou de uma saída para terra.');
+        return;
+      }
+    }
     function useAction() {
+      if (climbMode === 'swimming') {
+        useSwimmingAction();
+        return;
+      }
       if (heldItem) {
         announce(`Você usa ${heldItem}.`);
         return;
       }
       if (climbMode === 'trunkGrip' || climbMode === 'branchGrip') {
         releaseTreeGrip('Você soltou a árvore e voltou ao chão.');
+        return;
+      }
+      if (isNearSwimEntry(player.x, player.y)) {
+        if (isFacingDeepWater(player.x, player.y)) enterSwimming();
+        else announce('Você está na faixa rasa. Vire o corpo para águas profundas e pressione Espaço para nadar.');
+        return;
+      }
+      if (isDeepLakeWater(player.x, player.y)) {
+        announce('Você está na água profunda; caminhe de volta à faixa rasa para iniciar a natação.');
         return;
       }
 
@@ -1020,10 +1187,19 @@
     function movementVector(code) {
       const forwardX = Math.sin(player.yaw), forwardY = Math.cos(player.yaw);
       const rightX = Math.cos(player.yaw), rightY = -Math.sin(player.yaw);
-      if (code === 'KeyW') return { name: 'frente', x: forwardX, y: forwardY };
-      if (code === 'KeyS') return { name: 'trás', x: -forwardX, y: -forwardY };
-      if (code === 'KeyA') return { name: 'lateral esquerda', x: -rightX, y: -rightY };
-      if (code === 'KeyD') return { name: 'lateral direita', x: rightX, y: rightY };
+      if (climbMode === 'swimming') {
+        const horizontal = Math.cos(player.pitch);
+        const vertical = Math.sin(player.pitch);
+        if (code === 'KeyW') return { name: 'frente', x: forwardX * horizontal, y: forwardY * horizontal, z: vertical };
+        if (code === 'KeyS') return { name: 'trás', x: -forwardX * horizontal, y: -forwardY * horizontal, z: -vertical };
+        if (code === 'KeyA') return { name: 'lateral esquerda', x: -rightX, y: -rightY, z: 0 };
+        if (code === 'KeyD') return { name: 'lateral direita', x: rightX, y: rightY, z: 0 };
+        return null;
+      }
+      if (code === 'KeyW') return { name: 'frente', x: forwardX, y: forwardY, z: 0 };
+      if (code === 'KeyS') return { name: 'trás', x: -forwardX, y: -forwardY, z: 0 };
+      if (code === 'KeyA') return { name: 'lateral esquerda', x: -rightX, y: -rightY, z: 0 };
+      if (code === 'KeyD') return { name: 'lateral direita', x: rightX, y: rightY, z: 0 };
       return null;
     }
     function chooseDirection(code) {
@@ -1044,7 +1220,7 @@
       activeDirection = movementVector(code);
       if (!activeDirection) return;
       activeMoveMode = 'walk';
-      activeMoveSpeed = climbMode === 'ground' && rightShiftHeld ? RUN_SPEED : WALK_SPEED;
+      activeMoveSpeed = climbMode === 'swimming' ? SWIM_SPEED : climbMode === 'ground' && rightShiftHeld ? RUN_SPEED : WALK_SPEED;
       activeMoveRemaining = Infinity;
 
     }
@@ -1099,7 +1275,10 @@
       }
       if (code === 'Space') {
         event.preventDefault();
-        if (!event.repeat) useAction();
+        if (!event.repeat) {
+          await unlockAudio();
+          useAction();
+        }
         return;
       }
       const movementCode = movementCodeFromEvent(event);
@@ -1206,7 +1385,56 @@
         }
       }
 
-      if (activeDirection) {
+      if (climbMode === 'swimming') {
+        const now = performance.now();
+        if (now >= nextSwimGuidanceAt) {
+          playSwimGuidanceCue();
+          nextSwimGuidanceAt = now + SWIM_GUIDANCE_INTERVAL_MS;
+        }
+        if (activeCode && movementKeys.has(activeCode)) activeDirection = movementVector(activeCode);
+        if (activeDirection && activeCode) {
+          const movement = movementVector(activeCode);
+          if (movement) activeDirection = movement;
+          const distance = SWIM_SPEED * delta;
+          const steps = Math.max(1, Math.ceil(distance / .08));
+          const stepDistance = distance / steps;
+          let moved = false, blockedAtShore = false;
+          for (let i = 0; i < steps; i++) {
+            const tx = player.x + movement.x * stepDistance;
+            const ty = player.y + movement.y * stepDistance;
+            if (!isInLakeWater(tx, ty) || !isInsideMap(tx, ty)) {
+              blockedAtShore = true;
+              if (!swimExitContact) announce('A margem bloqueia a natação; para sair, chegue à superfície e pressione Espaço perto da faixa rasa ou de uma saída para terra.');
+              swimExitContact = true;
+              break;
+            }
+            swimExitContact = false;
+            const depth = lakeDepthAt(tx, ty);
+            const surface = LAKE.waterZ + player.perceptionProfile.eyeHeight;
+            const bottom = LAKE.waterZ - depth + player.perceptionProfile.eyeHeight + SWIM_BOTTOM_CLEARANCE_METERS;
+            const minimumEyeAltitude = Math.min(surface, bottom);
+            const unclamped = player.swimEyeAltitude + movement.z * stepDistance;
+            const nextEyeAltitude = clamp(unclamped, minimumEyeAltitude, surface);
+            const hitBottom = movement.z < 0 && unclamped < minimumEyeAltitude - 1e-5;
+            const hitSurface = movement.z > 0 && unclamped > surface - 1e-5;
+            player.x = tx;
+            player.y = ty;
+            player.swimEyeAltitude = nextEyeAltitude;
+            moved = true;
+            if (hitBottom && !swimBottomContact) announce('Você chegou ao fundo do lago. Olhe para cima para voltar à superfície.');
+            if (hitSurface && !swimSurfaceContact) announce('Você chegou à superfície. Aproxime-se da faixa rasa ou de uma saída para terra para sair com Espaço.');
+            swimBottomContact = nextEyeAltitude <= minimumEyeAltitude + 1e-5;
+            swimSurfaceContact = nextEyeAltitude >= surface - 1e-5;
+          }
+          if (moved && now >= nextSwimStrokeAt) {
+            playSwimStroke();
+            nextSwimStrokeAt = now + SWIM_STROKE_INTERVAL_MS;
+          }
+          if (blockedAtShore) stopMovement();
+        }
+      }
+
+      if (activeDirection && climbMode !== 'swimming') {
         const movement = activeDirection;
         const moveMode = activeMoveMode;
         const maxDistance = activeMoveSpeed * delta;
@@ -1254,7 +1482,7 @@
           if (isInLakeWater(tx, ty)) {
             mudContact = false;
             if (isDeepLakeWater(tx, ty)) {
-              if (!deepWaterContact) announce('O fundo do lago desce para águas profundas; é preciso nadar para avançar, mas a natação ainda não foi implementada.');
+              if (!deepWaterContact) announce('O fundo do lago desce para águas profundas; caminhe de volta à faixa rasa e use Espaço voltado para o fundo para nadar.');
               deepWaterContact = true;
               blocked = true;
               break;

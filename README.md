@@ -1,4 +1,4 @@
-# Phoenix Island — protótipo de caminhada 3D
+# Phoenix Island — protótipo acessível de caminhada e natação 3D
 
 Protótipo web em primeira pessoa para testar movimentação, olhar e pistas sonoras num mapa 3D de 36 × 36 m, com colina, árvore e lago. A cena usa Three.js e WebGL; céu, texturas e detalhes da vegetação são gerados proceduralmente no navegador, sem arquivos de arte externos. Este ainda não é o jogo nem implementa sistemas completos de RPG ou sobrevivência.
 
@@ -6,7 +6,15 @@ Protótipo web em primeira pessoa para testar movimentação, olhar e pistas son
 
 O campo passou de 24 × 24 m para 36 × 36 m, com X e Y entre −18 m e +18 m. A colina e a árvore mantêm suas posições no setor central; a colina tem descida posterior até o terreno baixo. O lago elíptico fica ao norte e a leste, centrado em X=5,0 m, Y=13,2 m, com dimensões de água de aproximadamente 12 × 6,4 m. Uma faixa de terreno lamacento, com cerca de 1,2 m de largura, envolve a margem.
 
-Dentro do lago, a faixa rasa contorna todo o perímetro e permite caminhar sobre um fundo que chega a cerca de 0,55 m abaixo do terreno. Em seguida, o fundo desce para uma bacia central de até 2,7 m. A região profunda bloqueia o avanço e anuncia que é preciso nadar; a mecânica de natação ainda não está implementada.
+Dentro do lago, a faixa rasa contorna todo o perímetro e permite caminhar sobre um fundo que chega a cerca de 0,55 m abaixo do terreno. Em seguida, o fundo desce para uma bacia central de até 2,7 m. A região profunda bloqueia o avanço a pé. Com as mãos vazias, o jogador pode iniciar a natação na faixa rasa ao pressionar Espaço enquanto o corpo está voltado para a região profunda. A natação funciona no lago deste protótipo.
+
+## Natação e saídas
+
+A entrada exige mãos vazias, estar na faixa rasa caminhável e apontar o corpo para água profunda; então Espaço inicia a natação na superfície. W/S avançam ou recuam na direção do corpo e acompanham a inclinação do olhar: apontar para baixo conduz para baixo, apontar para cima conduz para cima e o horizonte mantém a altitude. A/D deslocam lateralmente sem mudar a altitude. A velocidade de natação é 1,5 m/s. A movimentação respeita a profundidade e mantém uma distância mínima do fundo; fora do contorno de água modelado, a margem bloqueia o avanço.
+
+Para sair, mãos vazias, o jogador deve estar na superfície e perto da faixa rasa ou de uma saída terrestre indicada por um futuro marcador; Espaço então retorna à caminhada. A natação não termina automaticamente ao tocar a margem. Um conector subaquático marcado como destino de água mantém o modo de natação, enquanto uma saída marcada como terra pode servir para sair, mas também exige superfície e Espaço. Os pontos reutilizáveis de orientação vertical aceitam posição (X/Y/Z), destino e raio. Por ora, a lista está vazia: não existe passagem subaquática no protótipo. Sem marcadores, bipes periódicos orientam para a superfície; a orientação específica para uma passagem só poderá ser exercitada depois que uma passagem real for construída.
+
+Mudanças de estado relevantes — entrada/saída, contato com fundo/superfície e bloqueio pela margem — são anunciadas sem fala por tecla ou por braçada. A inclinação do olhar continua informada ao ajustá-la.
 
 ## Estilo visual do protótipo
 
@@ -14,7 +22,7 @@ O cenário usa um céu em degradê, texturas procedurais de grama, solo e casca,
 
 ## Testar
 
-Abra a página publicada no GitHub Pages. O navegador precisa permitir WebGL e carregar o módulo Three.js hospedado no jsDelivr. O áudio é liberado depois da primeira tecla de movimento, conforme a política dos navegadores.
+Abra a página publicada no GitHub Pages. O navegador precisa permitir WebGL e carregar o módulo Three.js hospedado no jsDelivr. O áudio é liberado depois da primeira tecla de movimento ou Espaço, conforme a política dos navegadores.
 
 ## Controles
 
@@ -26,9 +34,9 @@ Abra a página publicada no GitHub Pages. O navegador precisa permitir WebGL e c
 - Shift esquerdo+W: girar o corpo 180°, sem caminhar; o sistema anuncia para qual direção o corpo ficou voltado (norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste).
 - Shift esquerdo+S: recuo rápido de cerca de 1,35 unidade, equivalente a alguns passos para trás.
 - Setas esquerda/direita: desviar o olhar em passos de 15°, até ±45° em relação ao corpo. No limite, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo.
-- Setas cima/baixo: inclinar o olhar em passos de 15°, até ±30°. Para observar além desse limite, mude de posição.
+- Setas cima/baixo: inclinar o olhar em passos de 15°, até ±30°. Para observar além desse limite, mude de posição. Durante a natação, a inclinação também direciona os deslocamentos W/S para cima/baixo; em posição horizontal, a profundidade permanece estável.
 - C: anunciar X/Y no plano e Z como altitude-base, em metros com duas casas decimais. A referência humana atual usa altura ocular de 1,60 m, definida no perfil de percepção. O modelo do jogo é X/Y/Z; na renderização, o Three.js converte (X, Y, Z) para (X, Z, -Y).
-- Espaço: usa o item em mãos. Com mãos livres, perto da árvore, olhar para o tronco agarra; olhar para um galho ou copa ao alcance extrai um graveto e informa o total coletado. Em árvores com frutos, mire o fruto específico; se estiver fora de alcance, aproxime-se da posição dele ou suba. A árvore deste teste não tem frutos. Espaço solta enquanto estiver segurando a árvore.
+- Espaço: usa o item em mãos. Com mãos vazias, na faixa rasa e voltado para águas profundas, inicia a natação. Para sair da natação, mãos vazias, esteja na superfície e perto da faixa rasa ou de uma saída terrestre e pressione Espaço; o modo não termina automaticamente ao tocar a margem. Na faixa rasa e sem estar nadando, perto da árvore, olhar para o tronco agarra; olhar para um galho ou copa ao alcance extrai um graveto e informa o total coletado. Em árvores com frutos, mire o fruto específico; se estiver fora de alcance, aproxime-se da posição dele ou suba. A árvore deste teste não tem frutos. Espaço solta enquanto estiver segurando a árvore.
 - Ao segurar o tronco ou a ponta do galho, W/S produzem impulsos ritmados de subida/descida, cerca de um a cada 0,43 s enquanto a tecla estiver mantida; soltar interrompe o movimento.
 - A subida termina automaticamente no cruzamento dos galhos. Sobre os galhos, W/S/A/D permitem caminhar até uma ponta; pressione Espaço para se segurar e use S para descer. Espaço também solta e retorna ao chão.
 
@@ -46,6 +54,8 @@ A linha entre os olhos e o alvo é verificada contra a função numérica de alt
 
 - Caminhada na grama: quatro variações curtas e mais distinguíveis, com diferenças de impacto, contato da ponta e ruído vegetal; os níveis médios foram mantidos próximos e a seleção evita repetição imediata.
 - Caminhada na água rasa: quatro variações sintetizadas de impacto molhado, respingo e pequena ondulação; usadas somente na faixa caminhável do lago, sem repetição imediata.
+- Margem lamacenta: quatro variações próprias de passos, separadas dos passos de grama e água rasa.
+- Natação: quatro variações de braçada à superfície, quatro de bolhas submersas, efeitos de entrada e saída e bipes distintos de orientação vertical para cima/baixo. A braçada toca durante o movimento, e os bipes se repetem em intervalos durante a natação.
 - Caminhada sobre os galhos: três variações de contato de madeira, separadas das pisadas no chão.
 - Cadência no terreno: caminhando, intervalo de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; correndo, 0,30 s, 0,37 s e 0,27 s, respectivamente. A direção é calculada pela diferença de altitude nos próximos 0,75 m, com limiar de 0,035 m; o recuo rápido mantém 0,23 s. A cadência ajusta apenas os sons; Shift direito altera a velocidade de deslocamento para 3,6 m/s.
 - Subida e descida da colina: pistas ressonantes ascendentes ou descendentes, sincronizadas aos passos no terreno inclinado.

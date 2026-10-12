@@ -69,6 +69,31 @@ WATER_STEP_PROFILES: tuple[dict[str, object], ...] = (
      "foam_mix": .12},
 )
 
+MUD_STEP_PROFILES: tuple[dict[str, float], ...] = (
+    {"duration": .235, "impact_hz": 74, "impact": .19, "squelch": .23, "pull_delay": .075, "pull": .18, "filter": .18},
+    {"duration": .25, "impact_hz": 88, "impact": .16, "squelch": .28, "pull_delay": .09, "pull": .14, "filter": .14},
+    {"duration": .22, "impact_hz": 66, "impact": .23, "squelch": .18, "pull_delay": .055, "pull": .22, "filter": .23},
+    {"duration": .245, "impact_hz": 98, "impact": .14, "squelch": .21, "pull_delay": .11, "pull": .19, "filter": .12},
+)
+
+SWIM_SURFACE_PROFILES: tuple[dict[str, object], ...] = (
+    {"duration": .28, "impact_hz": 112, "impact": .18, "filter": .12,
+     "splashes": ((.002, .29, 24), (.105, .09, 33)), "ripple": .055},
+    {"duration": .30, "impact_hz": 95, "impact": .22, "filter": .18,
+     "splashes": ((.006, .20, 25), (.055, .14, 30), (.15, .07, 38)), "ripple": .045},
+    {"duration": .26, "impact_hz": 128, "impact": .14, "filter": .10,
+     "splashes": ((.003, .32, 29), (.09, .12, 40)), "ripple": .065},
+    {"duration": .29, "impact_hz": 82, "impact": .20, "filter": .22,
+     "splashes": ((.004, .24, 22), (.08, .10, 46), (.17, .06, 42)), "ripple": .05},
+)
+
+SWIM_UNDERWATER_PROFILES: tuple[dict[str, object], ...] = (
+    {"duration": .30, "filter": .26, "bubbles": ((.005, 148, .18, 21), (.105, 226, .11, 24))},
+    {"duration": .32, "filter": .20, "bubbles": ((.008, 198, .15, 24), (.085, 278, .12, 27), (.17, 164, .07, 28))},
+    {"duration": .29, "filter": .32, "bubbles": ((.004, 122, .20, 20), (.12, 188, .13, 22))},
+    {"duration": .31, "filter": .23, "bubbles": ((.01, 242, .13, 28), (.105, 174, .15, 22), (.2, 296, .065, 32))},
+)
+
 
 def make_footstep(seed: int = 31, profile: dict[str, float] | None = None) -> list[float]:
     """Gera passos de grama com timbres e articulações distinguíveis, mas coerentes."""
@@ -155,6 +180,129 @@ def make_water_step(seed: int = 211, profile: dict[str, object] | None = None) -
     if rms:
         level_match = .058 / rms
         samples = [sample * level_match for sample in samples]
+    return samples
+
+
+def make_mud_step(seed: int = 251, profile: dict[str, float] | None = None) -> list[float]:
+    """Passo curto e abafado na lama, com compressão úmida e pequena sucção ao retirar o pé."""
+    rng = random.Random(seed)
+    profile = profile or MUD_STEP_PROFILES[0]
+    duration = profile["duration"]
+    count = int(RATE * duration)
+    lowpass = 0.0
+    samples = []
+    for index in range(count):
+        t = index / RATE
+        raw = rng.uniform(-1, 1)
+        lowpass += profile["filter"] * (raw - lowpass)
+        grit = raw - lowpass
+        impact_elapsed = t - .004
+        impact = 0.0
+        if impact_elapsed >= 0:
+            impact = profile["impact"] * math.sin(2 * math.pi * profile["impact_hz"] * impact_elapsed) * math.exp(-34 * impact_elapsed)
+        squelch = 0.0
+        if t >= 0:
+            envelope = math.exp(-23 * t) * min(1.0, t * 110)
+            squelch = (grit + .28 * lowpass) * profile["squelch"] * envelope
+        pull_elapsed = t - profile["pull_delay"]
+        pull = 0.0
+        if pull_elapsed >= 0:
+            envelope = math.exp(-29 * pull_elapsed) * min(1.0, pull_elapsed * 100)
+            suction = math.sin(2 * math.pi * (58 - 20 * min(1.0, pull_elapsed / .12)) * pull_elapsed)
+            pull = profile["pull"] * (suction + .22 * grit) * envelope
+        samples.append(impact + squelch + pull)
+    rms = math.sqrt(sum(sample * sample for sample in samples) / len(samples))
+    if rms:
+        samples = [sample * (.057 / rms) for sample in samples]
+    return samples
+
+
+def make_swim_stroke(seed: int, profile: dict[str, object], submerged: bool = False) -> list[float]:
+    """Braçada curta; acima da água respinga, abaixo dela produz bolhas abafadas."""
+    rng = random.Random(seed)
+    duration = float(profile["duration"])
+    count = int(RATE * duration)
+    lowpass = 0.0
+    samples = []
+    for index in range(count):
+        t = index / RATE
+        raw = rng.uniform(-1, 1)
+        lowpass += float(profile["filter"]) * (raw - lowpass)
+        noise = raw - lowpass
+        sound = 0.0
+        if submerged:
+            for start, frequency, strength, decay in profile["bubbles"]:
+                elapsed = t - float(start)
+                if elapsed >= 0:
+                    envelope = math.exp(-float(decay) * elapsed) * min(1.0, elapsed * 95)
+                    wobble = math.sin(2 * math.pi * float(frequency) * elapsed)
+                    sound += float(strength) * (wobble + .20 * math.sin(2 * math.pi * float(frequency) * 1.72 * elapsed)) * envelope
+                    sound += noise * float(strength) * .12 * envelope
+        else:
+            impact_elapsed = t - .006
+            if impact_elapsed >= 0:
+                sound += float(profile["impact"]) * math.sin(2 * math.pi * float(profile["impact_hz"]) * impact_elapsed) * math.exp(-28 * impact_elapsed)
+            for start, level, decay in profile["splashes"]:
+                elapsed = t - float(start)
+                if elapsed >= 0:
+                    envelope = math.exp(-float(decay) * elapsed) * min(1.0, elapsed * 105)
+                    sound += float(level) * (noise + .18 * lowpass) * envelope
+            ripple_elapsed = t - .055
+            if ripple_elapsed >= 0:
+                sound += float(profile["ripple"]) * (noise + .35 * lowpass) * math.exp(-19 * ripple_elapsed) * min(1.0, ripple_elapsed * 50)
+        samples.append(sound)
+    target_rms = .048 if submerged else .056
+    rms = math.sqrt(sum(sample * sample for sample in samples) / len(samples))
+    if rms:
+        samples = [sample * (target_rms / rms) for sample in samples]
+    return samples
+
+
+def make_swim_transition(entering: bool) -> list[float]:
+    """Confirmação de entrada/saída da natação, com respingo de volume controlado."""
+    rng = random.Random(271 if entering else 277)
+    duration = .29 if entering else .22
+    count = int(RATE * duration)
+    lowpass = 0.0
+    samples = []
+    pulses = ((.004, .28, 25), (.09, .09, 38)) if entering else ((.005, .18, 31), (.10, .055, 45))
+    for index in range(count):
+        t = index / RATE
+        raw = rng.uniform(-1, 1)
+        lowpass += .16 * (raw - lowpass)
+        noise = raw - lowpass
+        impact_elapsed = t - .005
+        impact = .16 * math.sin(2 * math.pi * (102 if entering else 84) * impact_elapsed) * math.exp(-26 * impact_elapsed) if impact_elapsed >= 0 else 0.0
+        splash = 0.0
+        for start, level, decay in pulses:
+            elapsed = t - start
+            if elapsed >= 0:
+                splash += level * (noise + .16 * lowpass) * math.exp(-decay * elapsed) * min(1.0, elapsed * 100)
+        samples.append(impact + splash)
+    rms = math.sqrt(sum(sample * sample for sample in samples) / len(samples))
+    if rms:
+        samples = [sample * (.055 / rms) for sample in samples]
+    return samples
+
+
+def make_swim_guide(upward: bool) -> list[float]:
+    """Dois bipes simples em sequência ascendente ou descendente para orientação vertical."""
+    frequencies = (470, 760) if upward else (760, 470)
+    pulse_duration = .075
+    gap = .035
+    total = pulse_duration * 2 + gap
+    samples = [0.0] * int(RATE * total)
+    for pulse, frequency in enumerate(frequencies):
+        start = pulse * (pulse_duration + gap)
+        start_index = int(start * RATE)
+        pulse_count = int(pulse_duration * RATE)
+        for offset in range(pulse_count):
+            t = offset / RATE
+            attack = min(1.0, t / .008)
+            release = min(1.0, (pulse_duration - t) / .018)
+            envelope = max(0.0, min(attack, release))
+            tone = math.sin(2 * math.pi * frequency * t) + .12 * math.sin(4 * math.pi * frequency * t)
+            samples[start_index + offset] = .20 * tone * envelope
     return samples
 
 
@@ -374,6 +522,19 @@ def main() -> None:
     for variant, (seed, profile) in enumerate(zip((211, 223, 227, 229), WATER_STEP_PROFILES), start=1):
         filename = "water-step.wav" if variant == 1 else f"water-step-{variant}.wav"
         write_wav(ASSETS / filename, make_water_step(seed, profile))
+    for variant, (seed, profile) in enumerate(zip((251, 257, 263, 269), MUD_STEP_PROFILES), start=1):
+        filename = "mud-step.wav" if variant == 1 else f"mud-step-{variant}.wav"
+        write_wav(ASSETS / filename, make_mud_step(seed, profile))
+    for variant, (seed, profile) in enumerate(zip((281, 283, 293, 307), SWIM_SURFACE_PROFILES), start=1):
+        filename = "swim-surface.wav" if variant == 1 else f"swim-surface-{variant}.wav"
+        write_wav(ASSETS / filename, make_swim_stroke(seed, profile))
+    for variant, (seed, profile) in enumerate(zip((311, 313, 317, 331), SWIM_UNDERWATER_PROFILES), start=1):
+        filename = "swim-underwater.wav" if variant == 1 else f"swim-underwater-{variant}.wav"
+        write_wav(ASSETS / filename, make_swim_stroke(seed, profile, submerged=True))
+    write_wav(ASSETS / "swim-enter.wav", make_swim_transition(entering=True))
+    write_wav(ASSETS / "swim-exit.wav", make_swim_transition(entering=False))
+    write_wav(ASSETS / "swim-guide-up.wav", make_swim_guide(upward=True))
+    write_wav(ASSETS / "swim-guide-down.wav", make_swim_guide(upward=False))
     write_wav(ASSETS / "slope-up.wav", make_slope_cue(upward=True))
     write_wav(ASSETS / "slope-down.wav", make_slope_cue(upward=False))
     write_wav(ASSETS / "boundary.wav", make_boundary())
