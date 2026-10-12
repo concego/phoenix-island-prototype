@@ -34,10 +34,10 @@
     <header>
       <h1>Phoenix Island — teste de caminhada em 3D</h1>
       <div id="instructions">
-        <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Shift+A/D giram o corpo 45° para a esquerda/direita; Shift+W gira 180°; Shift+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
+        <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Segure Ctrl esquerdo junto com W/S/A/D para correr a 3,6 m/s; também pode apertar Ctrl esquerdo depois de iniciar o movimento. Ao soltar Ctrl esquerdo, volta a caminhar a 2,4 m/s. A corrida não se aplica à escalada nem à caminhada pelos galhos; Ctrl direito não ativa a corrida. Shift+A/D giram o corpo 45° para a esquerda/direita; Shift+W gira 180°; Shift+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift+A/D ou Shift+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°; para observar além, mude de posição. A descrição separa o rumo do olhar do rumo de caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
         <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S fazem impulsos ritmados de escalada, aproximadamente a cada 0,43 segundo enquanto a tecla estiver mantida; soltar interrompe o movimento. Espaço solta.</p>
-        <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina. No terreno, a cadência sonora é de cerca de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; o recuo rápido mantém seu ritmo. Isso altera o intervalo dos sons, não a velocidade do deslocamento. Há também um alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
+        <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina. Caminhando, a cadência sonora é de cerca de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; isso não muda a velocidade da caminhada. Correndo, os intervalos são cerca de 0,30 s no plano, 0,37 s subindo e 0,27 s descendo. O recuo rápido mantém seu próprio ritmo. Há também um alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
       </div>
     </header>
     <section id="stage" aria-label="Cena tridimensional do protótipo">
@@ -115,11 +115,15 @@
     const VERTICAL_LOOK_STEP = Math.PI / 12;
     const VERTICAL_LOOK_LIMIT = Math.PI / 6;
     const WALK_SPEED = 2.4;
+    const RUN_SPEED = 3.6;
     const BACKSTEP_SPEED = 4.2;
     const BACKSTEP_DISTANCE = 1.35;
     const STEP_INTERVAL_WALK_MS = 430;
     const STEP_INTERVAL_UPHILL_MS = 520;
     const STEP_INTERVAL_DOWNHILL_MS = 360;
+    const STEP_INTERVAL_RUN_MS = 300;
+    const STEP_INTERVAL_RUN_UPHILL_MS = 370;
+    const STEP_INTERVAL_RUN_DOWNHILL_MS = 270;
     const STEP_INTERVAL_BACKSTEP_MS = 230;
     const TERRAIN_STEP_LOOKAHEAD_METERS = .75;
     const TERRAIN_STEP_THRESHOLD_METERS = .035;
@@ -454,6 +458,7 @@
     let activeMoveMode = 'walk';
     let activeMoveSpeed = WALK_SPEED;
     let activeMoveRemaining = 0;
+    let runKeyHeld = false;
     let climbMode = 'ground';
     let branchContact = false;
     let obstacleContact = false;
@@ -826,7 +831,7 @@
       activeDirection = movementVector(code);
       if (!activeDirection) return;
       activeMoveMode = 'walk';
-      activeMoveSpeed = WALK_SPEED;
+      activeMoveSpeed = climbMode === 'ground' && runKeyHeld ? RUN_SPEED : WALK_SPEED;
       activeMoveRemaining = Infinity;
 
     }
@@ -855,6 +860,9 @@
 
       }
     }
+    function isLeftControlEvent(event) {
+      return event.code === 'ControlLeft' || (event.key === 'Control' && event.location === 1);
+    }
     function movementCodeFromEvent(event) {
       const letter = String(event.key || '').toLowerCase();
       const byLetter = { w: 'KeyW', a: 'KeyA', s: 'KeyS', d: 'KeyD' };
@@ -863,6 +871,12 @@
 
     window.addEventListener('keydown', async event => {
       const code = event.code;
+      if (isLeftControlEvent(event)) {
+        event.preventDefault();
+        runKeyHeld = true;
+        if (activeDirection && activeMoveMode === 'walk' && climbMode === 'ground') activeMoveSpeed = RUN_SPEED;
+        return;
+      }
       if (code === 'Space') {
         event.preventDefault();
         if (!event.repeat) useAction();
@@ -910,11 +924,20 @@
       }
     });
     window.addEventListener('keyup', event => {
+      if (isLeftControlEvent(event)) {
+        event.preventDefault();
+        runKeyHeld = false;
+        if (activeDirection && activeMoveMode === 'walk' && climbMode === 'ground') activeMoveSpeed = WALK_SPEED;
+        return;
+      }
       const movementCode = movementCodeFromEvent(event);
       if (!movementCode || activeCode !== movementCode) return;
       stopMovement();
     });
-    window.addEventListener('blur', () => stopMovement());
+    window.addEventListener('blur', () => {
+      runKeyHeld = false;
+      stopMovement();
+    });
 
     const clock = new THREE.Clock();
     function update(delta) {
@@ -1028,8 +1051,16 @@
             }
           }
           let stepInterval = STEP_INTERVAL_WALK_MS;
+          const isRunning = moveMode === 'walk' && climbMode === 'ground' && activeMoveSpeed === RUN_SPEED;
           if (moveMode === 'backstep') {
             stepInterval = STEP_INTERVAL_BACKSTEP_MS;
+          } else if (isRunning) {
+            stepInterval = STEP_INTERVAL_RUN_MS;
+            if (terrainDifference !== null && terrainDifference > TERRAIN_STEP_THRESHOLD_METERS) {
+              stepInterval = STEP_INTERVAL_RUN_UPHILL_MS;
+            } else if (terrainDifference !== null && terrainDifference < -TERRAIN_STEP_THRESHOLD_METERS) {
+              stepInterval = STEP_INTERVAL_RUN_DOWNHILL_MS;
+            }
           } else if (climbMode === 'ground' && terrainDifference !== null) {
             if (terrainDifference > TERRAIN_STEP_THRESHOLD_METERS) stepInterval = STEP_INTERVAL_UPHILL_MS;
             else if (terrainDifference < -TERRAIN_STEP_THRESHOLD_METERS) stepInterval = STEP_INTERVAL_DOWNHILL_MS;
