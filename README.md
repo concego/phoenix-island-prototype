@@ -39,6 +39,7 @@ A linha entre os olhos e o alvo é verificada contra a função numérica de alt
 
 - Caminhada na grama: quatro variações curtas e mais distinguíveis, com diferenças de impacto, contato da ponta e ruído vegetal; os níveis médios foram mantidos próximos e a seleção evita repetição imediata.
 - Caminhada sobre os galhos: três variações de contato de madeira, separadas das pisadas no chão.
+- Cadência no terreno: intervalo de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo. A direção é calculada pela diferença de altitude nos próximos 0,75 m, com limiar de 0,035 m; o recuo rápido mantém 0,23 s. Isso altera os sons de passo, não a velocidade de deslocamento.
 - Subida e descida da colina: pistas ressonantes ascendentes ou descendentes, sincronizadas aos passos no terreno inclinado.
 - Limite do campo: alerta pulsante uma vez por passo ao caminhar na direção da borda; ao tocá-la, dois impactos curtos confirmam o contato. No máximo um aviso direcional é tocado por passo, e os alertas não usam temporizador independente.
 - Coleta de graveto: estalo seco seguido de um roçar breve de folhas.

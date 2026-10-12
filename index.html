@@ -37,7 +37,7 @@
         <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Shift+A/D giram o corpo 45° para a esquerda/direita; Shift+W gira 180°; Shift+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift+A/D ou Shift+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°; para observar além, mude de posição. A descrição separa o rumo do olhar do rumo de caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
         <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S fazem impulsos ritmados de escalada, aproximadamente a cada 0,43 segundo enquanto a tecla estiver mantida; soltar interrompe o movimento. Espaço solta.</p>
-        <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina; alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
+        <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina. No terreno, a cadência sonora é de cerca de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; o recuo rápido mantém seu ritmo. Isso altera o intervalo dos sons, não a velocidade do deslocamento. Há também um alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
       </div>
     </header>
     <section id="stage" aria-label="Cena tridimensional do protótipo">
@@ -117,6 +117,12 @@
     const WALK_SPEED = 2.4;
     const BACKSTEP_SPEED = 4.2;
     const BACKSTEP_DISTANCE = 1.35;
+    const STEP_INTERVAL_WALK_MS = 430;
+    const STEP_INTERVAL_UPHILL_MS = 520;
+    const STEP_INTERVAL_DOWNHILL_MS = 360;
+    const STEP_INTERVAL_BACKSTEP_MS = 230;
+    const TERRAIN_STEP_LOOKAHEAD_METERS = .75;
+    const TERRAIN_STEP_THRESHOLD_METERS = .035;
     const CLIMB_STROKE_DISTANCE = .36;
     const CLIMB_STROKE_SPEED = 2.4;
     const CLIMB_STROKE_INTERVAL = 430;
@@ -550,13 +556,17 @@
     }
     function terrainChange(direction) {
       const here = terrainHeightAt(player.x, player.y);
-      const ahead = terrainHeightAt(player.x + direction.x * .75, player.y + direction.y * .75);
+      const ahead = terrainHeightAt(
+        player.x + direction.x * TERRAIN_STEP_LOOKAHEAD_METERS,
+        player.y + direction.y * TERRAIN_STEP_LOOKAHEAD_METERS
+      );
       const difference = ahead - here;
-      if (difference > .035) {
+      if (difference > TERRAIN_STEP_THRESHOLD_METERS) {
         if (playBuffer('up', .3) === false) playTone(760, .095, 'sine', .045);
-      } else if (difference < -.035) {
+      } else if (difference < -TERRAIN_STEP_THRESHOLD_METERS) {
         if (playBuffer('down', .3) === false) playTone(245, .095, 'sine', .045);
       }
+      return difference;
     }
     function playEdgeWarning(distance) {
       const proximity = clamp(1 - distance / 2.5, 0, 1);
@@ -1008,15 +1018,23 @@
         const now = performance.now();
         if (moved && now >= nextStepAt) {
           playStep();
+          let terrainDifference = null;
           if (climbMode === 'ground') {
             const boundary = boundaryAhead(player.x, player.y, movement);
             if (boundary.distance <= 2.5 && boundary.distance >= 0) {
               playEdgeWarning(boundary.distance);
             } else {
-              terrainChange(movement);
+              terrainDifference = terrainChange(movement);
             }
           }
-          nextStepAt = now + (moveMode === 'backstep' ? 230 : 430);
+          let stepInterval = STEP_INTERVAL_WALK_MS;
+          if (moveMode === 'backstep') {
+            stepInterval = STEP_INTERVAL_BACKSTEP_MS;
+          } else if (climbMode === 'ground' && terrainDifference !== null) {
+            if (terrainDifference > TERRAIN_STEP_THRESHOLD_METERS) stepInterval = STEP_INTERVAL_UPHILL_MS;
+            else if (terrainDifference < -TERRAIN_STEP_THRESHOLD_METERS) stepInterval = STEP_INTERVAL_DOWNHILL_MS;
+          }
+          nextStepAt = now + stepInterval;
         }
         if (moveMode === 'backstep' && (blocked || activeMoveRemaining <= .001)) stopMovement();
       }
