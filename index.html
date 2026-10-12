@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Protótipo 3D de Phoenix Island com mapa ampliado, colina, árvore e lago para preparar testes de natação.">
+  <meta name="description" content="Protótipo 3D de Phoenix Island em um mapa de 36 × 36 m, com colina, árvore, margem lamacenta e lago com faixa rasa caminhável; natação ainda não implementada.">
   <title>Phoenix Island — Teste de caminhada 3D</title>
   <link rel="icon" href="data:,">
   <style>
@@ -34,7 +34,7 @@
     <header>
       <h1>Phoenix Island — teste de caminhada em 3D</h1>
       <div id="instructions">
-        <p><strong>Mapa:</strong> área de 24 × 24 m; a colina e a árvore ficam na região central, e o lago na parte posterior, ao norte e a leste. A água bloqueia a passagem por enquanto; a mecânica de natação será adicionada depois.</p>
+        <p><strong>Mapa:</strong> área de 36 × 36 m, com X e Y entre −18 m e +18 m. A colina e a árvore ficam na região central; o lago fica ao norte e a leste, centrado em X=5,0 m e Y=13,2 m, com cerca de 12 × 6,4 m de água. Uma margem lamacenta de 1,2 m contorna o lago. A faixa rasa ao redor permite caminhar sobre um fundo de até 0,55 m; depois, o fundo desce até 2,7 m na bacia central. A região profunda bloqueia a passagem. A natação ainda não está implementada.</p>
         <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Segure Shift direito junto com W/S/A/D para correr a 3,6 m/s; também pode pressionar Shift direito depois de iniciar o movimento. Ao soltá-lo, volta a caminhar a 2,4 m/s. A corrida não se aplica à escalada nem à caminhada pelos galhos. Shift esquerdo+A/D giram o corpo 45° para a esquerda/direita; Shift esquerdo+W gira 180°; Shift esquerdo+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°; para observar além, mude de posição. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
         <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S fazem impulsos ritmados de escalada, aproximadamente a cada 0,43 segundo enquanto a tecla estiver mantida; soltar interrompe o movimento. Espaço solta.</p>
@@ -43,7 +43,7 @@
     </header>
     <section id="stage" aria-label="Cena tridimensional do protótipo">
       <div id="webgl-warning" hidden>Este navegador ou dispositivo não disponibilizou WebGL para a cena 3D.</div>
-      <div id="readout" role="status" aria-live="polite" aria-atomic="true">Posição inicial na porção sul de um mapa de 24 por 24 metros. A colina e a árvore ficam na região central; o lago está ao norte e a leste. A natação ainda não foi implementada. Use as setas para olhar, ou C para anunciar as coordenadas.</div>
+      <div id="readout" role="status" aria-live="polite" aria-atomic="true">Posição inicial na porção sul de um mapa de 36 por 36 metros, com X e Y entre menos 18 e mais 18 metros. O lago fica ao norte e a leste, centrado em X=5,0 m e Y=13,2 m, e mede cerca de 12 por 6,4 metros na água. Uma margem lamacenta de 1,2 m envolve a faixa rasa caminhável, que desce até 0,55 m; a bacia central chega a 2,7 m e bloqueia a passagem. A natação ainda não está implementada. Use as setas para olhar, ou C para anunciar as coordenadas.</div>
     </section>
   </main>
 
@@ -109,14 +109,18 @@
     const PERCEPTION_TERRAIN_SAMPLE_METERS = .01;
     const humanPerceptionProfile = Object.freeze({ eyeHeight: 1.60, verticalFovDegrees: HUMAN_VERTICAL_FOV_DEGREES });
     const camera = new THREE.PerspectiveCamera(humanPerceptionProfile.verticalFovDegrees, 1, 0.1, 100);
-    const MAP_BOUNDS = { minX: -12, maxX: 12, minY: -12, maxY: 12 };
+    const MAP_BOUNDS = { minX: -18, maxX: 18, minY: -18, maxY: 18 };
     const HILL_HALF_WIDTH = 2.1;
     const HILL_RAMP_START_Y = 1.1;
     const HILL_FRONT_CREST_Y = 4.8;
     const HILL_PLATEAU_END_Y = 6.0;
     const HILL_REAR_END_Y = 8.8;
     const HILL_TOP_Z = 1.8;
-    const LAKE = Object.freeze({ centerX: 6.5, centerY: 9.0, radiusX: 4.2, radiusY: 2.3, shoreWidth: .45, waterZ: .03 });
+    const LAKE = Object.freeze({ centerX: 5.0, centerY: 13.2, radiusX: 6.0, radiusY: 3.2, mudWidth: 1.2, waterZ: .03 });
+    const LAKE_WADING_LIMIT_RATIO = .68;
+    const LAKE_DEEP_BASIN_RATIO = .42;
+    const LAKE_WADING_DEPTH_METERS = .55;
+    const LAKE_MAX_DEPTH_METERS = 2.7;
     const player = { x: 0, y: -2.5, perceptionProfile: humanPerceptionProfile, yaw: 0, headYawOffset: 0, pitch: 0, climbHeight: 0 };
     const HORIZONTAL_LOOK_STEP = Math.PI / 12;
     const HORIZONTAL_LOOK_LIMIT = Math.PI / 4;
@@ -235,9 +239,30 @@
       ctx.globalAlpha = 1;
       return finishProceduralTexture(canvas, 1, 1);
     }
+    function makeMudTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 256;
+      const ctx = canvas.getContext('2d');
+      const random = seededRandom(6651);
+      ctx.fillStyle = '#453d30';
+      ctx.fillRect(0, 0, 256, 256);
+      const palette = ['#302c25', '#514735', '#67573d', '#393a32', '#78684a'];
+      for (let i = 0; i < 1450; i++) {
+        const x = random() * 256, y = random() * 256;
+        ctx.globalAlpha = .12 + random() * .26;
+        ctx.fillStyle = palette[Math.floor(random() * palette.length)];
+        ctx.beginPath();
+        ctx.ellipse(x, y, 1 + random() * 8, .7 + random() * 4, random() * Math.PI, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      return finishProceduralTexture(canvas, 3, 2);
+    }
     const materials = {
       grass: new THREE.MeshStandardMaterial({ map: makeGrassTexture(), roughness: 1 }),
       hill: new THREE.MeshStandardMaterial({ map: makeSoilTexture(), roughness: 1, side: THREE.DoubleSide }),
+      mud: new THREE.MeshStandardMaterial({ map: makeMudTexture(), roughness: .98, side: THREE.DoubleSide }),
+      lakeBed: new THREE.MeshStandardMaterial({ color: 0x3d5045, roughness: .96, side: THREE.DoubleSide }),
       bark: new THREE.MeshStandardMaterial({ map: makeBarkTexture(), roughness: 1 }),
       leaves: new THREE.MeshStandardMaterial({ color: 0x315f45, roughness: 1 }),
       leavesLight: new THREE.MeshStandardMaterial({ color: 0x4b7a4a, roughness: 1 }),
@@ -263,7 +288,7 @@
       return mesh;
     }
 
-    // O terreno cobre 25 m para que o campo lógico de 24 × 24 m fique totalmente apoiado.
+    // O terreno cobre 37 m para apoiar o campo lógico ampliado de 36 × 36 m.
     const groundWidth = MAP_BOUNDS.maxX - MAP_BOUNDS.minX + 1;
     const groundLength = MAP_BOUNDS.maxY - MAP_BOUNDS.minY + 1;
     const ground = addMesh(new THREE.PlaneGeometry(groundWidth, groundLength), materials.grass, [0, 0, -.08], null, false);
@@ -308,33 +333,116 @@
     scene.add(rearRamp);
     markLookable(rearRamp, rearRamp.userData.lookDescription, 'hill');
 
-    const lakeShoreMaterial = new THREE.MeshStandardMaterial({ color: 0x9b8a66, roughness: 1, side: THREE.DoubleSide });
-    const lakeWaterMaterial = new THREE.MeshStandardMaterial({ color: 0x28798c, roughness: .28, metalness: .08, side: THREE.DoubleSide });
-    const lakeShore = new THREE.Mesh(new THREE.RingGeometry(.82, 1, 64), lakeShoreMaterial);
-    lakeShore.position.copy(designToThree(LAKE.centerX, LAKE.centerY, .008));
-    lakeShore.rotation.x = -Math.PI / 2;
-    lakeShore.scale.set(LAKE.radiusX + LAKE.shoreWidth, LAKE.radiusY + LAKE.shoreWidth, 1);
-    lakeShore.receiveShadow = false;
-    scene.add(lakeShore);
-    const lakeWater = new THREE.Mesh(new THREE.CircleGeometry(1, 64), lakeWaterMaterial);
+    function createEllipticalAnnulusGeometry(innerRadiusX, innerRadiusY, outerRadiusX, outerRadiusY, segments = 96) {
+      const positions = [], uvs = [], indices = [];
+      for (let index = 0; index <= segments; index++) {
+        const angle = Math.PI * 2 * index / segments;
+        const cosine = Math.cos(angle), sine = Math.sin(angle);
+        const u = index / segments;
+        positions.push(innerRadiusX * cosine, innerRadiusY * sine, 0);
+        uvs.push(u, 0);
+        positions.push(outerRadiusX * cosine, outerRadiusY * sine, 0);
+        uvs.push(u, 1);
+      }
+      for (let index = 0; index < segments; index++) {
+        const inner = index * 2, outer = inner + 1, nextInner = inner + 2, nextOuter = inner + 3;
+        indices.push(inner, outer, nextInner, outer, nextOuter, nextInner);
+      }
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+      geometry.setIndex(indices);
+      geometry.computeVertexNormals();
+      return geometry;
+    }
+    function createLakeBedGeometry() {
+      const segments = 96;
+      const ratios = [LAKE_DEEP_BASIN_RATIO, .48, .54, .60, LAKE_WADING_LIMIT_RATIO, .76, .84, .92, 1];
+      const positions = [], uvs = [], indices = [];
+      positions.push(...designToThree(LAKE.centerX, LAKE.centerY, -LAKE_MAX_DEPTH_METERS).toArray());
+      uvs.push(.5, .5);
+      const ringStarts = [];
+      for (const ratio of ratios) {
+        ringStarts.push(positions.length / 3);
+        for (let index = 0; index < segments; index++) {
+          const angle = Math.PI * 2 * index / segments;
+          const x = LAKE.centerX + Math.cos(angle) * LAKE.radiusX * ratio;
+          const y = LAKE.centerY + Math.sin(angle) * LAKE.radiusY * ratio;
+          const z = -lakeDepthAt(x, y);
+          positions.push(...designToThree(x, y, z).toArray());
+          uvs.push(.5 + Math.cos(angle) * ratio * .5, .5 + Math.sin(angle) * ratio * .5);
+        }
+      }
+      for (let index = 0; index < segments; index++) {
+        const next = (index + 1) % segments;
+        indices.push(0, ringStarts[0] + index, ringStarts[0] + next);
+      }
+      for (let ring = 0; ring < ringStarts.length - 1; ring++) {
+        const inner = ringStarts[ring], outer = ringStarts[ring + 1];
+        for (let index = 0; index < segments; index++) {
+          const next = (index + 1) % segments;
+          indices.push(inner + index, outer + index, inner + next, outer + index, outer + next, inner + next);
+        }
+      }
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+      geometry.setIndex(indices);
+      geometry.computeVertexNormals();
+      return geometry;
+    }
+    const lakeBed = new THREE.Mesh(createLakeBedGeometry(), materials.lakeBed);
+    lakeBed.castShadow = false;
+    lakeBed.receiveShadow = false;
+    scene.add(lakeBed);
+
+    const lakeMud = new THREE.Mesh(
+      createEllipticalAnnulusGeometry(
+        LAKE.radiusX, LAKE.radiusY,
+        LAKE.radiusX + LAKE.mudWidth, LAKE.radiusY + LAKE.mudWidth
+      ),
+      materials.mud
+    );
+    lakeMud.position.copy(designToThree(LAKE.centerX, LAKE.centerY, .006));
+    lakeMud.rotation.x = -Math.PI / 2;
+    lakeMud.receiveShadow = false;
+    scene.add(lakeMud);
+
+    const lakeWaterMaterial = new THREE.MeshStandardMaterial({
+      color: 0x28798c, roughness: .24, metalness: .04, transparent: true, opacity: .78,
+      depthWrite: false, side: THREE.DoubleSide
+    });
+    const lakeWater = new THREE.Mesh(new THREE.CircleGeometry(1, 96), lakeWaterMaterial);
     lakeWater.position.copy(designToThree(LAKE.centerX, LAKE.centerY, LAKE.waterZ));
     lakeWater.rotation.x = -Math.PI / 2;
     lakeWater.scale.set(LAKE.radiusX, LAKE.radiusY, 1);
     lakeWater.castShadow = false;
     lakeWater.receiveShadow = false;
     scene.add(lakeWater);
-    markLookable(lakeWater, 'A superfície do lago fica na parte posterior da ilha. A natação ainda não foi implementada.', 'lake');
+    markLookable(lakeWater, 'A faixa rasa contorna o lago; o fundo desce para a bacia profunda no centro.', 'lake');
+
+    const shallowWater = new THREE.Mesh(
+      createEllipticalAnnulusGeometry(
+        LAKE.radiusX * LAKE_WADING_LIMIT_RATIO, LAKE.radiusY * LAKE_WADING_LIMIT_RATIO,
+        LAKE.radiusX, LAKE.radiusY
+      ),
+      new THREE.MeshBasicMaterial({ color: 0x9ad8c8, transparent: true, opacity: .28, depthWrite: false, side: THREE.DoubleSide })
+    );
+    shallowWater.position.copy(designToThree(LAKE.centerX, LAKE.centerY, LAKE.waterZ + .006));
+    shallowWater.rotation.x = -Math.PI / 2;
+    shallowWater.renderOrder = 2;
+    scene.add(shallowWater);
 
     function addGrassTufts() {
       const geometry = new THREE.ConeGeometry(.035, .22, 4, 1);
       geometry.translate(0, .11, 0);
-      const tuftInstanceCount = 336;
+      const tuftInstanceCount = 600;
       const mesh = new THREE.InstancedMesh(geometry, materials.grassTuft, tuftInstanceCount);
       const random = seededRandom(1937);
       const dummy = new THREE.Object3D();
       const palette = [0x91a765, 0x758d50, 0xa1a66a, 0x637e49];
       let count = 0;
-      for (let attempt = 0; attempt < 300 && count < tuftInstanceCount; attempt++) {
+      for (let attempt = 0; attempt < 480 && count < tuftInstanceCount; attempt++) {
         const x = MAP_BOUNDS.minX + .5 + random() * (MAP_BOUNDS.maxX - MAP_BOUNDS.minX - 1);
         const y = MAP_BOUNDS.minY + .5 + random() * (MAP_BOUNDS.maxY - MAP_BOUNDS.minY - 1);
         if (Math.abs(x) <= HILL_HALF_WIDTH && y > HILL_RAMP_START_Y && y < HILL_REAR_END_Y) continue;
@@ -424,8 +532,26 @@
       return dx * dx + dy * dy;
     }
     function isInLakeWater(x, y) { return lakeDistanceSquared(x, y) <= 1; }
-    function isNearLakeShore(x, y) { return lakeDistanceSquared(x, y, LAKE.shoreWidth) <= 1; }
+    function isNearLakeShore(x, y) { return lakeDistanceSquared(x, y, LAKE.mudWidth) <= 1; }
+    function isMuddyGround(x, y) { return isNearLakeShore(x, y) && !isInLakeWater(x, y); }
+    function lakeDepthAt(x, y) {
+      const radialRatio = Math.sqrt(lakeDistanceSquared(x, y));
+      if (radialRatio >= 1) return 0;
+      if (radialRatio >= LAKE_WADING_LIMIT_RATIO) {
+        return LAKE_WADING_DEPTH_METERS * (1 - radialRatio) / (1 - LAKE_WADING_LIMIT_RATIO);
+      }
+      const descent = clamp(
+        (LAKE_WADING_LIMIT_RATIO - radialRatio) / (LAKE_WADING_LIMIT_RATIO - LAKE_DEEP_BASIN_RATIO),
+        0, 1
+      );
+      const easedDescent = descent * descent * (3 - 2 * descent);
+      return LAKE_WADING_DEPTH_METERS + (LAKE_MAX_DEPTH_METERS - LAKE_WADING_DEPTH_METERS) * easedDescent;
+    }
+    function isDeepLakeWater(x, y) {
+      return isInLakeWater(x, y) && lakeDistanceSquared(x, y) < LAKE_WADING_LIMIT_RATIO * LAKE_WADING_LIMIT_RATIO;
+    }
     function terrainHeightAt(x, y) {
+      if (isInLakeWater(x, y)) return -lakeDepthAt(x, y);
       if (Math.abs(x) > HILL_HALF_WIDTH) return 0;
       if (y >= HILL_RAMP_START_Y && y <= HILL_FRONT_CREST_Y) {
         return HILL_TOP_Z * ((y - HILL_RAMP_START_Y) / (HILL_FRONT_CREST_Y - HILL_RAMP_START_Y));
@@ -488,7 +614,7 @@
     function isWalkable(x, y) {
       if (!isInsideMap(x, y)) return false;
       if (y > HILL_FRONT_CREST_Y && y < HILL_REAR_END_Y && Math.abs(x) > HILL_HALF_WIDTH) return false;
-      if (isInLakeWater(x, y)) return false;
+      if (isDeepLakeWater(x, y)) return false;
       if (obstacleAt(x, y)) return false;
       return true;
     }
@@ -529,7 +655,9 @@
     let climbMode = 'ground';
     let branchContact = false;
     let obstacleContact = false;
-    let lakeContact = false;
+    let mudContact = false;
+    let lakeWading = false;
+    let deepWaterContact = false;
     let heldItem = null;
     let audioContext = null;
     let audioBuffers = {};
@@ -729,7 +857,6 @@
       activeMoveRemaining = 0;
       branchContact = false;
       obstacleContact = false;
-      lakeContact = false;
     }
     function releaseTreeGrip(message = 'Você soltou a árvore e voltou ao chão.') {
       playBuffer('climbRelease', .25);
@@ -846,7 +973,7 @@
         const trunk = visible.find(target => target.category === 'tree' && target.name.includes('tronco') && Math.abs(target.screen.x) < .55 && Math.abs(target.screen.y) < .48);
         if (trunk) return `Olhar para baixo: ${trunk.name} está no campo de visão, a ${trunk.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
         const lake = visible.find(target => target.category === 'lake');
-        if (lake) return `Olhar para baixo: a superfície do lago está no campo de visão, a ${lake.distance.toFixed(1)} unidades. A natação ainda não foi implementada.`;
+        if (lake) return `Olhar para baixo: a superfície do lago está no campo de visão, a ${lake.distance.toFixed(1)} unidades. A faixa rasa contorna a margem; o fundo desce para águas profundas no centro.`;
         const surface = terrainHeightAt(player.x, player.y) > .05 ? 'a encosta da colina' : 'o chão do campo';
         return `Olhar para baixo: ${surface} ocupa o centro da visão, rumo ${heading}.`;
       }
@@ -863,13 +990,13 @@
           else if (slopeDelta < -.08) slopeText = 'A encosta desce na direção do olhar.';
           return `Olhar horizontal: a colina está ${side}, a ${centered.distance.toFixed(1)} unidades. ${slopeText} Rumo do olhar: ${heading}.`;
         }
-        if (centered.category === 'lake') return `Olhar horizontal: a superfície do lago está ${side}, a ${centered.distance.toFixed(1)} unidades. A água está bloqueada; a natação ainda não foi implementada. Rumo do olhar: ${heading}.`;
+        if (centered.category === 'lake') return `Olhar horizontal: o centro do lago está ${side}, a ${centered.distance.toFixed(1)} unidades. Uma faixa rasa contorna a margem; o fundo desce para a bacia profunda. Rumo do olhar: ${heading}.`;
         return `Olhar horizontal: ${centered.name} está ${side}, a ${centered.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
       }
       if (visible.length) {
         const target = visible[0];
         const side = target.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
-        if (target.category === 'lake') return `Olhar horizontal: a superfície do lago aparece ${side}, fora do centro. A água está bloqueada; a natação ainda não foi implementada. Rumo do olhar: ${heading}.`;
+        if (target.category === 'lake') return `Olhar horizontal: o lago aparece ${side}, fora do centro. A faixa rasa contorna a margem e o fundo desce para a região profunda. Rumo do olhar: ${heading}.`;
         return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro. Rumo do olhar: ${heading}.`;
       }
       const lookDirection = threeToDesign(direction);
@@ -1113,12 +1240,26 @@
             break;
           }
           if (isInLakeWater(tx, ty)) {
-            if (!lakeContact) announce('Você chegou à margem do lago; a natação ainda não foi implementada.');
-            lakeContact = true;
-            blocked = true;
-            break;
+            mudContact = false;
+            if (isDeepLakeWater(tx, ty)) {
+              if (!deepWaterContact) announce('O fundo do lago desce para águas profundas; é preciso nadar para avançar, mas a natação ainda não foi implementada.');
+              deepWaterContact = true;
+              blocked = true;
+              break;
+            }
+            deepWaterContact = false;
+            if (!lakeWading) announce('Você entrou na faixa rasa do lago. O fundo permite caminhar.');
+            lakeWading = true;
+          } else {
+            lakeWading = false;
+            deepWaterContact = false;
+            if (isMuddyGround(tx, ty)) {
+              if (!mudContact) announce('A margem do lago é lamacenta.');
+              mudContact = true;
+            } else {
+              mudContact = false;
+            }
           }
-          lakeContact = false;
           if (!isWalkable(tx, ty)) {
             blocked = true;
             break;

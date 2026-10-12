@@ -1,10 +1,12 @@
 # Phoenix Island — protótipo de caminhada 3D
 
-Protótipo web em primeira pessoa para testar movimentação, olhar e pistas sonoras num mapa 3D de 24 × 24 m, com colina, árvore e lago. A cena usa Three.js e WebGL; céu, texturas e detalhes da vegetação são gerados proceduralmente no navegador, sem arquivos de arte externos. Este ainda não é o jogo nem implementa sistemas completos de RPG ou sobrevivência.
+Protótipo web em primeira pessoa para testar movimentação, olhar e pistas sonoras num mapa 3D de 36 × 36 m, com colina, árvore e lago. A cena usa Three.js e WebGL; céu, texturas e detalhes da vegetação são gerados proceduralmente no navegador, sem arquivos de arte externos. Este ainda não é o jogo nem implementa sistemas completos de RPG ou sobrevivência.
 
 ## Mapa ampliado e lago
 
-O campo passou de 12 × 12 m para 24 × 24 m, com X e Y entre −12 m e +12 m. A colina e a árvore mantêm suas posições no setor central. A colina agora tem uma descida posterior até o terreno baixo. O lago elíptico fica ao norte e a leste, na parte posterior do mapa, centrado em X=6,5 m, Y=9,0 m, com dimensões aproximadas de 8,4 × 4,6 m. A água bloqueia a passagem e anuncia que a natação ainda não foi implementada; não há mecânica de natação nesta etapa.
+O campo passou de 24 × 24 m para 36 × 36 m, com X e Y entre −18 m e +18 m. A colina e a árvore mantêm suas posições no setor central; a colina tem descida posterior até o terreno baixo. O lago elíptico fica ao norte e a leste, centrado em X=5,0 m, Y=13,2 m, com dimensões de água de aproximadamente 12 × 6,4 m. Uma faixa de terreno lamacento, com cerca de 1,2 m de largura, envolve a margem.
+
+Dentro do lago, a faixa rasa contorna todo o perímetro e permite caminhar sobre um fundo que chega a cerca de 0,55 m abaixo do terreno. Em seguida, o fundo desce para uma bacia central de até 2,7 m. A região profunda bloqueia o avanço e anuncia que é preciso nadar; a mecânica de natação ainda não está implementada.
 
 ## Estilo visual do protótipo
 
