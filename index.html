@@ -34,7 +34,7 @@
     <header>
       <h1>Phoenix Island — teste de caminhada em 3D</h1>
       <div id="instructions">
-        <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Segure Ctrl esquerdo junto com W/S/A/D para correr a 3,6 m/s; também pode apertar Ctrl esquerdo depois de iniciar o movimento. Ao soltar Ctrl esquerdo, volta a caminhar a 2,4 m/s. A corrida não se aplica à escalada nem à caminhada pelos galhos; Ctrl direito não ativa a corrida. Shift+A/D giram o corpo 45° para a esquerda/direita; Shift+W gira 180°; Shift+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
+        <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Segure R junto com W/S/A/D para correr a 3,6 m/s; também pode apertar R depois de iniciar o movimento. Ao soltar R, volta a caminhar a 2,4 m/s. A corrida não se aplica à escalada nem à caminhada pelos galhos. Shift+A/D giram o corpo 45° para a esquerda/direita; Shift+W gira 180°; Shift+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift+A/D ou Shift+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°; para observar além, mude de posição. A descrição separa o rumo do olhar do rumo de caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
         <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S fazem impulsos ritmados de escalada, aproximadamente a cada 0,43 segundo enquanto a tecla estiver mantida; soltar interrompe o movimento. Espaço solta.</p>
         <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina. Caminhando, a cadência sonora é de cerca de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; isso não muda a velocidade da caminhada. Correndo, os intervalos são cerca de 0,30 s no plano, 0,37 s subindo e 0,27 s descendo. O recuo rápido mantém seu próprio ritmo. Há também um alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
@@ -860,8 +860,8 @@
 
       }
     }
-    function isLeftControlEvent(event) {
-      return event.code === 'ControlLeft' || (event.key === 'Control' && event.location === 1);
+    function isRunKeyEvent(event) {
+      return event.code === 'KeyR' || String(event.key || '').toLowerCase() === 'r';
     }
     function movementCodeFromEvent(event) {
       const letter = String(event.key || '').toLowerCase();
@@ -871,7 +871,7 @@
 
     window.addEventListener('keydown', async event => {
       const code = event.code;
-      if (isLeftControlEvent(event)) {
+      if (isRunKeyEvent(event)) {
         event.preventDefault();
         runKeyHeld = true;
         if (activeDirection && activeMoveMode === 'walk' && climbMode === 'ground') activeMoveSpeed = RUN_SPEED;
@@ -924,7 +924,7 @@
       }
     });
     window.addEventListener('keyup', event => {
-      if (isLeftControlEvent(event)) {
+      if (isRunKeyEvent(event)) {
         event.preventDefault();
         runKeyHeld = false;
         if (activeDirection && activeMoveMode === 'walk' && climbMode === 'ground') activeMoveSpeed = WALK_SPEED;
