@@ -20,8 +20,8 @@ Abra a página publicada no GitHub Pages. O navegador precisa permitir WebGL e c
 - S: recuar na direção oposta ao corpo; sul na orientação inicial.
 - A/D: deslocar lateralmente à esquerda/direita, sem girar o corpo.
 - Shift direito + W/S/A/D: correr a 3,6 m/s; também é possível pressionar Shift direito depois de iniciar o movimento. Ao soltá-lo, retorna à caminhada de 2,4 m/s. Corrida não se aplica à escalada nem aos galhos.
-- Shift esquerdo+A/D: girar o corpo 45° para a esquerda/direita, sem caminhar; a descrição acessível anuncia para qual direção o corpo ficou voltado.
-- Shift esquerdo+W: girar o corpo 180°, sem caminhar; a descrição acessível anuncia para qual direção o corpo ficou voltado (norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste).
+- Shift esquerdo+A/D: girar o corpo 45° para a esquerda/direita, sem caminhar; o sistema anuncia para qual direção o corpo ficou voltado.
+- Shift esquerdo+W: girar o corpo 180°, sem caminhar; o sistema anuncia para qual direção o corpo ficou voltado (norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste).
 - Shift esquerdo+S: recuo rápido de cerca de 1,35 unidade, equivalente a alguns passos para trás.
 - Setas esquerda/direita: desviar o olhar em passos de 15°, até ±45° em relação ao corpo. No limite, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo.
 - Setas cima/baixo: inclinar o olhar em passos de 15°, até ±30°. Para observar além desse limite, mude de posição.
@@ -30,7 +30,7 @@ Abra a página publicada no GitHub Pages. O navegador precisa permitir WebGL e c
 - Ao segurar o tronco ou a ponta do galho, W/S produzem impulsos ritmados de subida/descida, cerca de um a cada 0,43 s enquanto a tecla estiver mantida; soltar interrompe o movimento.
 - A subida termina automaticamente no cruzamento dos galhos. Sobre os galhos, W/S/A/D permitem caminhar até uma ponta; pressione Espaço para se segurar e use S para descer. Espaço também solta e retorna ao chão.
 
-No chão, W/S seguem a frente e a parte de trás do corpo; A/D são deslocamentos laterais. As teclas de movimento só giram o corpo quando usadas com Shift esquerdo conforme a lista acima. A descrição separa o rumo do olhar do rumo de caminhada; “à esquerda” e “à direita” referem-se sempre à posição de um objeto no campo de visão, não à caminhada. A descrição aparece numa região acessível para leitor de tela, mas caminhar não narra cada tecla ou passo. Soltar a tecla ativa interrompe o deslocamento.
+No chão, W/S seguem a frente e a parte de trás do corpo; A/D são deslocamentos laterais. As teclas de movimento só giram o corpo quando usadas com Shift esquerdo conforme a lista acima. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” referem-se sempre à posição de um objeto no campo de visão, não à caminhada. Os anúncios são expostos numa região acessível para leitor de tela, mas caminhar não narra cada tecla ou passo. Soltar a tecla ativa interrompe o deslocamento.
 
 O tronco também bloqueia a caminhada: não é possível subir simplesmente caminhando contra ele.
 
@@ -38,7 +38,7 @@ O tronco também bloqueia a caminhada: não é possível subir simplesmente cami
 
 Cada ator usa um perfil de percepção com altura ocular própria e campo vertical. O perfil humano atual usa olhos a 1,60 m da base e campo vertical de 68°. Para um ponto-alvo, o protótipo calcula o ângulo de elevação com `atan2(Z_alvo - Z_olhos, distância_horizontal)` e o compara com a inclinação atual do olhar.
 
-A linha entre os olhos e o alvo é verificada contra a função numérica de altitude do terreno, em amostras de até 1 cm. O alvo é bloqueado se o relevo ultrapassar a linha de visão por mais de 1 cm. Assim, o limite angular e a oclusão pelo relevo são testes separados; o alcance máximo continua independente. Nesta etapa, o filtro é aplicado aos pontos de interesse que a descrição acessível já examina, não a um sistema completo de descoberta do mundo.
+A linha entre os olhos e o alvo é verificada contra a função numérica de altitude do terreno, em amostras de até 1 cm. O alvo é bloqueado se o relevo ultrapassar a linha de visão por mais de 1 cm. Assim, o limite angular e a oclusão pelo relevo são testes separados; o alcance máximo continua independente. Nesta etapa, o filtro é aplicado aos pontos de interesse que o sistema acessível já examina, não a um sistema completo de descoberta do mundo.
 
 ## Pistas sonoras provisórias
 

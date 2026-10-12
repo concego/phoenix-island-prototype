@@ -36,14 +36,14 @@
       <div id="instructions">
         <p><strong>Mapa:</strong> área de 24 × 24 m; a colina e a árvore ficam na região central, e o lago na parte posterior, ao norte e a leste. A água bloqueia a passagem por enquanto; a mecânica de natação será adicionada depois.</p>
         <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Segure Shift direito junto com W/S/A/D para correr a 3,6 m/s; também pode pressionar Shift direito depois de iniciar o movimento. Ao soltá-lo, volta a caminhar a 2,4 m/s. A corrida não se aplica à escalada nem à caminhada pelos galhos. Shift esquerdo+A/D giram o corpo 45° para a esquerda/direita; Shift esquerdo+W gira 180°; Shift esquerdo+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
-        <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°; para observar além, mude de posição. A descrição separa o rumo do olhar do rumo de caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
+        <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°; para observar além, mude de posição. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
         <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S fazem impulsos ritmados de escalada, aproximadamente a cada 0,43 segundo enquanto a tecla estiver mantida; soltar interrompe o movimento. Espaço solta.</p>
         <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina. Caminhando, a cadência sonora é de cerca de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; isso não muda a velocidade da caminhada. Correndo, os intervalos são cerca de 0,30 s no plano, 0,37 s subindo e 0,27 s descendo. O recuo rápido mantém seu próprio ritmo. Há também um alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento, conforme a política do navegador.</p>
       </div>
     </header>
     <section id="stage" aria-label="Cena tridimensional do protótipo">
       <div id="webgl-warning" hidden>Este navegador ou dispositivo não disponibilizou WebGL para a cena 3D.</div>
-      <div id="readout" role="status" aria-live="polite" aria-atomic="true"><strong>Descrição:</strong> posição inicial na porção sul de um mapa de 24 por 24 metros. A colina e a árvore ficam na região central; o lago está ao norte e a leste. A natação ainda não foi implementada. Use as setas para olhar, ou C para anunciar as coordenadas.</div>
+      <div id="readout" role="status" aria-live="polite" aria-atomic="true">Posição inicial na porção sul de um mapa de 24 por 24 metros. A colina e a árvore ficam na região central; o lago está ao norte e a leste. A natação ainda não foi implementada. Use as setas para olhar, ou C para anunciar as coordenadas.</div>
     </section>
   </main>
 
@@ -683,10 +683,10 @@
       camera.lookAt(camera.position.clone().add(direction));
       camera.updateMatrixWorld(true);
     }
-    function announce(text, includeLabel = true) {
+    function announce(text) {
       if (text === lastAnnouncement) text += ' ';
       lastAnnouncement = text;
-      descriptionText.innerHTML = includeLabel ? '<strong>Descrição:</strong> ' + text : text;
+      descriptionText.textContent = text;
     }
     function getTreeActionTarget() {
       setCamera();
@@ -918,12 +918,12 @@
       if (code === 'KeyA' || code === 'KeyD') {
         const turn = code === 'KeyA' ? -Math.PI / 4 : Math.PI / 4;
         player.yaw = normalizeAngle(player.yaw + turn);
-        announce(getBodyHeading(), false);
+        announce(getBodyHeading());
         return;
       }
       if (code === 'KeyW') {
         player.yaw = normalizeAngle(player.yaw + Math.PI);
-        announce(getBodyHeading(), false);
+        announce(getBodyHeading());
         return;
       }
       if (code === 'KeyS') {
