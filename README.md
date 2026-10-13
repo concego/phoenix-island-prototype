@@ -33,7 +33,7 @@ Abra a página publicada no GitHub Pages. O navegador precisa permitir WebGL e c
 - W: avançar na direção do corpo; norte quando começa na orientação inicial.
 - S: recuar na direção oposta ao corpo; sul na orientação inicial.
 - A/D: deslocar lateralmente à esquerda/direita, sem girar o corpo.
-- Shift direito + W/S/A/D: correr a 3,6 m/s; também é possível pressionar Shift direito depois de iniciar o movimento. Ao soltá-lo, retorna à caminhada de 2,4 m/s. Corrida não se aplica à escalada nem aos galhos.
+- Shift direito + W: correr para frente a 3,6 m/s; + A/D: correr lateralmente a 3,2 m/s; + S: correr para trás a 2,4 m/s. Shift direito também pode ser pressionado depois de iniciar o movimento. Ao soltá-lo, retorna à velocidade de caminhada de 2,4 m/s. Corrida não se aplica à escalada nem aos galhos.
 - Shift esquerdo+A/D: girar o corpo 45° para a esquerda/direita, sem caminhar; o sistema anuncia para qual direção o corpo ficou voltado.
 - Shift esquerdo+W: girar o corpo 180°, sem caminhar; o sistema anuncia para qual direção o corpo ficou voltado (norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste).
 - Shift esquerdo+S: recuo rápido de cerca de 1,35 unidade, equivalente a alguns passos para trás.
