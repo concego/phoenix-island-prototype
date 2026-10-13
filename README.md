@@ -44,7 +44,7 @@ Abra a página publicada no GitHub Pages. O navegador precisa permitir WebGL e c
 
 No chão, W/S seguem a frente e a parte de trás do corpo; A/D são deslocamentos laterais. As teclas de movimento só giram o corpo quando usadas com Shift esquerdo conforme a lista acima. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” referem-se sempre à posição de um objeto no campo de visão, não à caminhada. Os anúncios são expostos numa região acessível para leitor de tela e começam diretamente com a informação, sem repetir um rótulo genérico; caminhar não narra cada tecla ou passo. Soltar a tecla ativa interrompe o deslocamento.
 
-O tronco também bloqueia a caminhada: não é possível subir simplesmente caminhando contra ele.
+O tronco também bloqueia a caminhada: não é possível subir simplesmente caminhando contra ele. As laterais íngremes da colina bloqueiam passagem entre a rampa e a descida posterior; ao atingir esse trecho, o anúncio informa que é preciso contornar a colina pelo sul ou pelo norte. Outros bloqueios não identificados recebem um aviso geral, em vez de interromper o movimento silenciosamente.
 
 ## Percepção vertical — teste inicial
 
