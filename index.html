@@ -38,7 +38,7 @@
         <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Segure Shift direito junto com W/S/A/D para correr a 3,6 m/s; também pode pressionar Shift direito depois de iniciar o movimento. Ao soltá-lo, volta a caminhar a 2,4 m/s. A corrida não se aplica à escalada nem à caminhada pelos galhos. Shift esquerdo+A/D giram o corpo 45° para a esquerda/direita; Shift esquerdo+W gira 180°; Shift esquerdo+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°. Durante a natação, essa inclinação também controla a trajetória de W/S: olhar para baixo faz avançar e descer; para cima, avançar e subir; olhar no horizonte mantém a profundidade. A/D deslocam lateralmente. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
         <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com mãos vazias, na faixa rasa e voltado para águas profundas, Espaço inicia a natação. Para sair, mantenha as mãos vazias, nade até a superfície e aproxime-se da faixa rasa ou de uma saída para terra, então pressione Espaço; sair não é automático. Um canal subaquático conectado manterá a natação, mas ainda não há passagens no mapa. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S fazem impulsos ritmados de escalada, aproximadamente a cada 0,43 segundo enquanto a tecla estiver mantida; soltar interrompe o movimento. Espaço solta.</p>
-        <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; quatro respingos curtos diferentes ao caminhar na faixa rasa do lago; quatro passos próprios na margem lamacenta; quatro variações sintetizadas para braçadas à superfície e quatro para braçadas submersas; efeitos distintos de entrada/saída e bipes em sequência ascendente para subir e descendente para descer; sem pontos de passagem, indicam a superfície; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina. Caminhando, a cadência sonora é de cerca de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; isso não muda a velocidade da caminhada. Correndo, os intervalos são cerca de 0,30 s no plano, 0,37 s subindo e 0,27 s descendo. O recuo rápido mantém seu próprio ritmo. Há também um alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento ou Espaço, conforme a política do navegador.</p>
+        <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; quatro respingos curtos diferentes ao caminhar na faixa rasa do lago; quatro passos próprios na margem lamacenta; quatro variações sintetizadas para braçadas à superfície e quatro para braçadas submersas; efeitos distintos de entrada/saída; dois bipes médios marcam águas profundas, três agudos uma possível saída e um grave longo a margem, apenas ao entrar em cada zona; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina. Caminhando, a cadência sonora é de cerca de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; isso não muda a velocidade da caminhada. Correndo, os intervalos são cerca de 0,30 s no plano, 0,37 s subindo e 0,27 s descendo. O recuo rápido mantém seu próprio ritmo. Há também um alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento ou Espaço, conforme a política do navegador.</p>
       </div>
     </header>
     <section id="stage" aria-label="Cena tridimensional do protótipo">
@@ -126,14 +126,14 @@
     const LAKE_MAX_DEPTH_METERS = 2.7;
     const SWIM_SPEED = 1.5;
     const SWIM_STROKE_INTERVAL_MS = 580;
-    const SWIM_GUIDANCE_INTERVAL_MS = 1800;
     const SWIM_ENTRY_LOOKAHEAD_METERS = 1.0;
+    const SWIM_SHORE_MARKER_RATIO = .92;
     const SWIM_BOTTOM_CLEARANCE_METERS = .14;
     const SWIM_SURFACE_TOLERANCE_METERS = .08;
     const SWIM_EXIT_MAX_DEPTH_METERS = LAKE_WADING_DEPTH_METERS;
-    // Futuros conectores subaquáticos: {x, y, z, destination: 'water'|'land', radius}.
-    // Conectores de água mantêm a natação; os de terra só permitem sair perto da superfície.
-    const SWIM_PASSAGE_GUIDES = Object.freeze([]);
+    // Marcadores futuros: {x, y, z, destination: 'water'|'land', radius}.
+    // Passagens que continuam submersas não geram beep nem encerram a natação.
+    const SWIM_PASSAGE_MARKERS = Object.freeze([]);
     const player = { x: 0, y: -2.5, perceptionProfile: humanPerceptionProfile, yaw: 0, headYawOffset: 0, pitch: 0, climbHeight: 0, swimEyeAltitude: null };
     const HORIZONTAL_LOOK_STEP = Math.PI / 12;
     const HORIZONTAL_LOOK_LIMIT = Math.PI / 4;
@@ -584,16 +584,17 @@
     }
     function isNearSwimmingExit(x, y) {
       if (isInLakeWater(x, y) && lakeDepthAt(x, y) <= SWIM_EXIT_MAX_DEPTH_METERS) return true;
-      return SWIM_PASSAGE_GUIDES.some(passage => passage.destination === 'land'
-        && Math.hypot(x - passage.x, y - passage.y) <= (passage.radius || .8));
+      return SWIM_PASSAGE_MARKERS.some(marker => marker.destination === 'land'
+        && Math.hypot(x - marker.x, y - marker.y) <= (marker.radius || .8));
     }
-    function swimGuidanceTarget() {
-      const passages = [...SWIM_PASSAGE_GUIDES].sort((a, b) => {
-        const distanceA = Math.hypot(player.x - a.x, player.y - a.y, player.swimEyeAltitude - a.z);
-        const distanceB = Math.hypot(player.x - b.x, player.y - b.y, player.swimEyeAltitude - b.z);
-        return distanceA - distanceB;
-      });
-      return passages[0] || { x: player.x, y: player.y, z: LAKE.waterZ + player.perceptionProfile.eyeHeight, destination: 'surface' };
+    function isNearSwimmingShore(x, y) {
+      return isInLakeWater(x, y) && Math.sqrt(lakeDistanceSquared(x, y)) >= SWIM_SHORE_MARKER_RATIO;
+    }
+    function isInSwimmingExitMarkerZone(x, y) {
+      const shallowExit = isNearSwimmingExit(x, y) && !isNearSwimmingShore(x, y);
+      const landMarker = SWIM_PASSAGE_MARKERS.some(marker => marker.destination === 'land'
+        && Math.hypot(x - marker.x, y - marker.y) <= (marker.radius || .8));
+      return shallowExit || landMarker;
     }
     function terrainHeightAt(x, y) {
       if (isInLakeWater(x, y)) return -lakeDepthAt(x, y);
@@ -710,10 +711,11 @@
     let lakeWading = false;
     let deepWaterContact = false;
     let swimExitContact = false;
+    let swimExitMarkerContact = false;
+    let swimShoreMarkerContact = false;
     let swimBottomContact = false;
     let swimSurfaceContact = false;
     let nextSwimStrokeAt = 0;
-    let nextSwimGuidanceAt = 0;
     let heldItem = null;
     let audioContext = null;
     let audioBuffers = {};
@@ -755,8 +757,6 @@
           swimUnderwater4: './assets/swim-underwater-4.wav',
           swimEnter: './assets/swim-enter.wav',
           swimExit: './assets/swim-exit.wav',
-          swimGuideUp: './assets/swim-guide-up.wav',
-          swimGuideDown: './assets/swim-guide-down.wav',
           branchStep: './assets/branch-step.wav',
           branchStep2: './assets/branch-step-2.wav',
           branchStep3: './assets/branch-step-3.wav',
@@ -854,20 +854,28 @@
       lastSwimBufferName = name;
       playBuffer(name, atSurface ? .30 : .26);
     }
-    function playSwimGuidanceCue() {
-      const target = swimGuidanceTarget();
-      const verticalDifference = target.z - player.swimEyeAltitude;
-      if (verticalDifference > .14) {
-        if (!playBuffer('swimGuideUp', .28)) {
-          playTone(470, .07, 'sine', .04);
-          window.setTimeout(() => playTone(760, .07, 'sine', .04), 105);
-        }
-      } else if (verticalDifference < -.14) {
-        if (!playBuffer('swimGuideDown', .28)) {
-          playTone(760, .07, 'sine', .04);
-          window.setTimeout(() => playTone(470, .07, 'sine', .04), 105);
-        }
+    function playWaterMarkerBeeps(kind) {
+      const patterns = {
+        deep: { frequencies: [520, 520], duration: .07, interval: 145, volume: .035 },
+        exit: { frequencies: [710, 710, 710], duration: .05, interval: 95, volume: .035 },
+        shore: { frequencies: [430], duration: .16, interval: 0, volume: .04 }
+      };
+      const pattern = patterns[kind];
+      if (!pattern) return;
+      pattern.frequencies.forEach((frequency, index) => {
+        window.setTimeout(() => playTone(frequency, pattern.duration, 'sine', pattern.volume), index * pattern.interval);
+      });
+    }
+    function updateSwimmingMarkerBeeps() {
+      const atExitMarker = isInSwimmingExitMarkerZone(player.x, player.y);
+      const atShoreMarker = isNearSwimmingShore(player.x, player.y);
+      if (atExitMarker && !swimExitMarkerContact) playWaterMarkerBeeps('exit');
+      if (atShoreMarker && !swimShoreMarkerContact) {
+        const delay = atExitMarker && !swimExitMarkerContact ? 420 : 0;
+        window.setTimeout(() => playWaterMarkerBeeps('shore'), delay);
       }
+      swimExitMarkerContact = atExitMarker;
+      swimShoreMarkerContact = atShoreMarker;
     }
     function playClimbStroke(direction) {
       playBuffer(direction > 0 ? 'climbUp' : 'climbDown', direction > 0 ? .25 : .22);
@@ -993,10 +1001,12 @@
       // A entrada começa na superfície; a inclinação do olhar permite mergulhar com W/S.
       player.swimEyeAltitude = LAKE.waterZ + player.perceptionProfile.eyeHeight;
       swimExitContact = false;
+      swimExitMarkerContact = false;
+      swimShoreMarkerContact = false;
+      deepWaterContact = false;
       swimBottomContact = false;
       swimSurfaceContact = true;
       nextSwimStrokeAt = 0;
-      nextSwimGuidanceAt = performance.now();
       playBuffer('swimEnter', .34);
       announce('Você entrou na natação. W/S avançam na direção do olhar e acompanham sua inclinação; A/D deslocam lateralmente. Olhe para cima para subir.');
     }
@@ -1006,6 +1016,9 @@
       player.swimEyeAltitude = null;
       player.climbHeight = 0;
       swimExitContact = false;
+      swimExitMarkerContact = false;
+      swimShoreMarkerContact = false;
+      deepWaterContact = false;
       swimBottomContact = false;
       swimSurfaceContact = false;
       nextStepAt = 0;
@@ -1387,10 +1400,7 @@
 
       if (climbMode === 'swimming') {
         const now = performance.now();
-        if (now >= nextSwimGuidanceAt) {
-          playSwimGuidanceCue();
-          nextSwimGuidanceAt = now + SWIM_GUIDANCE_INTERVAL_MS;
-        }
+        updateSwimmingMarkerBeeps();
         if (activeCode && movementKeys.has(activeCode)) activeDirection = movementVector(activeCode);
         if (activeDirection && activeCode) {
           const movement = movementVector(activeCode);
@@ -1482,7 +1492,10 @@
           if (isInLakeWater(tx, ty)) {
             mudContact = false;
             if (isDeepLakeWater(tx, ty)) {
-              if (!deepWaterContact) announce('O fundo do lago desce para águas profundas; caminhe de volta à faixa rasa e use Espaço voltado para o fundo para nadar.');
+              if (!deepWaterContact) {
+                playWaterMarkerBeeps('deep');
+                announce('O fundo do lago desce para águas profundas; caminhe de volta à faixa rasa e use Espaço voltado para o fundo para nadar.');
+              }
               deepWaterContact = true;
               blocked = true;
               break;
