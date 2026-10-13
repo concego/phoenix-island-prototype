@@ -8,6 +8,8 @@ O campo passou de 24 × 24 m para 36 × 36 m, com X e Y entre −18 m e +18 m. A
 
 Dentro do lago, a faixa rasa contorna todo o perímetro e permite caminhar sobre um fundo que chega a cerca de 0,55 m abaixo do terreno. Em seguida, o fundo desce para uma bacia central de até 2,7 m. A região profunda bloqueia o avanço a pé. Com as mãos vazias, o jogador pode iniciar a natação na faixa rasa ao pressionar Espaço enquanto o corpo está voltado para a região profunda. A natação funciona no lago deste protótipo.
 
+A superfície agora muda gradualmente de tom conforme a profundidade, recebe ondas muito suaves em shader e mostra ondulações circulares de baixa densidade quando o jogador caminha na água rasa ou nada à superfície.
+
 ## Natação e saídas
 
 A entrada exige mãos vazias, estar na faixa rasa caminhável e apontar o corpo para água profunda; então Espaço inicia a natação na superfície. W/S avançam ou recuam na direção do corpo e acompanham a inclinação do olhar: apontar para baixo conduz para baixo, apontar para cima conduz para cima e o horizonte mantém a altitude. A/D deslocam lateralmente sem mudar a altitude. A velocidade de natação é 1,5 m/s. A movimentação respeita a profundidade e mantém uma distância mínima do fundo; fora do contorno de água modelado, a margem bloqueia o avanço.

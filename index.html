@@ -34,7 +34,7 @@
     <header>
       <h1>Phoenix Island — teste de caminhada e natação em 3D</h1>
       <div id="instructions">
-        <p><strong>Mapa:</strong> área de 36 × 36 m, com X e Y entre −18 m e +18 m. A colina e a árvore ficam na região central; o terreno além das laterais dela é plano e caminhável; o lago fica ao norte e a leste, centrado em X=5,0 m e Y=13,2 m, com cerca de 12 × 6,4 m de água. Uma margem lamacenta de 1,2 m contorna o lago. A faixa rasa ao redor permite caminhar sobre um fundo de até 0,55 m; depois, o fundo desce até 2,7 m na bacia central. A região profunda bloqueia a passagem a pé. A natação está implementada para o lago de teste; ainda não há passagens subaquáticas.</p>
+        <p><strong>Mapa:</strong> área de 36 × 36 m, com X e Y entre −18 m e +18 m. A colina e a árvore ficam na região central; o terreno além das laterais dela é plano e caminhável; o lago fica ao norte e a leste, centrado em X=5,0 m e Y=13,2 m, com cerca de 12 × 6,4 m de água. Uma margem lamacenta de 1,2 m contorna o lago. A faixa rasa ao redor permite caminhar sobre um fundo de até 0,55 m; depois, o fundo desce até 2,7 m na bacia central. A superfície escurece com a profundidade, ondula suavemente e mostra círculos de água ao caminhar na parte rasa ou nadar na superfície. A região profunda bloqueia a passagem a pé. A natação está implementada para o lago de teste; ainda não há passagens subaquáticas.</p>
         <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Segure Shift direito junto com W/S/A/D para correr a 3,6 m/s; também pode pressionar Shift direito depois de iniciar o movimento. Ao soltá-lo, volta a caminhar a 2,4 m/s. A corrida não se aplica à escalada nem à caminhada pelos galhos. Shift esquerdo+A/D giram o corpo 45° para a esquerda/direita; Shift esquerdo+W gira 180°; Shift esquerdo+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°. Durante a natação, a inclinação controla a trajetória de W/S enquanto a tecla é mantida: olhar para baixo faz avançar e descer; para cima, avançar e subir; olhar no horizonte mantém a profundidade. Mudar o olhar sem manter W/S não movimenta o personagem. A/D deslocam lateralmente. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
         <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com mãos vazias, na faixa rasa e voltado para águas profundas, Espaço inicia a natação. Para sair, mantenha as mãos vazias, esteja na superfície e perto da faixa rasa ou de uma saída para terra, então pressione Espaço; sair não é automático. Ao ficar muito raso, o fundo pode elevar você até a superfície, e o jogo anuncia isso. Um canal subaquático conectado manterá a natação, mas ainda não há passagens no mapa. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S fazem impulsos ritmados de escalada, aproximadamente a cada 0,43 segundo enquanto a tecla estiver mantida; soltar interrompe o movimento. Espaço solta.</p>
@@ -427,11 +427,78 @@
     lakeMud.receiveShadow = false;
     scene.add(lakeMud);
 
+    function createLakeSurfaceGeometry(radialRings = 28, segments = 96) {
+      const positions = [0, 0, 0], uvs = [.5, .5], colors = [], indices = [];
+      const deepColor = new THREE.Color(0x164b62);
+      const shallowColor = new THREE.Color(0x9bd8c9);
+      const ringStarts = [];
+      function addSurfaceColor(ratio, angle) {
+        const x = LAKE.centerX + Math.cos(angle) * LAKE.radiusX * ratio;
+        const y = LAKE.centerY + Math.sin(angle) * LAKE.radiusY * ratio;
+        const depth = lakeDepthAt(x, y);
+        const depthRatio = clamp(depth / LAKE_MAX_DEPTH_METERS, 0, 1);
+        const color = shallowColor.clone().lerp(deepColor, depthRatio);
+        colors.push(color.r, color.g, color.b, .42 + depthRatio * .44);
+      }
+      addSurfaceColor(0, 0);
+      for (let ring = 1; ring <= radialRings; ring++) {
+        const ratio = ring / radialRings;
+        ringStarts.push(positions.length / 3);
+        for (let index = 0; index < segments; index++) {
+          const angle = Math.PI * 2 * index / segments;
+          const x = Math.cos(angle) * ratio, y = Math.sin(angle) * ratio;
+          positions.push(x, y, 0);
+          uvs.push(.5 + x * .5, .5 + y * .5);
+          addSurfaceColor(ratio, angle);
+        }
+      }
+      for (let index = 0; index < segments; index++) {
+        const next = (index + 1) % segments;
+        indices.push(0, ringStarts[0] + index, ringStarts[0] + next);
+      }
+      for (let ring = 0; ring < ringStarts.length - 1; ring++) {
+        const inner = ringStarts[ring], outer = ringStarts[ring + 1];
+        for (let index = 0; index < segments; index++) {
+          const next = (index + 1) % segments;
+          indices.push(inner + index, outer + index, inner + next, outer + index, outer + next, inner + next);
+        }
+      }
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 4));
+      geometry.setIndex(indices);
+      geometry.computeVertexNormals();
+      return geometry;
+    }
     const lakeWaterMaterial = new THREE.MeshStandardMaterial({
-      color: 0x28798c, roughness: .24, metalness: .04, transparent: true, opacity: .78,
+      color: 0xffffff, vertexColors: true, roughness: .2, metalness: .025, transparent: true, opacity: .78,
       depthWrite: false, side: THREE.DoubleSide
     });
-    const lakeWater = new THREE.Mesh(new THREE.CircleGeometry(1, 96), lakeWaterMaterial);
+    lakeWaterMaterial.onBeforeCompile = shader => {
+      shader.uniforms.uWaterTime = { value: 0 };
+      shader.vertexShader = shader.vertexShader.replace(
+        '#include <common>',
+        '#include <common>\nuniform float uWaterTime;'
+      );
+      shader.vertexShader = shader.vertexShader.replace(
+        '#include <beginnormal_vertex>',
+        `#include <beginnormal_vertex>
+        float wavePhaseA = position.x * 15.0 + position.y * 4.0 + uWaterTime * 0.72;
+        float wavePhaseB = position.y * 18.0 - position.x * 5.0 - uWaterTime * 0.55;
+        float waveSlopeX = 0.006 * 15.0 * cos(wavePhaseA) - 0.004 * 5.0 * cos(wavePhaseB);
+        float waveSlopeY = 0.006 * 4.0 * cos(wavePhaseA) + 0.004 * 18.0 * cos(wavePhaseB);
+        objectNormal = normalize(objectNormal + vec3(-waveSlopeX, -waveSlopeY, 0.0));`
+      );
+      shader.vertexShader = shader.vertexShader.replace(
+        '#include <begin_vertex>',
+        `#include <begin_vertex>
+        transformed.z += 0.006 * sin(wavePhaseA) + 0.004 * sin(wavePhaseB);`
+      );
+      lakeWaterMaterial.userData.shader = shader;
+    };
+    lakeWaterMaterial.customProgramCacheKey = () => 'phoenix-island-water-waves-v1';
+    const lakeWater = new THREE.Mesh(createLakeSurfaceGeometry(), lakeWaterMaterial);
     lakeWater.position.copy(designToThree(LAKE.centerX, LAKE.centerY, LAKE.waterZ));
     lakeWater.rotation.x = -Math.PI / 2;
     lakeWater.scale.set(LAKE.radiusX, LAKE.radiusY, 1);
@@ -445,12 +512,53 @@
         LAKE.radiusX * LAKE_WADING_LIMIT_RATIO, LAKE.radiusY * LAKE_WADING_LIMIT_RATIO,
         LAKE.radiusX, LAKE.radiusY
       ),
-      new THREE.MeshBasicMaterial({ color: 0x9ad8c8, transparent: true, opacity: .28, depthWrite: false, side: THREE.DoubleSide })
+      new THREE.MeshBasicMaterial({ color: 0x9ad8c8, transparent: true, opacity: .16, depthWrite: false, side: THREE.DoubleSide })
     );
     shallowWater.position.copy(designToThree(LAKE.centerX, LAKE.centerY, LAKE.waterZ + .006));
     shallowWater.rotation.x = -Math.PI / 2;
     shallowWater.renderOrder = 2;
     scene.add(shallowWater);
+
+    const waterRipplePool = [];
+    const waterRippleGeometry = new THREE.RingGeometry(.045, .07, 24);
+    const WATER_RIPPLE_POOL_SIZE = 20;
+    let nextWaterRippleIndex = 0;
+    function spawnWaterRipple(x, y, intensity = 1) {
+      if (!isInLakeWater(x, y)) return;
+      let ripple = waterRipplePool[nextWaterRippleIndex];
+      if (!ripple) {
+        const material = new THREE.MeshBasicMaterial({
+          color: 0xd6fff4, transparent: true, opacity: .28, depthWrite: false, side: THREE.DoubleSide
+        });
+        ripple = new THREE.Mesh(waterRippleGeometry, material);
+        ripple.rotation.x = -Math.PI / 2;
+        ripple.renderOrder = 3;
+        scene.add(ripple);
+        waterRipplePool[nextWaterRippleIndex] = ripple;
+      }
+      ripple.position.copy(designToThree(x, y, LAKE.waterZ + .024));
+      ripple.scale.setScalar(.45);
+      ripple.material.opacity = .28 * intensity;
+      ripple.userData.age = 0;
+      ripple.userData.duration = .82;
+      ripple.userData.intensity = intensity;
+      ripple.visible = true;
+      nextWaterRippleIndex = (nextWaterRippleIndex + 1) % WATER_RIPPLE_POOL_SIZE;
+    }
+    function updateWaterRipples(delta) {
+      for (const ripple of waterRipplePool) {
+        if (!ripple?.visible) continue;
+        const age = ripple.userData.age + delta;
+        ripple.userData.age = age;
+        const progress = Math.min(1, age / ripple.userData.duration);
+        if (progress >= 1) {
+          ripple.visible = false;
+          continue;
+        }
+        ripple.scale.setScalar(.45 + progress * 7 * ripple.userData.intensity);
+        ripple.material.opacity = .28 * ripple.userData.intensity * (1 - progress);
+      }
+    }
 
     function addGrassTufts() {
       const geometry = new THREE.ConeGeometry(.035, .22, 4, 1);
@@ -815,6 +923,7 @@
       const onBranch = climbMode === 'branch';
       const inShallowWater = !onBranch && climbMode === 'ground' && isInLakeWater(player.x, player.y) && !isDeepLakeWater(player.x, player.y);
       const onMud = !onBranch && !inShallowWater && climbMode === 'ground' && isMuddyGround(player.x, player.y);
+      if (inShallowWater) spawnWaterRipple(player.x, player.y, .8);
       let variants = onBranch
         ? ['branchStep', 'branchStep2', 'branchStep3']
         : inShallowWater
@@ -838,6 +947,7 @@
     }
     function playSwimStroke() {
       const atSurface = isSwimmingAtSurface();
+      if (atSurface) spawnWaterRipple(player.x, player.y, 1);
       const variants = atSurface
         ? ['swimSurface', 'swimSurface2', 'swimSurface3', 'swimSurface4']
         : ['swimUnderwater', 'swimUnderwater2', 'swimUnderwater3', 'swimUnderwater4'];
@@ -1367,6 +1477,7 @@
 
     const clock = new THREE.Clock();
     function update(delta) {
+      updateWaterRipples(delta);
       if (activeClimbDirection !== 0 && (climbMode === 'trunkGrip' || climbMode === 'branchGrip')) {
         const now = performance.now();
         if (climbStrokeRemaining <= .001 && now >= nextClimbStrokeAt) {
@@ -1573,6 +1684,8 @@
     function render() {
       const delta = Math.min(clock.getDelta(), .05);
       update(delta);
+      const waterShader = lakeWaterMaterial.userData.shader;
+      if (waterShader) waterShader.uniforms.uWaterTime.value += delta;
       renderer.render(scene, camera);
       requestAnimationFrame(render);
     }
