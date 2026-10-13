@@ -22,7 +22,7 @@ Mudanças de estado relevantes — entrada/saída, contato com fundo/superfície
 
 ## Estilo visual do protótipo
 
-O cenário usa um céu em degradê, texturas procedurais de grama, solo e casca, folhagem em grupos de formas facetadas, raízes e pequenos tufos de grama. Esses detalhes são criados em código, sem imagens ou modelos de arte baixados; continuam sendo uma direção visual provisória, não arte final.
+O cenário usa um céu em degradê, texturas procedurais de grama, solo e casca, folhagem em grupos de formas facetadas, raízes e pequenos tufos de grama. A colina chega a 1,8 m (não 5 m) e agora varia de tom com a altitude; as sombras da colina ficam ativas e há uma sombra de contato suave sob a árvore. A margem já tem uma faixa texturizada de lama, e a água agora desaparece mais suavemente na borda rasa antes de ganhar densidade no fundo. A árvore já tem tronco cilíndrico, raízes, galhos e oito grupos de copa; esta passagem não adiciona novas pedras ou troncos que pudessem sugerir obstáculos sem colisão e sinalização. Os detalhes continuam sendo criados em código, sem imagens ou modelos de arte baixados; são uma direção visual provisória, não arte final.
 
 ## Testar
 

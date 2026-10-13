@@ -34,7 +34,7 @@
     <header>
       <h1>Phoenix Island — teste de caminhada e natação em 3D</h1>
       <div id="instructions">
-        <p><strong>Mapa:</strong> área de 36 × 36 m, com X e Y entre −18 m e +18 m. A colina e a árvore ficam na região central; o terreno além das laterais dela é plano e caminhável; o lago fica ao norte e a leste, centrado em X=5,0 m e Y=13,2 m, com cerca de 12 × 6,4 m de água. Uma margem lamacenta de 1,2 m contorna o lago. A faixa rasa ao redor permite caminhar sobre um fundo de até 0,55 m; depois, o fundo desce até 2,7 m na bacia central. A superfície escurece com a profundidade, ondula suavemente e mostra círculos de água ao caminhar na parte rasa ou nadar na superfície. A região profunda bloqueia a passagem a pé. A natação está implementada para o lago de teste; ainda não há passagens subaquáticas.</p>
+        <p><strong>Mapa:</strong> área de 36 × 36 m, com X e Y entre −18 m e +18 m. A colina e a árvore ficam na região central; o topo da colina chega a 1,8 m, com as encostas clareando gradualmente por altitude. O terreno além das laterais dela é plano e caminhável. O lago fica ao norte e a leste, centrado em X=5,0 m e Y=13,2 m, com cerca de 12 × 6,4 m de água. Uma margem lamacenta texturizada de 1,2 m contorna o lago. A faixa rasa ao redor permite caminhar sobre um fundo de até 0,55 m; depois, o fundo desce até 2,7 m na bacia central. A água fica mais translúcida e suave na borda, escurecendo e ganhando densidade no fundo; ondulações leves e círculos aparecem com o movimento. A região profunda bloqueia a passagem a pé. A natação está implementada para o lago de teste; ainda não há passagens subaquáticas.</p>
         <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Segure Shift direito: W corre para frente a 3,6 m/s, A/D correm lateralmente a 3,2 m/s e S corre para trás a 2,4 m/s. Também pode pressionar Shift direito depois de iniciar o movimento; ao soltá-lo, a velocidade volta a 2,4 m/s. A corrida não se aplica à escalada nem à caminhada pelos galhos. Shift esquerdo+A/D giram o corpo 45° para a esquerda/direita; Shift esquerdo+W gira 180°; Shift esquerdo+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°. Durante a natação, a inclinação controla a trajetória de W/S enquanto a tecla é mantida: olhar para baixo faz avançar e descer; para cima, avançar e subir; olhar no horizonte mantém a profundidade. Mudar o olhar sem manter W/S não movimenta o personagem. A/D deslocam lateralmente. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
         <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com mãos vazias, na faixa rasa e voltado para águas profundas, Espaço inicia a natação. Para sair, mantenha as mãos vazias, esteja na superfície e perto da faixa rasa ou de uma saída para terra, então pressione Espaço; sair não é automático. Ao ficar muito raso, o fundo pode elevar você até a superfície, e o jogo anuncia isso. Um canal subaquático conectado manterá a natação, mas ainda não há passagens no mapa. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S fazem impulsos ritmados de escalada, aproximadamente a cada 0,43 segundo enquanto a tecla estiver mantida; soltar interrompe o movimento. Espaço solta.</p>
@@ -274,10 +274,25 @@
       ctx.globalAlpha = 1;
       return finishProceduralTexture(canvas, 3, 2);
     }
+    function makeContactShadowTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+      const gradient = ctx.createRadialGradient(64, 64, 3, 64, 64, 62);
+      gradient.addColorStop(0, 'rgba(18, 25, 17, .34)');
+      gradient.addColorStop(.48, 'rgba(18, 25, 17, .16)');
+      gradient.addColorStop(1, 'rgba(18, 25, 17, 0)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 128, 128);
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      return texture;
+    }
     const materials = {
       grass: new THREE.MeshStandardMaterial({ map: makeGrassTexture(), roughness: 1 }),
-      hill: new THREE.MeshStandardMaterial({ map: makeSoilTexture(), roughness: 1, side: THREE.DoubleSide }),
+      hill: new THREE.MeshStandardMaterial({ map: makeSoilTexture(), roughness: 1, side: THREE.DoubleSide, vertexColors: true }),
       mud: new THREE.MeshStandardMaterial({ map: makeMudTexture(), roughness: .98, side: THREE.DoubleSide }),
+      contactShadow: new THREE.MeshBasicMaterial({ map: makeContactShadowTexture(), transparent: true, opacity: .55, depthWrite: false, side: THREE.DoubleSide, toneMapped: false }),
       lakeBed: new THREE.MeshStandardMaterial({ color: 0x3d5045, roughness: .96, side: THREE.DoubleSide }),
       bark: new THREE.MeshStandardMaterial({ map: makeBarkTexture(), roughness: 1 }),
       leaves: new THREE.MeshStandardMaterial({ color: 0x315f45, roughness: 1 }),
@@ -286,6 +301,24 @@
       grassTuft: new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1, side: THREE.DoubleSide }),
       fruit: new THREE.MeshStandardMaterial({ color: 0xc84f3d, roughness: .78 })
     };
+    materials.hillTop = new THREE.MeshStandardMaterial({ map: materials.grass.map, roughness: 1, vertexColors: true });
+    const hillLowTint = new THREE.Color(0xc7d2a5);
+    const hillHighTint = new THREE.Color(0xf0d493);
+    function setHillAltitudeColors(geometry) {
+      const positions = geometry.attributes.position;
+      const colors = [];
+      for (let index = 0; index < positions.count; index++) {
+        const altitudeRatio = clamp(positions.getY(index) / HILL_TOP_Z, 0, 1);
+        const color = hillLowTint.clone().lerp(hillHighTint, altitudeRatio);
+        colors.push(color.r, color.g, color.b);
+      }
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    }
+    function setUniformVertexColor(geometry, color) {
+      const colors = [];
+      for (let index = 0; index < geometry.attributes.position.count; index++) colors.push(color.r, color.g, color.b);
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    }
 
     const lookables = [];
     function markLookable(object, description, category = 'other') {
@@ -317,11 +350,12 @@
     ].flatMap(point => designToThree(...point).toArray());
     rampGeometry.setAttribute('position', new THREE.Float32BufferAttribute(rampVertices, 3));
     rampGeometry.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 1, 0, 0, 1, 1, 1], 2));
+    setHillAltitudeColors(rampGeometry);
     rampGeometry.setIndex([0, 1, 2, 1, 3, 2]);
     rampGeometry.computeVertexNormals();
     const ramp = new THREE.Mesh(rampGeometry, materials.hill);
-    ramp.receiveShadow = false;
-    ramp.castShadow = false;
+    ramp.receiveShadow = true;
+    ramp.castShadow = true;
     ramp.userData.lookDescription = 'Uma colina se estende à frente.';
     scene.add(ramp);
     markLookable(ramp, ramp.userData.lookDescription, 'hill');
@@ -329,9 +363,11 @@
     const plateauWidth = HILL_HALF_WIDTH * 2;
     const plateauLength = HILL_PLATEAU_END_Y - HILL_FRONT_CREST_Y;
     const plateauCenterY = (HILL_PLATEAU_END_Y + HILL_FRONT_CREST_Y) / 2;
-    const plateau = addMesh(new THREE.PlaneGeometry(plateauWidth, plateauLength), materials.grass, [0, plateauCenterY, HILL_TOP_Z], 'Você está olhando para o topo da colina.', false, 'hill');
+    const plateauGeometry = new THREE.PlaneGeometry(plateauWidth, plateauLength);
+    setUniformVertexColor(plateauGeometry, hillHighTint);
+    const plateau = addMesh(plateauGeometry, materials.hillTop, [0, plateauCenterY, HILL_TOP_Z], 'Você está olhando para o topo da colina.', true, 'hill');
     plateau.rotation.x = -Math.PI / 2;
-    plateau.receiveShadow = false;
+    plateau.receiveShadow = true;
 
     const rearRampGeometry = new THREE.BufferGeometry();
     const rearRampVertices = [
@@ -340,11 +376,12 @@
     ].flatMap(point => designToThree(...point).toArray());
     rearRampGeometry.setAttribute('position', new THREE.Float32BufferAttribute(rearRampVertices, 3));
     rearRampGeometry.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 1, 0, 0, 1, 1, 1], 2));
+    setHillAltitudeColors(rearRampGeometry);
     rearRampGeometry.setIndex([0, 1, 2, 1, 3, 2]);
     rearRampGeometry.computeVertexNormals();
     const rearRamp = new THREE.Mesh(rearRampGeometry, materials.hill);
-    rearRamp.receiveShadow = false;
-    rearRamp.castShadow = false;
+    rearRamp.receiveShadow = true;
+    rearRamp.castShadow = true;
     rearRamp.userData.lookDescription = 'O lado posterior da colina desce até o terreno próximo ao lago.';
     scene.add(rearRamp);
     markLookable(rearRamp, rearRamp.userData.lookDescription, 'hill');
@@ -440,7 +477,7 @@
         const depth = lakeDepthAt(x, y);
         const depthRatio = clamp(depth / LAKE_MAX_DEPTH_METERS, 0, 1);
         const color = shallowColor.clone().lerp(deepColor, depthRatio);
-        colors.push(color.r, color.g, color.b, .42 + depthRatio * .44);
+        colors.push(color.r, color.g, color.b, .08 + depthRatio * .80);
       }
       addSurfaceColor(0, 0);
       for (let ring = 1; ring <= radialRings; ring++) {
@@ -514,9 +551,9 @@
         LAKE.radiusX * LAKE_WADING_LIMIT_RATIO, LAKE.radiusY * LAKE_WADING_LIMIT_RATIO,
         LAKE.radiusX, LAKE.radiusY
       ),
-      new THREE.MeshBasicMaterial({ color: 0x9ad8c8, transparent: true, opacity: .16, depthWrite: false, side: THREE.DoubleSide })
+      new THREE.MeshBasicMaterial({ color: 0x9ad8c8, transparent: true, opacity: .06, depthWrite: false, side: THREE.DoubleSide })
     );
-    shallowWater.position.copy(designToThree(LAKE.centerX, LAKE.centerY, LAKE.waterZ + .006));
+    shallowWater.position.copy(designToThree(LAKE.centerX, LAKE.centerY, LAKE.waterZ + .018));
     shallowWater.rotation.x = -Math.PI / 2;
     shallowWater.renderOrder = 2;
     scene.add(shallowWater);
@@ -599,6 +636,12 @@
     }
     // Árvore, com um cruzamento de galhos que serve de patamar de teste.
     const treeX = 3.8, treeY = -.2;
+    const treeContactShadow = new THREE.Mesh(new THREE.CircleGeometry(1, 32), materials.contactShadow);
+    treeContactShadow.position.copy(designToThree(treeX, treeY, -.063));
+    treeContactShadow.rotation.x = -Math.PI / 2;
+    treeContactShadow.scale.set(1.18, .92, 1);
+    treeContactShadow.renderOrder = 1;
+    scene.add(treeContactShadow);
     const TREE_BRANCH_HEIGHT = 2.75;
     const TREE_BRANCH_REACH = 1.8;
     const TREE_BRANCH_HALF_WIDTH = .32;
