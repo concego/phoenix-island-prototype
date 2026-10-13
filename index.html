@@ -36,14 +36,14 @@
       <div id="instructions">
         <p><strong>Mapa:</strong> área de 36 × 36 m, com X e Y entre −18 m e +18 m. A colina e a árvore ficam na região central; o terreno além das laterais dela é plano e caminhável; o lago fica ao norte e a leste, centrado em X=5,0 m e Y=13,2 m, com cerca de 12 × 6,4 m de água. Uma margem lamacenta de 1,2 m contorna o lago. A faixa rasa ao redor permite caminhar sobre um fundo de até 0,55 m; depois, o fundo desce até 2,7 m na bacia central. A região profunda bloqueia a passagem a pé. A natação está implementada para o lago de teste; ainda não há passagens subaquáticas.</p>
         <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Segure Shift direito junto com W/S/A/D para correr a 3,6 m/s; também pode pressionar Shift direito depois de iniciar o movimento. Ao soltá-lo, volta a caminhar a 2,4 m/s. A corrida não se aplica à escalada nem à caminhada pelos galhos. Shift esquerdo+A/D giram o corpo 45° para a esquerda/direita; Shift esquerdo+W gira 180°; Shift esquerdo+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
-        <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°. Durante a natação, essa inclinação também controla a trajetória de W/S: olhar para baixo faz avançar e descer; para cima, avançar e subir; olhar no horizonte mantém a profundidade. A/D deslocam lateralmente. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
+        <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°. Durante a natação, a inclinação controla a trajetória de W/S enquanto a tecla é mantida: olhar para baixo faz avançar e descer; para cima, avançar e subir; olhar no horizonte mantém a profundidade. Mudar o olhar sem manter W/S não movimenta o personagem. A/D deslocam lateralmente. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
         <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com mãos vazias, na faixa rasa e voltado para águas profundas, Espaço inicia a natação. Para sair, mantenha as mãos vazias, nade até a superfície e aproxime-se da faixa rasa ou de uma saída para terra, então pressione Espaço; sair não é automático. Um canal subaquático conectado manterá a natação, mas ainda não há passagens no mapa. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S fazem impulsos ritmados de escalada, aproximadamente a cada 0,43 segundo enquanto a tecla estiver mantida; soltar interrompe o movimento. Espaço solta.</p>
         <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; quatro respingos curtos diferentes ao caminhar na faixa rasa do lago; quatro passos próprios na margem lamacenta; quatro variações sintetizadas para braçadas à superfície e quatro para braçadas submersas; efeitos distintos de entrada/saída; dois bipes médios marcam águas profundas, três agudos uma possível saída e um grave longo a margem, apenas ao entrar em cada zona; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina. Caminhando, a cadência sonora é de cerca de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; isso não muda a velocidade da caminhada. Correndo, os intervalos são cerca de 0,30 s no plano, 0,37 s subindo e 0,27 s descendo. O recuo rápido mantém seu próprio ritmo. Há também um alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento ou Espaço, conforme a política do navegador.</p>
       </div>
     </header>
     <section id="stage" aria-label="Cena tridimensional do protótipo">
       <div id="webgl-warning" hidden>Este navegador ou dispositivo não disponibilizou WebGL para a cena 3D.</div>
-      <div id="readout" role="status" aria-live="polite" aria-atomic="true">Posição inicial ao sul do lago em Phoenix Island. A margem lamacenta tem passos próprios; a faixa rasa permite caminhar, e Espaço inicia a natação somente com mãos vazias, na água rasa e voltado para o fundo. Na natação, W/S seguem a inclinação do olhar para subir ou descer; no horizonte mantêm a profundidade. Para sair, chegue à superfície e à faixa rasa ou a uma saída para terra e pressione Espaço. Não há passagem subaquática construída neste mapa. Use as setas para olhar, ou C para anunciar as coordenadas.</div>
+      <div id="readout" role="status" aria-live="polite" aria-atomic="true">Posição inicial ao sul do lago em Phoenix Island. A margem lamacenta tem passos próprios; a faixa rasa permite caminhar, e Espaço inicia a natação somente com mãos vazias, na água rasa e voltado para o fundo. Na natação, mantenha W ou S: a inclinação define subida ou descida; no horizonte, mantém a profundidade. Mudar o olhar sozinho não move. Para sair, chegue à superfície e à faixa rasa ou a uma saída para terra e pressione Espaço. Não há passagem subaquática construída neste mapa. Use as setas para olhar, ou C para anunciar as coordenadas.</div>
     </section>
   </main>
 
@@ -129,6 +129,7 @@
     const SWIM_ENTRY_LOOKAHEAD_METERS = 1.0;
     const SWIM_SHORE_MARKER_RATIO = .92;
     const SWIM_BOTTOM_CLEARANCE_METERS = .14;
+    const SWIM_EYE_SURFACE_OFFSET_METERS = .08;
     const SWIM_SURFACE_TOLERANCE_METERS = .08;
     const SWIM_EXIT_MAX_DEPTH_METERS = LAKE_WADING_DEPTH_METERS;
     // Marcadores futuros: {x, y, z, destination: 'water'|'land', radius}.
@@ -580,7 +581,7 @@
       return false;
     }
     function isSwimmingAtSurface() {
-      return climbMode === 'swimming' && player.swimEyeAltitude >= LAKE.waterZ + player.perceptionProfile.eyeHeight - SWIM_SURFACE_TOLERANCE_METERS;
+      return climbMode === 'swimming' && player.swimEyeAltitude >= LAKE.waterZ + SWIM_EYE_SURFACE_OFFSET_METERS - SWIM_SURFACE_TOLERANCE_METERS;
     }
     function isNearSwimmingExit(x, y) {
       if (isInLakeWater(x, y) && lakeDepthAt(x, y) <= SWIM_EXIT_MAX_DEPTH_METERS) return true;
@@ -1000,7 +1001,7 @@
       climbMode = 'swimming';
       player.climbHeight = 0;
       // A entrada começa na superfície; a inclinação do olhar permite mergulhar com W/S.
-      player.swimEyeAltitude = LAKE.waterZ + player.perceptionProfile.eyeHeight;
+      player.swimEyeAltitude = LAKE.waterZ + SWIM_EYE_SURFACE_OFFSET_METERS;
       swimExitContact = false;
       swimExitMarkerContact = false;
       swimShoreMarkerContact = false;
@@ -1129,6 +1130,12 @@
       const degrees = ((getLookYaw() * 180 / Math.PI) % 360 + 360) % 360;
       const sectors = ['norte', 'norte-nordeste', 'nordeste', 'leste-nordeste', 'leste', 'leste-sudeste', 'sudeste', 'sul-sudeste', 'sul', 'sul-sudoeste', 'sudoeste', 'oeste-sudoeste', 'oeste', 'oeste-noroeste', 'noroeste', 'norte-noroeste'];
       const heading = sectors[Math.round(degrees / 22.5) % 16];
+      if (climbMode === 'swimming') {
+        const depth = Math.max(0, LAKE.waterZ - player.swimEyeAltitude).toFixed(2);
+        if (player.pitch > .12) return `Natação: olhar para cima; W sobe e S desce. Profundidade atual: ${depth} m.`;
+        if (player.pitch < -.12) return `Natação: olhar para baixo; W desce e S sobe. Profundidade atual: ${depth} m.`;
+        return `Natação: olhar horizontal; W/S mantêm a profundidade. Profundidade atual: ${depth} m.`;
+      }
       const targets = [
         { category: 'tree', name: 'o tronco da árvore', point: designToThree(treeX, treeY, 1.35) },
         { category: 'tree', name: 'um galho horizontal', point: designToThree(treeX, treeY, TREE_BRANCH_HEIGHT) },
@@ -1421,8 +1428,8 @@
             }
             swimExitContact = false;
             const depth = lakeDepthAt(tx, ty);
-            const surface = LAKE.waterZ + player.perceptionProfile.eyeHeight;
-            const bottom = LAKE.waterZ - depth + player.perceptionProfile.eyeHeight + SWIM_BOTTOM_CLEARANCE_METERS;
+            const surface = LAKE.waterZ + SWIM_EYE_SURFACE_OFFSET_METERS;
+            const bottom = LAKE.waterZ - depth + SWIM_EYE_SURFACE_OFFSET_METERS + SWIM_BOTTOM_CLEARANCE_METERS;
             const minimumEyeAltitude = Math.min(surface, bottom);
             const unclamped = player.swimEyeAltitude + movement.z * stepDistance;
             const nextEyeAltitude = clamp(unclamped, minimumEyeAltitude, surface);
