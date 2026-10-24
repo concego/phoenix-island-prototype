@@ -83,9 +83,10 @@
       <h1>Phoenix Island — teste de caminhada e natação em 3D</h1>
       <div id="instructions">
         <p><strong>Inventário:</strong> pressione I ou use o botão Inventário. O inventário inicial tem dez espaços para tipos diferentes de item, em duas fileiras de cinco; itens iguais acumulam no mesmo espaço. Selecione um item e use Examinar, Mover, Usar, Largar ou Atribuir atalho. Os atalhos de 1 a 0 equipam o item atribuído; Espaço usa o item que estiver equipado nas mãos. Com um item nas mãos, pressione Alt+C para ver ações situacionais compatíveis. O peso é registrado quando definido, mas ainda não há limite de carga.</p>
-        <p><strong>Mapa:</strong> área de 36 × 36 m, com X e Y entre −18 m e +18 m. A colina e a árvore ficam na região central; o topo da colina chega a 1,8 m, com as encostas clareando gradualmente por altitude. O terreno além das laterais dela é plano e caminhável. O lago fica ao norte e a leste, centrado em X=5,0 m e Y=13,2 m, com cerca de 12 × 6,4 m de água. Uma margem lamacenta texturizada de 1,2 m contorna o lago. A faixa rasa ao redor permite caminhar sobre um fundo de até 0,55 m; depois, o fundo desce até 2,7 m na bacia central. A água fica mais translúcida e suave na borda, escurecendo e ganhando densidade no fundo; ondulações leves e círculos aparecem com o movimento. A região profunda bloqueia a passagem a pé. A natação está implementada para o lago de teste; ainda não há passagens subaquáticas.</p>
+        <p><strong>Mapa:</strong> área de 48 × 54 m, com X entre −24 m e +24 m e Y entre −18 m e +36 m. A colina e a árvore ficam na região central; o topo da colina chega a 1,8 m, com as encostas clareando gradualmente por altitude. Há terreno plano e caminhável em volta da colina e espaço para seguir ao norte dela. O lago fica ao norte e a leste, centrado em X=5,0 m e Y=13,2 m, com cerca de 12 × 6,4 m de água. Uma margem lamacenta texturizada de 1,2 m contorna o lago. A faixa rasa ao redor permite caminhar sobre um fundo de até 0,55 m; depois, o fundo desce até 2,7 m na bacia central. A água fica mais translúcida e suave na borda, escurecendo e ganhando densidade no fundo; ondulações leves e círculos aparecem com o movimento. A região profunda bloqueia a passagem a pé. A natação está implementada para o lago de teste; ainda não há passagens subaquáticas.</p>
         <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Segure Shift direito: W corre para frente a 3,6 m/s, A/D correm lateralmente a 3,2 m/s e S corre para trás a 2,4 m/s. Também pode pressionar Shift direito depois de iniciar o movimento; ao soltá-lo, a velocidade volta a 2,4 m/s. A corrida não se aplica à escalada nem à caminhada pelos galhos. Shift esquerdo+A/D giram o corpo 45° para a esquerda/direita; Shift esquerdo+W gira 180°; Shift esquerdo+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°. Durante a natação, a inclinação controla a trajetória de W/S enquanto a tecla é mantida: olhar para baixo faz avançar e descer; para cima, avançar e subir; olhar no horizonte mantém a profundidade. Mudar o olhar sem manter W/S não movimenta o personagem. A/D deslocam lateralmente. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
+        <p><strong>Pedras:</strong> com as mãos vazias, mire uma pedra solta perto da colina e pressione Espaço para recolhê-la. Para montar um martelo, equipe graveto ou pedra e pressione Alt+C; a receita consome 1 graveto e 1 pedra. No topo, mire um afloramento e pressione Espaço com o martelo de pedra equipado para extrair pedras. Cada afloramento rende uma vez; as pedras soltas também desaparecem após a coleta. O martelo não se desgasta nesta versão de teste.</p>
         <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com mãos vazias, na faixa rasa e voltado para águas profundas, Espaço inicia a natação. Para sair, mantenha as mãos vazias, esteja na superfície e perto da faixa rasa ou de uma saída para terra, então pressione Espaço; sair não é automático. Ao ficar muito raso, o fundo pode elevar você até a superfície, e o jogo anuncia isso. Um canal subaquático conectado manterá a natação, mas ainda não há passagens no mapa. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S fazem impulsos ritmados de escalada, aproximadamente a cada 0,43 segundo enquanto a tecla estiver mantida; soltar interrompe o movimento. Espaço solta.</p>
         <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; quatro respingos curtos diferentes ao caminhar na faixa rasa do lago; quatro passos próprios na margem lamacenta; quatro variações sintetizadas para braçadas à superfície e quatro para braçadas submersas; efeitos distintos de entrada/saída; dois bipes médios marcam águas profundas, três agudos uma possível saída e um grave longo a margem, apenas ao entrar em cada zona; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina. Caminhando, a cadência sonora é de cerca de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; isso não muda a velocidade da caminhada. Correndo, os intervalos são cerca de 0,30 s no plano, 0,37 s subindo e 0,27 s descendo. O recuo rápido mantém seu próprio ritmo. Há também um alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento ou Espaço, conforme a política do navegador.</p>
       </div>
@@ -197,7 +198,7 @@
     const PERCEPTION_TERRAIN_SAMPLE_METERS = .01;
     const humanPerceptionProfile = Object.freeze({ eyeHeight: 1.60, verticalFovDegrees: HUMAN_VERTICAL_FOV_DEGREES });
     const camera = new THREE.PerspectiveCamera(humanPerceptionProfile.verticalFovDegrees, 1, 0.1, 100);
-    const MAP_BOUNDS = { minX: -18, maxX: 18, minY: -18, maxY: 18 };
+    const MAP_BOUNDS = { minX: -24, maxX: 24, minY: -18, maxY: 36 };
     const HILL_HALF_WIDTH = 2.1;
     const HILL_RAMP_START_Y = 1.1;
     const HILL_FRONT_CREST_Y = 4.8;
@@ -380,6 +381,9 @@
       contactShadow: new THREE.MeshBasicMaterial({ map: makeContactShadowTexture(), transparent: true, opacity: .55, depthWrite: false, side: THREE.DoubleSide, toneMapped: false }),
       lakeBed: new THREE.MeshStandardMaterial({ color: 0x3d5045, roughness: .96, side: THREE.DoubleSide }),
       bark: new THREE.MeshStandardMaterial({ map: makeBarkTexture(), roughness: 1 }),
+      stone: new THREE.MeshStandardMaterial({ color: 0x777a76, roughness: .96, flatShading: true }),
+      stoneLight: new THREE.MeshStandardMaterial({ color: 0x92938b, roughness: .94, flatShading: true }),
+      stoneShade: new THREE.MeshStandardMaterial({ color: 0x565c5e, roughness: .98, flatShading: true }),
       leaves: new THREE.MeshStandardMaterial({ color: 0x315f45, roughness: 1 }),
       leavesLight: new THREE.MeshStandardMaterial({ color: 0x4b7a4a, roughness: 1 }),
       leavesShade: new THREE.MeshStandardMaterial({ color: 0x274837, roughness: 1 }),
@@ -422,10 +426,12 @@
       return mesh;
     }
 
-    // O terreno cobre 37 m para apoiar o campo lógico ampliado de 36 × 36 m.
+    // O terreno cobre 49 × 55 m para apoiar o campo lógico ampliado de 48 × 54 m.
     const groundWidth = MAP_BOUNDS.maxX - MAP_BOUNDS.minX + 1;
     const groundLength = MAP_BOUNDS.maxY - MAP_BOUNDS.minY + 1;
-    const ground = addMesh(new THREE.PlaneGeometry(groundWidth, groundLength), materials.grass, [0, 0, -.08], null, false);
+    const groundCenterX = (MAP_BOUNDS.minX + MAP_BOUNDS.maxX) / 2;
+    const groundCenterY = (MAP_BOUNDS.minY + MAP_BOUNDS.maxY) / 2;
+    const ground = addMesh(new THREE.PlaneGeometry(groundWidth, groundLength), materials.grass, [groundCenterX, groundCenterY, -.08], null, false);
     ground.rotation.x = -Math.PI / 2;
 
     const rampGeometry = new THREE.BufferGeometry();
@@ -687,13 +693,13 @@
     function addGrassTufts() {
       const geometry = new THREE.ConeGeometry(.035, .22, 4, 1);
       geometry.translate(0, .11, 0);
-      const tuftInstanceCount = 600;
+      const tuftInstanceCount = 1800;
       const mesh = new THREE.InstancedMesh(geometry, materials.grassTuft, tuftInstanceCount);
       const random = seededRandom(1937);
       const dummy = new THREE.Object3D();
       const palette = [0x91a765, 0x758d50, 0xa1a66a, 0x637e49];
       let count = 0;
-      for (let attempt = 0; attempt < 480 && count < tuftInstanceCount; attempt++) {
+      for (let attempt = 0; attempt < 720 && count < tuftInstanceCount; attempt++) {
         const x = MAP_BOUNDS.minX + .5 + random() * (MAP_BOUNDS.maxX - MAP_BOUNDS.minX - 1);
         const y = MAP_BOUNDS.minY + .5 + random() * (MAP_BOUNDS.maxY - MAP_BOUNDS.minY - 1);
         if (Math.abs(x) <= HILL_HALF_WIDTH && y > HILL_RAMP_START_Y && y < HILL_REAR_END_Y) continue;
@@ -733,7 +739,54 @@
     const TREE_GATHER_REACH = 2.3;
     const TREE_AIM_MIN_ALIGNMENT = Math.cos(Math.PI / 3);
     const treeFruitTargets = []; // Filled by addTreeFruitTarget for fruit-bearing trees.
-    const itemDefinitions = { stick: { name: 'graveto', flammable: true, weightKg: null } };
+    const itemDefinitions = {
+      stick: { name: 'graveto', flammable: true, weightKg: null },
+      stone: { name: 'pedra', flammable: false, weightKg: null },
+      stoneHammer: { name: 'martelo de pedra', flammable: false, weightKg: null, tool: 'stone' }
+    };
+    const hillStoneLocations = [
+      { x: -.85, y: 5.35, output: 3 },
+      { x: .8, y: 5.65, output: 3 },
+      { x: 0, y: 6.2, output: 4 }
+    ];
+    const looseStoneLocations = [
+      { x: -2.8, y: 2.6 }, { x: 2.8, y: 3.1 },
+      { x: -3.0, y: 5.0 }, { x: 3.1, y: 5.7 },
+      { x: -2.7, y: 7.2 }, { x: 2.9, y: 7.5 },
+      { x: -2.9, y: 9.2 }, { x: 2.8, y: 9.4 }
+    ];
+    const hillStoneNodes = [];
+    const looseStones = [];
+    function createRockMesh(x, y, z, scale, material, rotation = 0) {
+      const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(1, 1), material);
+      mesh.position.copy(designToThree(x, y, z));
+      mesh.scale.set(scale[0], scale[2], scale[1]);
+      mesh.rotation.set(rotation * .31, rotation, rotation * .19);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      scene.add(mesh);
+      return mesh;
+    }
+    for (const [index, location] of hillStoneLocations.entries()) {
+      const node = { ...location, z: terrainHeightAt(location.x, location.y), remaining: location.output, meshes: [], point: designToThree(location.x, location.y, terrainHeightAt(location.x, location.y) + .35) };
+      const shapes = [
+        [-.23, 0, .06, [.36, .30, .29], materials.stone],
+        [.18, .04, .04, [.30, .27, .24], materials.stoneLight],
+        [0, -.20, .015, [.24, .22, .19], materials.stoneShade]
+      ];
+      for (const [dx, dy, dz, scale, material] of shapes) {
+        const mesh = createRockMesh(location.x + dx, location.y + dy, node.z + dz, scale, material, index * .8 + dx);
+        markLookable(mesh, 'Pedra bruta de um afloramento no topo da colina.', 'rock');
+        node.meshes.push(mesh);
+      }
+      hillStoneNodes.push(node);
+    }
+    for (const [index, location] of looseStoneLocations.entries()) {
+      const mesh = createRockMesh(location.x, location.y, .08, [.19 + (index % 3) * .025, .16 + (index % 2) * .035, .12 + (index % 2) * .02], index % 2 ? materials.stoneLight : materials.stone, index * .73);
+      const stone = { ...location, mesh, point: designToThree(location.x, location.y, .22), collected: false };
+      markLookable(mesh, 'Uma pedra solta pequena perto da base da colina.', 'rock');
+      looseStones.push(stone);
+    }
     const campfires = [];
     const CAMPFIRE_INTERACTION_RANGE = 2.4;
     const CAMPFIRE_INITIAL_FUEL_SECONDS = 180;
@@ -811,7 +864,7 @@
     }
     // Esta árvore de teste não tem frutos; árvores frutíferas podem adicionar alvos aqui.
 
-    const blockers = [{ x: treeX, y: treeY, radius: 1.05, name: 'árvore' }];
+    const blockers = [{ x: treeX, y: treeY, radius: 1.05, name: 'árvore' }, ...hillStoneNodes.map((node, index) => ({ x: node.x, y: node.y, radius: .38, name: `afloramento de pedra ${index + 1}` }))];
 
     function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
     function lakeDistanceSquared(x, y, extraMargin = 0) {
@@ -1505,6 +1558,18 @@
       const nearest = closestCampfire();
       const actions = [];
       const definition = itemDefinitions[held.itemId];
+      const hasStone = inventoryQuantity('stone') >= 1;
+      const hasStick = inventoryQuantity('stick') >= 1;
+      const hasHammerSlot = inventory.some(entry => entry?.itemId === 'stoneHammer') || inventory.some(entry => entry === null);
+      if (hasStone || hasStick) {
+        const craftAllowed = climbMode === 'ground' && hasStone && hasStick && hasHammerSlot;
+        let craftDetail = !hasStone ? 'Requer 1 pedra e 1 graveto; falta uma pedra.'
+          : !hasStick ? 'Requer 1 pedra e 1 graveto; falta um graveto.'
+          : !hasHammerSlot ? 'Requer 1 pedra e 1 graveto; inventário cheio, libere um espaço para o martelo.'
+          : climbMode !== 'ground' ? 'Disponível no chão, sem nadar nem estar agarrado à árvore.'
+          : 'Consome 1 pedra e 1 graveto e cria um martelo de pedra reutilizável.';
+        actions.push({ label: 'Montar martelo de pedra', disabled: !craftAllowed, detail: craftDetail, run: craftStoneHammer });
+      }
       if (nearest?.fire.lit && definition.flammable) {
         const canAddFuel = nearest.fire.fuelSeconds < CAMPFIRE_MAX_FUEL_SECONDS;
         actions.push({ label: canAddFuel ? 'Abastecer fogueira simples' : 'Fogueira simples no limite de combustível', disabled: !canAddFuel, detail: canAddFuel
@@ -1555,8 +1620,8 @@
         itemActionList.append(li);
       }
       itemActionHelp.textContent = nearest
-        ? `Fogueira simples próxima a ${nearest.distance.toFixed(1)} m. ${nearest.fire.lit ? `Combustível restante: ${Math.ceil(nearest.fire.fuelSeconds)} s.` : 'Esta fogueira simples já apagou.'}`
-        : 'As opções dependem do item em mãos, da quantidade e do local. Fogueiras simples só podem ser montadas em chão seco.';
+        ? `Fogueira simples próxima a ${nearest.distance.toFixed(1)} m. ${nearest.fire.lit ? `Combustível restante: ${Math.ceil(nearest.fire.fuelSeconds)} s.` : 'Esta fogueira simples já apagou.'} O martelo requer 1 pedra e 1 graveto.`
+        : 'As opções dependem do item em mãos, da quantidade e do local. O martelo de pedra requer 1 pedra e 1 graveto.';
       if (!actions.length) {
         const li = document.createElement('li');
         const info = document.createElement('p');
@@ -1781,11 +1846,87 @@
         return;
       }
     }
+    function inventoryQuantity(itemId) {
+      return inventory.reduce((total, entry) => total + (entry?.itemId === itemId ? entry.quantity : 0), 0);
+    }
+    function consumeInventoryQuantity(itemId, quantity) {
+      if (inventoryQuantity(itemId) < quantity) return false;
+      let remaining = quantity;
+      for (let index = 0; index < inventory.length && remaining > 0; index++) {
+        const entry = inventory[index];
+        if (entry?.itemId !== itemId) continue;
+        const taken = Math.min(remaining, entry.quantity);
+        entry.quantity -= taken;
+        remaining -= taken;
+        if (entry.quantity <= 0) {
+          if (heldItem === itemDefinitions[itemId].name) heldItem = null;
+          inventory[index] = null;
+        }
+      }
+      renderInventory();
+      return true;
+    }
+    function craftStoneHammer() {
+      if (climbMode !== 'ground') { announce('Para montar o martelo de pedra, esteja no chão, sem nadar nem estar agarrado à árvore.'); return; }
+      if (inventoryQuantity('stone') < 1 || inventoryQuantity('stick') < 1) { announce('Faltam materiais: o martelo de pedra requer 1 pedra e 1 graveto.'); return; }
+      if (!inventory.some(entry => entry?.itemId === 'stoneHammer') && !inventory.some(entry => entry === null)) { announce('Inventário cheio: libere um espaço para o martelo de pedra. Nenhum material foi consumido.'); return; }
+      consumeInventoryQuantity('stone', 1);
+      consumeInventoryQuantity('stick', 1);
+      addInventoryItem('stoneHammer', 1);
+      closeItemActionMenu();
+      announce('Martelo de pedra montado. Equipe-o pelo inventário ou por atalho para extrair os afloramentos no topo da colina.');
+    }
+    function getRockActionTarget() {
+      if (climbMode !== 'ground') return null;
+      setCamera();
+      const direction = camera.getWorldDirection(new THREE.Vector3()).normalize();
+      const candidates = [
+        ...looseStones.filter(stone => !stone.collected).map(stone => ({ kind: 'loose', stone, point: stone.point })),
+        ...hillStoneNodes.filter(node => node.remaining > 0).map(node => ({ kind: 'outcrop', node, point: node.point }))
+      ];
+      return candidates.map(target => {
+        const offset = target.point.clone().sub(camera.position);
+        const distance = offset.length();
+        return { ...target, distance, alignment: direction.dot(offset.normalize()) };
+      }).filter(target => target.alignment >= TREE_AIM_MIN_ALIGNMENT)
+        .sort((a, b) => a.distance - b.distance)[0] || null;
+    }
+    function useRockAction(target) {
+      if (!target) return false;
+      if (target.kind === 'loose') {
+        if (heldItem) { announce(`Guarde ${heldItem} para recolher a pedra com as mãos livres.`); return true; }
+        if (target.distance > 2.0) { announce('A pedra solta está fora de alcance; aproxime-se e mire nela.'); return true; }
+        if (!addInventoryItem('stone', 1)) { announce('Inventário cheio: não foi possível recolher a pedra. Libere um espaço antes de tentar novamente.'); return true; }
+        target.stone.collected = true;
+        target.stone.mesh.visible = false;
+        const index = lookables.indexOf(target.stone.mesh);
+        if (index >= 0) lookables.splice(index, 1);
+        announce(`Você recolheu uma pedra solta. ${inventorySummary()}.`);
+        return true;
+      }
+      if (target.distance > 2.4) { announce('O afloramento está fora de alcance; suba até o topo e aproxime-se.'); return true; }
+      const held = heldInventoryEntry();
+      if (!held || held.itemId !== 'stoneHammer') {
+        announce('Este afloramento exige um martelo de pedra. Monte-o com 1 pedra e 1 graveto usando Alt+C.');
+        return true;
+      }
+      const amount = target.node.remaining;
+      if (!addInventoryItem('stone', amount)) { announce('Inventário cheio: libere um espaço para guardar as pedras antes de minerar.'); return true; }
+      target.node.remaining = 0;
+      for (const mesh of target.node.meshes) {
+        mesh.visible = false;
+        const index = lookables.indexOf(mesh);
+        if (index >= 0) lookables.splice(index, 1);
+      }
+      announce(`Você extraiu ${amount} pedras do afloramento. O afloramento foi esgotado. ${inventorySummary()}.`);
+      return true;
+    }
     function useAction() {
       if (climbMode === 'swimming') {
         useSwimmingAction();
         return;
       }
+      if (useRockAction(getRockActionTarget())) return;
       if (heldItem) {
         announce(`Você está segurando ${heldItem}; o efeito de uso ainda não foi implementado.`);
         return;
@@ -1881,6 +2022,8 @@
         { category: 'tree', name: 'a parte mais alta da copa', point: designToThree(treeX, treeY, 4.15) },
         { category: 'hill', name: 'a encosta da colina', point: designToThree(0, 2.95, .9) },
         { category: 'hill', name: 'o topo da colina', point: designToThree(0, 5.4, 1.8) },
+        ...hillStoneNodes.filter(node => node.remaining > 0).map(node => ({ category: 'rock', name: 'um afloramento de pedra bruta', point: node.point, node })),
+        ...looseStones.filter(stone => !stone.collected).map(stone => ({ category: 'rock', name: 'uma pedra solta pequena na base da colina', point: stone.point, stone })),
         { category: 'lake', name: 'a superfície do lago', point: designToThree(LAKE.centerX, LAKE.centerY, LAKE.waterZ) }
       ];
       const raycaster = new THREE.Raycaster();
@@ -1937,6 +2080,7 @@
           else if (slopeDelta < -.08) slopeText = 'A encosta desce na direção do olhar.';
           return `Olhar horizontal: a colina está ${side}, a ${centered.distance.toFixed(1)} unidades. ${slopeText} Rumo do olhar: ${heading}.`;
         }
+        if (centered.category === 'rock') return `Olhar horizontal: ${centered.name} está ${side}, a ${centered.distance.toFixed(1)} unidades.${centered.node ? ` Restam ${centered.node.remaining} pedras para extrair.` : ''} Rumo do olhar: ${heading}.`;
         if (centered.category === 'lake') return `Olhar horizontal: o centro do lago está ${side}, a ${centered.distance.toFixed(1)} unidades. Uma faixa rasa contorna a margem; o fundo desce para a bacia profunda. Rumo do olhar: ${heading}.`;
         return `Olhar horizontal: ${centered.name} está ${side}, a ${centered.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
       }
@@ -1947,6 +2091,7 @@
           const fireState = target.fire.lit ? `acesa, com cerca de ${Math.ceil(target.fire.fuelSeconds)} segundos de combustível.` : 'apagada.';
           return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro, a ${target.distance.toFixed(1)} unidades. Está ${fireState} Rumo do olhar: ${heading}.`;
         }
+        if (target.category === 'rock') return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro, a ${target.distance.toFixed(1)} unidades.${target.node ? ` Restam ${target.node.remaining} pedras para extrair.` : ''} Rumo do olhar: ${heading}.`;
         if (target.category === 'lake') return `Olhar horizontal: o lago aparece ${side}, fora do centro. A faixa rasa contorna a margem e o fundo desce para a região profunda. Rumo do olhar: ${heading}.`;
         return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro. Rumo do olhar: ${heading}.`;
       }
