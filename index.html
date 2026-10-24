@@ -1884,12 +1884,15 @@
         ...looseStones.filter(stone => !stone.collected).map(stone => ({ kind: 'loose', stone, point: stone.point })),
         ...hillStoneNodes.filter(node => node.remaining > 0).map(node => ({ kind: 'outcrop', node, point: node.point }))
       ];
-      return candidates.map(target => {
+      const aimed = candidates.map(target => {
         const offset = target.point.clone().sub(camera.position);
         const distance = offset.length();
         return { ...target, distance, alignment: direction.dot(offset.normalize()) };
       }).filter(target => target.alignment >= TREE_AIM_MIN_ALIGNMENT)
-        .sort((a, b) => b.alignment - a.alignment || a.distance - b.distance)[0] || null;
+        .sort((a, b) => b.alignment - a.alignment || a.distance - b.distance);
+      const mineableOutcrop = aimed.find(target => target.kind === 'outcrop' && target.distance <= 2.4);
+      if (mineableOutcrop && inventoryQuantity('stoneHammer') > 0) return mineableOutcrop;
+      return aimed[0] || null;
     }
     function useRockAction(target) {
       if (!target) return false;
@@ -1904,9 +1907,8 @@
         return true;
       }
       if (target.distance > 2.4) { announce('O afloramento está fora de alcance; suba até o topo e aproxime-se.'); return true; }
-      const held = heldInventoryEntry();
-      if (!held || held.itemId !== 'stoneHammer') {
-        announce('Este afloramento exige um martelo de pedra. Monte-o com 1 pedra e 1 graveto usando Alt+C.');
+      if (inventoryQuantity('stoneHammer') < 1) {
+        announce('Este afloramento exige que você tenha um martelo de pedra no inventário. Monte-o com 1 pedra e 1 graveto usando Alt+C.');
         return true;
       }
       const amount = target.node.remaining;
@@ -1939,8 +1941,12 @@
       }
       const rockTarget = getRockActionTarget();
       const treeTarget = climbMode === 'ground' ? getTreeActionTarget() : null;
+      const reachableMineableOutcrop = rockTarget?.kind === 'outcrop'
+        && rockTarget.distance <= 2.4 && inventoryQuantity('stoneHammer') > 0;
       const treeIsAimed = treeTarget && treeTarget.alignment >= TREE_AIM_MIN_ALIGNMENT
-        && (!rockTarget || treeTarget.alignment >= rockTarget.alignment - .035);
+        && (reachableMineableOutcrop
+          ? treeTarget.alignment >= rockTarget.alignment + .08
+          : !rockTarget || treeTarget.alignment >= rockTarget.alignment - .035);
       if (!treeIsAimed && useRockAction(rockTarget)) return;
       if (heldItem) {
         announce(`Você está segurando ${heldItem}; o efeito de uso ainda não foi implementado.`);

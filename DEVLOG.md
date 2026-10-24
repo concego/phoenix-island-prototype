@@ -329,3 +329,16 @@ Publicado para teste. Validação manual ainda pendente.
 - A seleção do alvo da árvore desempata candidatos pelo alinhamento da mira antes da distância, reduzindo a interferência de pedras próximas ao tronco. As pedras continuam coletáveis/mineráveis quando a árvore não é o alvo efetivamente mirado.
 
 Validar manualmente perto das pedras da base e da árvore.
+
+## 24 de outubro de 2026 — extração dos afloramentos com martelo no inventário
+
+### Implementado
+
+- A extração agora exige que o martelo de pedra esteja no inventário, mas não exige que esteja equipado nas mãos. O martelo continua reutilizável e não é consumido nem desgastado. Isso permite ao jogador que já o fabricou minerar diretamente sem repetir a receita ou reorganizar as mãos.
+- Entre alvos concorrentes, um afloramento alinhado e ao alcance (2,4 m) tem prioridade durante a mineração quando há martelo no inventário; uma árvore claramente mais alinhada que o afloramento continua tendo prioridade. Sem martelo, a regra existente de prioridade da árvore sobre pedras próximas permanece.
+- A extração continua recusada se não houver espaço para receber pedras; nesse caso, não reduz o afloramento. Ao concluir, recebe o total restante (3–4 pedras por afloramento), o afloramento esgota uma única vez, seu bloqueador de movimento é removido e suas malhas deixam de aparecer e de ser alvos observáveis.
+- O README foi corrigido para explicar que basta ter o martelo no inventário.
+
+### Verificação e validação
+
+Revisão estática dos fluxos de alvo, alcance, inventário, recompensa, esgotamento e limpeza de cena. A publicação e a carga pública da página serão verificadas separadamente. Uma carga de página ou análise estática não substitui o teste manual de mineração, inventário cheio e desambiguação perto da árvore; esses testes ainda precisam ser feitos no gameplay publicado.
