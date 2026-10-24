@@ -281,3 +281,11 @@ Recolher pelo menos 10 gravetos, equipar a pilha e testar a criação em terreno
 ### Validação
 
 Revisão estática concluída. Validar manualmente com fogueira criada e leitor de tela continua pendente.
+
+
+## 24 de outubro de 2026 — fogueira simples com duração inicial de três minutos
+
+- O nome da fogueira nas mensagens e descrições acessíveis passa a ser “fogueira simples”.
+- O combustível inicial passa de 60 para 180 segundos (3 minutos). A adição de 60 segundos por graveto e o teto total de 300 segundos não mudam.
+
+Publicado para teste no Pages; teste manual ainda pendente. Releases e backups não foram alterados.
