@@ -289,3 +289,20 @@ Revisão estática concluída. Validar manualmente com fogueira criada e leitor 
 - O combustível inicial passa de 60 para 180 segundos (3 minutos). A adição de 60 segundos por graveto e o teto total de 300 segundos não mudam.
 
 Publicado para teste no Pages; teste manual ainda pendente. Releases e backups não foram alterados.
+
+
+## 24 de outubro de 2026 — expansão ao norte e pedras da colina
+
+### Implementado no código
+
+- Campo caminhável ampliado para X=−24…+24 m e Y=−18…+36 m (48 × 54 m), com plano de terreno e distribuição de tufos ampliados. A colina deixa de ser o limite norte e há espaço plano para contorná-la. Lago e casa não foram movidos.
+- Adicionados três afloramentos facetados no topo (3–4 pedras por afloramento, esgotamento único) e oito pedras soltas coletáveis em volta da base. Desaparecem ao esgotar/recolher, têm descrição acessível e não criam colisores invisíveis.
+- Espaço com mãos vazias recolhe pedra solta. Alt+C com graveto ou pedra equipado oferece a receita de martelo (1 graveto + 1 pedra); Espaço com o martelo equipado extrai afloramentos próximos. O martelo é reutilizável sem durabilidade neste protótipo. Mensagens cobrem falta de alcance, ferramenta, espaço no inventário, requisitos e resultado.
+
+### Verificação e validação
+
+Revisão estática concluída; verificação de sintaxe do módulo ainda pendente por indisponibilidade de runtime JavaScript no ambiente. A movimentação contínua ao redor da colina, coleta, receita, seleção de alvo e extração ainda requerem teste manual de gameplay e leitor de tela. Não foi alegado teste manual.
+
+### Publicação
+
+Ainda não publicada nesta etapa. Releases e backups permanecem intocados.
