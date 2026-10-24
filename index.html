@@ -1683,6 +1683,11 @@
       const code = event.code;
       const typing = event.target instanceof HTMLElement && (event.target.isContentEditable || ['INPUT','TEXTAREA','SELECT'].includes(event.target.tagName));
       if (typing) return;
+      if (!inventoryOpen && code === 'Enter' && document.activeElement === inventoryOpenButton) {
+        // Enter não é atalho para abrir; I é. A abertura por botão continua disponível por clique/toque.
+        event.preventDefault();
+        return;
+      }
       if (inventoryOpen) {
         if (code === 'KeyI') { event.preventDefault(); closeInventory(); return; }
         if (code === 'Escape') {
