@@ -269,3 +269,15 @@ Publicado em `main` no commit `b8b18c668042b973fb4f9478fe1cadbd92a5a8a8` (inclui
 ### Pendente para teste do usuário
 
 Recolher pelo menos 10 gravetos, equipar a pilha e testar a criação em terreno seco, além das mensagens de bloqueio em água/lama e durante escalada/natação; abastecer uma fogueira, confirmar consumo de um graveto e limite de cinco minutos, fechar o menu e confirmar a contagem regressiva/extinção. Testar também teclado/leitor de tela e o menu com itens/situações sem ação. O inventário inicia vazio, portanto uma página que apenas carrega não valida essas mecânicas.
+
+
+## 24 de outubro de 2026 — fogueira no sistema de olhar
+
+### Implementado no código
+
+- As fogueiras criadas entram no conjunto de alvos do sistema de percepção; lenha e chamas também são marcadas como objetos observáveis para bloqueio e visibilidade coerentes.
+- Ao orientar o olhar com as setas, a descrição informa fogueira acesa/apagada, lado ou centro do campo de visão, distância e combustível restante quando acesa. O reconhecimento acessível funciona independentemente de destaque visual.
+
+### Validação
+
+Revisão estática concluída. Validar manualmente com fogueira criada e leitor de tela continua pendente.
