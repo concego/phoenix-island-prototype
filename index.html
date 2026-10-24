@@ -1168,7 +1168,7 @@
         button.type = 'button';
         button.className = 'inventory-slot';
         button.setAttribute('aria-pressed', String(selectedInventorySlot === index));
-        const shortcut = entry ? Object.keys(itemShortcuts).find(key => itemShortcuts[key] === index) : null;
+        const shortcut = entry ? Object.keys(itemShortcuts).find(key => itemShortcuts[key] === entry.itemId) : null;
         const label = entry ? `${itemDefinitions[entry.itemId].name}, quantidade ${entry.quantity}${heldItem === itemDefinitions[entry.itemId].name ? ', equipado' : ''}${shortcut ? `, atalho ${shortcut}` : ''}` : `Espaço ${index + 1}, vazio`;
         button.setAttribute('aria-label', label);
         button.textContent = entry ? `${itemDefinitions[entry.itemId].name} × ${entry.quantity}` : `Espaço ${index + 1}: vazio`;
@@ -1198,6 +1198,7 @@
       inventoryOpenButton.focus();
     }
     function equipInventorySlot(index) {
+      if (climbMode !== 'ground') { announce('Só é possível equipar ou guardar itens no chão, sem estar nadando ou agarrado à árvore.'); return; }
       const entry = inventory[index];
       if (!entry) { announce(`O espaço ${index + 1} está vazio.`); return; }
       const name = itemDefinitions[entry.itemId].name;
@@ -1236,7 +1237,7 @@
     function showShortcutTargets() {
       shortcutArea.hidden = false; const container=document.querySelector('#inventory-shortcut-targets'); container.replaceChildren();
       const labels=['1','2','3','4','5','6','7','8','9','0'];
-      labels.forEach((key,index)=>{const b=document.createElement('button');b.type='button';b.textContent=key;b.setAttribute('aria-label',`Atribuir atalho ${key}${itemShortcuts[key] !== undefined ? `, atualmente no espaço ${itemShortcuts[key]+1}` : ''}`);b.addEventListener('click',()=>{for(const k of Object.keys(itemShortcuts))if(itemShortcuts[k]===selectedInventorySlot)delete itemShortcuts[k];itemShortcuts[key]=selectedInventorySlot;renderInventory();announce(`Atalho ${key} atribuído a ${itemDefinitions[inventory[selectedInventorySlot].itemId].name}. Pressione ${key} fora do inventário para equipar.`);});container.append(b);});
+      labels.forEach((key,index)=>{const b=document.createElement('button');b.type='button';b.textContent=key;b.setAttribute('aria-label',`Atribuir atalho ${key}${itemShortcuts[key] !== undefined ? `, atualmente associado a ${itemDefinitions[itemShortcuts[key]].name}` : ''}`);b.addEventListener('click',()=>{for(const k of Object.keys(itemShortcuts))if(itemShortcuts[k]===selectedInventorySlot)delete itemShortcuts[k];itemShortcuts[key]=inventory[selectedInventorySlot].itemId;renderInventory();announce(`Atalho ${key} atribuído a ${itemDefinitions[inventory[selectedInventorySlot].itemId].name}. Pressione ${key} fora do inventário para equipar.`);});container.append(b);});
       container.querySelector('button')?.focus();
     }
     document.querySelectorAll('#inventory-actions button').forEach(button => button.addEventListener('click', () => {
@@ -1613,7 +1614,7 @@
       }
       if (code === 'KeyI') { event.preventDefault(); openInventory(); return; }
       const shortcutKey = /^Digit[0-9]$/.test(code) ? code.slice(5) : null;
-      if (shortcutKey !== null && itemShortcuts[shortcutKey] !== undefined) { event.preventDefault(); equipInventorySlot(itemShortcuts[shortcutKey]); return; }
+      if (shortcutKey !== null && itemShortcuts[shortcutKey] !== undefined) { event.preventDefault(); const shortcutSlot = inventory.findIndex(entry => entry?.itemId === itemShortcuts[shortcutKey]); if (shortcutSlot >= 0) equipInventorySlot(shortcutSlot); else announce(`O atalho ${shortcutKey} está atribuído a ${itemDefinitions[itemShortcuts[shortcutKey]].name}, mas esse item não está no inventário.`); return; }
       if (isRightShiftEvent(event)) {
         event.preventDefault();
         rightShiftHeld = true;

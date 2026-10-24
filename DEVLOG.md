@@ -197,7 +197,7 @@ O estado técnico presente foi descrito de acordo com os controles e os limites 
 
 - Inventário inicial vazio com dez espaços de tipos distintos, em grade de duas fileiras por cinco; pilhas idênticas se acumulam sem limite artificial. Graveto tem `flammable: true`; `weightKg` fica indefinido (`null`). Não há limite de carga nem recipientes equipáveis nesta etapa. A coleta da árvore agora adiciona gravetos ao inventário e anuncia quando falta espaço.
 - Acesso por I e botão visível, pausa do movimento ao abrir, foco no inventário e fechamento por I/Esc/botão. Controles semânticos e estado de seleção são expostos aos leitores de tela.
-- Examinar, mover, usar/equipar, largar e atribuir atalhos 1–0. Mover para tipo igual agrupa, mover para espaço diferente ocupado troca os itens. Os atalhos equipam/guardam o item associado quando usados fora do inventário.
+- Examinar, mover, usar/equipar, largar e atribuir atalhos 1–0. Mover para tipo igual agrupa, mover para espaço diferente ocupado troca os itens. Os atalhos ficam associados ao tipo de item e equipam/guardam o item quando usados fora do inventário; equipar só é permitido no chão, sem nadar ou estar agarrado à árvore.
 - Largar mantém o item numa lista recuperável pelo botão acessível “Recolher itens largados”; isto ainda não é um objeto colocado fisicamente no cenário. O graveto equipado não tem efeito implementado e não é consumido; nadar continua exigindo mãos vazias.
 
 ### Teste e aprovação
