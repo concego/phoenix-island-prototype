@@ -314,3 +314,10 @@ Publicado em main, commit final `8a78d53976d1b6cfe50b53176b2c57c9a206a12c`. GitH
 - A ação compartilha a rotina de coleta existente, remove a pedra de cena e anuncia a coleta; afloramentos continuam exigindo o martelo e a ação por Espaço. Enter no botão Inventário não abre o inventário e a ativação de controles existentes não é interceptada.
 
 Validação manual de gameplay e leitor de tela pendente. Nenhuma release ou backup foi alterada.
+
+
+## 24 de outubro de 2026 — coleta por Enter sem mãos vazias
+
+- Retirada a exigência de estar com as mãos vazias para recolher uma pedra solta por Enter. A ferramenta ou objeto equipado permanece nas mãos; alcance, mira e espaço no inventário continuam sendo verificados.
+
+Publicado para teste. Validação manual ainda pendente.
