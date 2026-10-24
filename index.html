@@ -1923,6 +1923,16 @@
       announce(`Você extraiu ${amount} pedras do afloramento. O afloramento foi esgotado. ${inventorySummary()}.`);
       return true;
     }
+    function collectSceneItemWithEnter(event) {
+      if (event.repeat || inventoryOpen || itemActionMenuOpen || climbMode !== 'ground') return false;
+      if (event.target instanceof HTMLElement && event.target.closest('button, a, [role="button"], input, textarea, select, [contenteditable="true"]')) return false;
+      const target = getRockActionTarget();
+      if (target?.kind !== 'loose') return false;
+      event.preventDefault();
+      event.stopPropagation();
+      useRockAction(target);
+      return true;
+    }
     function useAction() {
       if (climbMode === 'swimming') {
         useSwimmingAction();
@@ -2201,6 +2211,9 @@
         // Enter não é atalho para abrir; I é. A abertura por botão continua disponível por clique/toque.
         event.preventDefault();
         return;
+      }
+      if (code === 'Enter' && !inventoryOpen && !itemActionMenuOpen) {
+        if (collectSceneItemWithEnter(event)) return;
       }
       if (inventoryOpen) {
         if (code === 'KeyI') { event.preventDefault(); closeInventory(); return; }
