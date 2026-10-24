@@ -24,9 +24,7 @@
     #inventory-slots { display: grid; grid-template-rows: repeat(2, auto); gap: .5rem; max-width: 80rem; }
     .inventory-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .5rem; }
     .inventory-slot { width: 100%; min-width: 0; min-height: 4.5rem; padding: .65rem; color: inherit; background: #16212a; border: 1px solid #637783; border-radius: .4rem; text-align: left; }
-    .inventory-slot[aria-selected="true"] { border: 2px solid #b8e2ff; }
     .inventory-slot:focus-visible, #inventory-open-actions:focus-visible, #inventory-actions button:focus-visible { outline: 3px solid #b8e2ff; outline-offset: 2px; }
-    #inventory-selection { min-height: 1.5em; }
     #inventory-open-actions { margin: .35rem 0; }
     #inventory-actions, #inventory-move-targets, #inventory-shortcut-targets { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
     #inventory-move-area, #inventory-shortcut-area { margin-top: .75rem; }
@@ -66,9 +64,8 @@
     <section id="inventory-panel" aria-labelledby="inventory-heading" hidden>
       <h2 id="inventory-heading" tabindex="-1">Inventário</h2>
       <p id="inventory-count">0 de 10 tipos de item.</p>
-      <p id="inventory-navigation-help">A grade tem duas fileiras de cinco espaços. Use as setas para navegar, inclusive pelos espaços vazios. Enter abre as ações do item selecionado.</p>
-      <div id="inventory-slots" role="grid" aria-label="Grade do inventário, duas fileiras de cinco espaços" aria-describedby="inventory-navigation-help" aria-rowcount="2" aria-colcount="5"></div>
-      <p id="inventory-selection" role="status" aria-live="polite" aria-atomic="true">Espaço 1 vazio.</p>
+      <p id="inventory-navigation-help">Use as setas para percorrer as duas fileiras da grade.</p>
+      <div id="inventory-slots" role="group" aria-label="Espaços do inventário" aria-describedby="inventory-navigation-help"></div>
       <button id="inventory-open-actions" type="button" aria-controls="inventory-actions" aria-expanded="false" disabled>Ações (Enter)</button>
       <div id="inventory-actions" role="group" aria-label="Ações do item selecionado" hidden>
         <button type="button" data-inventory-action="examine">Examinar</button><button type="button" data-inventory-action="move">Mover</button><button type="button" data-inventory-action="use">Usar</button><button type="button" data-inventory-action="drop">Largar</button><button type="button" data-inventory-action="shortcut">Atribuir atalho</button>
@@ -698,7 +695,6 @@
     const inventoryOpenButton = document.querySelector('#inventory-open');
     const inventoryCloseButton = document.querySelector('#inventory-close');
     const inventorySlotsElement = document.querySelector('#inventory-slots');
-    const inventorySelection = document.querySelector('#inventory-selection');
     const inventoryCount = document.querySelector('#inventory-count');
     const moveArea = document.querySelector('#inventory-move-area');
     const shortcutArea = document.querySelector('#inventory-shortcut-area');
@@ -1172,7 +1168,7 @@
     function focusSelectedInventorySlot() {
       inventorySlotsElement.querySelector(`[data-slot-index="${selectedInventorySlot}"]`)?.focus();
     }
-    function selectInventorySlot(index, announceSelection = true) {
+    function selectInventorySlot(index) {
       selectedInventorySlot = Math.max(0, Math.min(INVENTORY_CAPACITY - 1, index));
       inventoryActionsElement.hidden = true;
       inventoryOpenActionsButton.setAttribute('aria-expanded', 'false');
@@ -1180,20 +1176,12 @@
       shortcutArea.hidden = true;
       renderInventory();
       focusSelectedInventorySlot();
-      if (announceSelection) {
-        const entry = inventory[selectedInventorySlot];
-        inventorySelection.textContent = entry
-          ? `Selecionado: espaço ${selectedInventorySlot + 1}, ${itemDefinitions[entry.itemId].name}, quantidade ${entry.quantity}. Enter abre as ações.`
-          : `Selecionado: espaço ${selectedInventorySlot + 1}, vazio. Enter abre as ações quando houver um item.`;
-      }
     }
     function renderInventory() {
       inventorySlotsElement.replaceChildren();
       for (let rowIndex = 0; rowIndex < 2; rowIndex++) {
         const row = document.createElement('div');
         row.className = 'inventory-row';
-        row.setAttribute('role', 'row');
-        row.setAttribute('aria-rowindex', String(rowIndex + 1));
         for (let columnIndex = 0; columnIndex < 5; columnIndex++) {
           const index = rowIndex * 5 + columnIndex;
           const entry = inventory[index];
@@ -1201,14 +1189,11 @@
           button.type = 'button';
           button.className = 'inventory-slot';
           button.dataset.slotIndex = String(index);
-          button.setAttribute('role', 'gridcell');
-          button.setAttribute('aria-selected', String(selectedInventorySlot === index));
-          button.setAttribute('aria-colindex', String(columnIndex + 1));
           button.tabIndex = selectedInventorySlot === index ? 0 : -1;
           const shortcut = entry ? Object.keys(itemShortcuts).find(key => itemShortcuts[key] === entry.itemId) : null;
-          const label = entry ? `Espaço ${index + 1}, ${itemDefinitions[entry.itemId].name}, quantidade ${entry.quantity}${heldItem === itemDefinitions[entry.itemId].name ? ', equipado' : ''}${shortcut ? `, atalho ${shortcut}` : ''}` : `Espaço ${index + 1}, vazio`;
+          const label = entry ? `${itemDefinitions[entry.itemId].name}, quantidade ${entry.quantity}${heldItem === itemDefinitions[entry.itemId].name ? ', equipado' : ''}${shortcut ? `, atalho ${shortcut}` : ''}` : 'vazio';
           button.setAttribute('aria-label', label);
-          button.textContent = entry ? `${itemDefinitions[entry.itemId].name} × ${entry.quantity}` : `Espaço ${index + 1}: vazio`;
+          button.textContent = entry ? `${itemDefinitions[entry.itemId].name} × ${entry.quantity}` : 'vazio';
           button.addEventListener('click', () => selectInventorySlot(index));
           row.append(button);
         }
@@ -1238,19 +1223,13 @@
       inventoryOpenButton.focus();
     }
     function openSelectedInventoryActions() {
-      if (!inventory[selectedInventorySlot]) {
-        const message = `Espaço ${selectedInventorySlot + 1} vazio. Não há ações disponíveis.`;
-        inventorySelection.textContent = message;
-        announce(message);
-        return;
-      }
+      if (!inventory[selectedInventorySlot]) return;
       moveArea.hidden = true;
       shortcutArea.hidden = true;
       inventoryActionsElement.hidden = false;
       inventoryOpenActionsButton.setAttribute('aria-expanded', 'true');
       const firstAction = inventoryActionsElement.querySelector('button:not(:disabled)');
       firstAction?.focus();
-      inventorySelection.textContent = `Ações para ${itemDefinitions[inventory[selectedInventorySlot].itemId].name}, espaço ${selectedInventorySlot + 1}.`;
     }
     function closeSelectedInventoryActions(returnToGrid = true) {
       inventoryActionsElement.hidden = true;
@@ -1686,6 +1665,8 @@
           return;
         }
         const activeSlotButton = document.activeElement.closest?.('[data-slot-index]');
+      const activeActionButton = document.activeElement.closest?.('#inventory-actions button');
+      const activeTargetButton = document.activeElement.closest?.('#inventory-move-targets button, #inventory-shortcut-targets button');
         if (code === 'Enter' && (activeSlotButton || document.activeElement === inventoryOpenActionsButton)) {
           event.preventDefault(); openSelectedInventoryActions(); return;
         }
@@ -1701,7 +1682,7 @@
           if (code === 'Home') target = row * 5;
           if (code === 'End') target = row * 5 + 4;
           if (target !== index) selectInventorySlot(target);
-          else announce(`Limite da grade no espaço ${index + 1}.`);
+          // At the edge, keep focus in place without announcing a slot or status.
           return;
         }
         return;

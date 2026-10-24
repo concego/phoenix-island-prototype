@@ -209,8 +209,9 @@ A mudança foi preparada para publicação e requer validação manual do usuár
 
 ### Implementado no código
 
-- Os dez espaços, inclusive os vazios, são células navegáveis da grade acessível, com uma única célula no Tab e seleção/foco sincronizados. Os rótulos informam o número do espaço, conteúdo, quantidade e, quando aplicável, estado equipado e atalho. Setas navegam sem contornar os limites; Home/End vão ao início/fim da fileira atual.
-- Enter abre o conjunto de ações do item selecionado e move o foco à primeira ação disponível. O botão visível “Ações (Enter)” fornece a alternativa por ponteiro/leitor de tela e fica desativado em espaço vazio; Enter em espaço vazio informa a ausência de ações sem perder seleção. Esc retorna da lista de ações/seleção de alvo à grade ou fecha o inventário.
+- Os dez espaços, inclusive os vazios, são botões navegáveis com uma única parada no Tab e foco móvel. Rótulos anunciam apenas o item e a quantidade (e, quando aplicável, estado equipado e atalho), ou “vazio”; não anunciam o número do espaço. Setas navegam sem contornar os limites; Home/End vão ao início/fim da fileira atual. A estrutura usa grupo e fileiras visuais sem semântica de grade/índices ARIA, para evitar anúncio automático de posição.
+- Enter abre o conjunto de ações de um item ocupado e move o foco à primeira ação disponível. O botão visível “Ações (Enter)” fornece alternativa equivalente e fica desativado em espaço vazio. Enter em espaço vazio não executa ação nem acrescenta fala. Esc retorna da lista de ações/seleção de alvo à grade ou fecha o inventário.
+- Mover o foco pela navegação não anuncia qual espaço está selecionado, seu número, nem instrução para pressionar Enter. No limite da fileira, a tecla mantém o foco sem anúncio.
 
 ### Teste e aprovação
 
