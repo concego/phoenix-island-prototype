@@ -1913,6 +1913,8 @@
       const amount = target.node.remaining;
       if (!addInventoryItem('stone', amount)) { announce('Inventário cheio: libere um espaço para guardar as pedras antes de minerar.'); return true; }
       target.node.remaining = 0;
+      const blockerIndex = blockers.findIndex(blocker => blocker.name.startsWith('afloramento') && blocker.x === target.node.x && blocker.y === target.node.y);
+      if (blockerIndex >= 0) blockers.splice(blockerIndex, 1);
       for (const mesh of target.node.meshes) {
         mesh.visible = false;
         const index = lookables.indexOf(mesh);
