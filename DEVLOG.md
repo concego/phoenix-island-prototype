@@ -241,3 +241,25 @@ A lógica e a documentação foram revisadas estaticamente. A inspeção do cód
 ### Teste e aprovação
 
 A alteração foi publicada; validar manualmente com teclado e leitor de tela continua pendente. Não registrar como teste manual ou aprovação do usuário.
+
+
+## 24 de outubro de 2026 — menu de ações situacionais e fogueira
+
+### Implementado no código
+
+- Com item nas mãos, Alt+C abre um diálogo modal de ações contextuais. O movimento para ao abrir; Esc fecha e devolve o foco; Tab permanece no diálogo, e setas/Home/End navegam pelas ações habilitadas. Requisitos e bloqueios são descritos junto às ações, incluindo falta de gravetos, água/lama, modo de movimento e fogueira próxima apagada.
+- Graveto é atualmente o único material inflamável. Criar fogueira exige estar no chão seco e ter pelo menos 10 gravetos na pilha equipada; consome exatamente 10 e a coloca no ponto atual do terreno. Não permite duplicar fogo aceso ou construir sobre fogo apagado a até 2,4 m. Reacender ainda não está disponível.
+- A fogueira acende com 60 segundos de combustível. Um graveto inflamável consumido de cada vez pode adicionar até 60 segundos, limitado a 300 segundos totais. O combustível decresce no loop do jogo mesmo com o menu fechado; ao zerar, fogo e luz se apagam, com anúncio único se o jogador estiver próximo. Há geometria procedural e luz Three.js.
+- Conhecimento, habilidades e magia ainda não são sistemas implementados; a seleção contextual está limitada às regras presentes no protótipo. Não há salvamento/persistência das fogueiras.
+
+### Verificações automatizadas/estáticas
+
+A lógica e a documentação foram revistas; os arquivos foram submetidos a verificações estáticas e a versão publicada/build será conferida separadamente. Isto não equivale a testar manualmente o ciclo completo de coleta, criação, abastecimento e extinção com leitor de tela.
+
+### Publicação
+
+Commit e status do GitHub Pages serão registrados após a publicação. Nenhuma release/backup foi alterada.
+
+### Pendente para teste do usuário
+
+Recolher pelo menos 10 gravetos, equipar a pilha e testar a criação em terreno seco, além das mensagens de bloqueio em água/lama e durante escalada/natação; abastecer uma fogueira, confirmar consumo de um graveto e limite de cinco minutos, fechar o menu e confirmar a contagem regressiva/extinção. Testar também teclado/leitor de tela e o menu com itens/situações sem ação. O inventário inicia vazio, portanto uma página que apenas carrega não valida essas mecânicas.

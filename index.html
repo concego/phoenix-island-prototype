@@ -46,6 +46,18 @@
     #inventory-move-area > div, #inventory-shortcut-area > div { display: flex; flex-wrap: wrap; gap: .5rem; }
     #inventory-move-targets button, #inventory-shortcut-targets button { min-width: 2.75rem; }
     #inventory-panel button:disabled { opacity: .48; cursor: not-allowed; filter: saturate(.45); }
+    body.item-action-open::before { content: ''; position: fixed; inset: 0; z-index: 1100; background: rgb(5 9 8 / 78%); backdrop-filter: blur(3px); }
+    #item-action-menu { position: fixed; inset: 50% auto auto 50%; z-index: 1101; transform: translate(-50%, -50%); width: min(31rem, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); overflow: auto; padding: 1rem; color: #ece8d9; background: linear-gradient(145deg, #26352e, #131c18 72%); border: 2px solid #9a8454; border-radius: .6rem; box-shadow: 0 1.2rem 4rem rgb(0 0 0 / 75%); }
+    #item-action-menu[hidden] { display: none; }
+    #item-action-menu h2 { margin: 0; color: #e4ce91; text-transform: uppercase; }
+    #item-action-menu p { color: #c9c0a9; }
+    #item-action-list { display: grid; gap: .45rem; margin: .75rem 0; padding: 0; list-style: none; }
+    #item-action-list button, #item-action-close { width: 100%; min-height: 3rem; text-align: left; }
+    #item-action-menu button { color: #eee8d5; background: linear-gradient(#39483b, #202a22); border: 1px solid #8a7950; border-radius: .3rem; padding: .6rem .75rem; }
+    #item-action-menu button:focus-visible { outline: 3px solid #ecd27e; outline-offset: 3px; }
+    #item-action-list button:disabled { opacity: .58; cursor: not-allowed; }
+    #item-action-list p { margin: .25rem 0 .6rem; font-size: .9rem; }
+    #item-action-hint { min-height: 1.4em; }
     #stage { position: relative; min-height: 55vh; height: calc(100vh - 190px); overflow: hidden; background: #87b7c8; }
     canvas { display: block; width: 100%; height: 100%; outline: none; }
     #readout { position: absolute; left: 1rem; right: 1rem; bottom: 1rem; max-width: 54rem; padding: .8rem 1rem; border: 1px solid #637783; border-radius: .5rem; background: rgb(12 20 25 / 88%); line-height: 1.45; }
@@ -70,7 +82,7 @@
     <header>
       <h1>Phoenix Island — teste de caminhada e natação em 3D</h1>
       <div id="instructions">
-        <p><strong>Inventário:</strong> pressione I ou use o botão Inventário. O inventário inicial tem dez espaços para tipos diferentes de item, em duas fileiras de cinco; itens iguais acumulam no mesmo espaço. Selecione um item e use Examinar, Mover, Usar, Largar ou Atribuir atalho. Os atalhos de 1 a 0 equipam o item atribuído; Espaço usa o item que estiver equipado nas mãos. O peso é registrado quando definido, mas ainda não há limite de carga.</p>
+        <p><strong>Inventário:</strong> pressione I ou use o botão Inventário. O inventário inicial tem dez espaços para tipos diferentes de item, em duas fileiras de cinco; itens iguais acumulam no mesmo espaço. Selecione um item e use Examinar, Mover, Usar, Largar ou Atribuir atalho. Os atalhos de 1 a 0 equipam o item atribuído; Espaço usa o item que estiver equipado nas mãos. Com um item nas mãos, pressione Alt+C para ver ações situacionais compatíveis. O peso é registrado quando definido, mas ainda não há limite de carga.</p>
         <p><strong>Mapa:</strong> área de 36 × 36 m, com X e Y entre −18 m e +18 m. A colina e a árvore ficam na região central; o topo da colina chega a 1,8 m, com as encostas clareando gradualmente por altitude. O terreno além das laterais dela é plano e caminhável. O lago fica ao norte e a leste, centrado em X=5,0 m e Y=13,2 m, com cerca de 12 × 6,4 m de água. Uma margem lamacenta texturizada de 1,2 m contorna o lago. A faixa rasa ao redor permite caminhar sobre um fundo de até 0,55 m; depois, o fundo desce até 2,7 m na bacia central. A água fica mais translúcida e suave na borda, escurecendo e ganhando densidade no fundo; ondulações leves e círculos aparecem com o movimento. A região profunda bloqueia a passagem a pé. A natação está implementada para o lago de teste; ainda não há passagens subaquáticas.</p>
         <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Segure Shift direito: W corre para frente a 3,6 m/s, A/D correm lateralmente a 3,2 m/s e S corre para trás a 2,4 m/s. Também pode pressionar Shift direito depois de iniciar o movimento; ao soltá-lo, a velocidade volta a 2,4 m/s. A corrida não se aplica à escalada nem à caminhada pelos galhos. Shift esquerdo+A/D giram o corpo 45° para a esquerda/direita; Shift esquerdo+W gira 180°; Shift esquerdo+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°. Durante a natação, a inclinação controla a trajetória de W/S enquanto a tecla é mantida: olhar para baixo faz avançar e descer; para cima, avançar e subir; olhar no horizonte mantém a profundidade. Mudar o olhar sem manter W/S não movimenta o personagem. A/D deslocam lateralmente. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
@@ -108,6 +120,12 @@
       <div id="inventory-shortcut-area" hidden><p>Escolha uma tecla da fileira numérica (1 a 0). Ela equipará este item; cada tecla pode apontar para um único espaço.</p><div id="inventory-shortcut-targets"></div></div>
     </section>
     <button id="recover-drops" type="button" hidden>Recolher itens largados</button>
+    <section id="item-action-menu" role="dialog" aria-modal="true" aria-labelledby="item-action-heading" aria-describedby="item-action-help" hidden>
+      <h2 id="item-action-heading" tabindex="-1">Ações do item</h2>
+      <p id="item-action-help">Ações compatíveis com o item em mãos e a situação atual.</p>
+      <ul id="item-action-list"></ul>
+      <button id="item-action-close" type="button">Fechar (Esc)</button>
+    </section>
     <section id="stage" aria-label="Cena tridimensional do protótipo">
       <div id="webgl-warning" hidden>Este navegador ou dispositivo não disponibilizou WebGL para a cena 3D.</div>
       <div id="readout" role="status" aria-live="polite" aria-atomic="true">Posição inicial ao sul do lago em Phoenix Island. A margem lamacenta tem passos próprios; a faixa rasa permite caminhar, e Espaço inicia a natação somente com mãos vazias, na água rasa e voltado para o fundo. Na natação, mantenha W ou S: a inclinação define subida ou descida; no horizonte, mantém a profundidade. Mudar o olhar sozinho não move. Para sair, chegue à superfície e à faixa rasa ou a uma saída para terra e pressione Espaço. Não há passagem subaquática construída neste mapa. Use as setas para olhar, ou C para anunciar as coordenadas.</div>
@@ -716,6 +734,14 @@
     const TREE_AIM_MIN_ALIGNMENT = Math.cos(Math.PI / 3);
     const treeFruitTargets = []; // Filled by addTreeFruitTarget for fruit-bearing trees.
     const itemDefinitions = { stick: { name: 'graveto', flammable: true, weightKg: null } };
+    const campfires = [];
+    const CAMPFIRE_INTERACTION_RANGE = 2.4;
+    const CAMPFIRE_INITIAL_FUEL_SECONDS = 60;
+    const CAMPFIRE_FUEL_PER_STICK_SECONDS = 60;
+    const CAMPFIRE_MAX_FUEL_SECONDS = 300;
+    const CAMPFIRE_CREATION_STICKS = 10;
+    const CAMPFIRE_LIGHT_RADIUS = 5.5;
+    const CAMPFIRE_REFUEL_AMOUNT = 1;
     const INVENTORY_CAPACITY = 10;
     const inventory = Array(INVENTORY_CAPACITY).fill(null);
     const itemShortcuts = {};
@@ -732,6 +758,12 @@
     const moveArea = document.querySelector('#inventory-move-area');
     const shortcutArea = document.querySelector('#inventory-shortcut-area');
     const droppedItemsButton = document.querySelector('#recover-drops');
+    const itemActionMenu = document.querySelector('#item-action-menu');
+    const itemActionList = document.querySelector('#item-action-list');
+    const itemActionHelp = document.querySelector('#item-action-help');
+    const itemActionCloseButton = document.querySelector('#item-action-close');
+    let itemActionMenuOpen = false;
+    let itemActionReturnFocus = null;
     const treeHarvest = { fruits: {} };
     addGrassTufts();
     const treeTrunk = addMesh(new THREE.CylinderGeometry(.2, .28, 2.7, 8), materials.bark, [treeX, treeY, 1.35], 'O tronco de uma árvore está à frente.', true, 'tree');
@@ -1269,6 +1301,199 @@
       inventoryOpenActionsButton.setAttribute('aria-expanded', 'false');
       if (returnToGrid && inventoryOpen) focusSelectedInventorySlot();
     }
+    function heldInventoryEntry() {
+      if (!heldItem) return null;
+      const itemId = Object.keys(itemDefinitions).find(id => itemDefinitions[id].name === heldItem);
+      const slot = inventory.findIndex(entry => entry?.itemId === itemId);
+      return slot < 0 ? null : { slot, itemId, entry: inventory[slot] };
+    }
+    function closestCampfire() {
+      if (climbMode !== 'ground') return null;
+      let nearest = null;
+      for (const fire of campfires) {
+        const distance = Math.hypot(fire.x - player.x, fire.y - player.y);
+        if (distance <= CAMPFIRE_INTERACTION_RANGE && (!nearest || distance < nearest.distance)) nearest = { fire, distance };
+      }
+      return nearest;
+    }
+    function consumeHeldItemQuantity(quantity) {
+      const held = heldInventoryEntry();
+      if (!held || held.entry.quantity < quantity) return false;
+      held.entry.quantity -= quantity;
+      if (held.entry.quantity <= 0) {
+        inventory[held.slot] = null;
+        heldItem = null;
+      }
+      renderInventory();
+      return true;
+    }
+    function createCampfire() {
+      const held = heldInventoryEntry();
+      if (climbMode !== 'ground' || !held || held.itemId !== 'stick' || held.entry.quantity < CAMPFIRE_CREATION_STICKS) return;
+      if (isInLakeWater(player.x, player.y) || isMuddyGround(player.x, player.y)) {
+        announce('Não dá para montar uma fogueira na água nem na margem lamacenta.');
+        return;
+      }
+      const nearbyFire = closestCampfire();
+      if (nearbyFire) {
+        announce(nearbyFire.fire.lit ? 'Já há uma fogueira acesa por perto. Abasteça-a enquanto estiver acesa.' : 'Há uma fogueira apagada por perto. Reacendê-la ainda não está disponível.');
+        return;
+      }
+      if (!consumeHeldItemQuantity(CAMPFIRE_CREATION_STICKS)) return;
+      const fuelMaterial = itemDefinitions.stick.name;
+      const fire = { x: player.x, y: player.y, fuelSeconds: CAMPFIRE_INITIAL_FUEL_SECONDS, lit: true, elapsed: 0, fuelMaterial };
+      const groundZ = terrainHeightAt(fire.x, fire.y);
+      const base = new THREE.Group();
+      base.position.copy(designToThree(fire.x, fire.y, groundZ));
+      scene.add(base);
+      const logMaterial = new THREE.MeshStandardMaterial({ color: 0x513723, roughness: .98 });
+      for (let index = 0; index < 4; index++) {
+        const log = new THREE.Mesh(new THREE.CylinderGeometry(.055, .07, .82, 7), logMaterial);
+        log.rotation.z = Math.PI / 2;
+        log.rotation.y = index % 2 ? Math.PI / 4 : -Math.PI / 4;
+        log.position.set(0, .09 + index * .035, 0);
+        log.castShadow = true;
+        base.add(log);
+      }
+      const flameMaterial = new THREE.MeshBasicMaterial({ color: 0xff8b28, transparent: true, opacity: .92 });
+      const flame = new THREE.Mesh(new THREE.ConeGeometry(.19, .68, 7), flameMaterial);
+      flame.position.set(0, .46, 0);
+      base.add(flame);
+      const innerFlame = new THREE.Mesh(new THREE.ConeGeometry(.095, .42, 6), new THREE.MeshBasicMaterial({ color: 0xffe39a, transparent: true, opacity: .9 }));
+      innerFlame.position.set(0, .34, 0);
+      base.add(innerFlame);
+      const light = new THREE.PointLight(0xff8a38, 2.2, CAMPFIRE_LIGHT_RADIUS, 2);
+      light.position.set(0, .45, 0);
+      base.add(light);
+      fire.base = base;
+      fire.flame = flame;
+      fire.innerFlame = innerFlame;
+      fire.light = light;
+      campfires.push(fire);
+      renderInventory();
+      closeItemActionMenu(false);
+      announce('Fogueira acesa. Ela começa com um minuto de combustível; gravetos inflamáveis podem abastecer o fogo enquanto estiver aceso. Sem combustível, apaga.');
+    }
+    function refuelCampfire(fire) {
+      const held = heldInventoryEntry();
+      if (!held || !itemDefinitions[held.itemId].flammable || !fire.lit) return;
+      if (!consumeHeldItemQuantity(CAMPFIRE_REFUEL_AMOUNT)) return;
+      const previousFuel = fire.fuelSeconds;
+      fire.fuelSeconds = Math.min(CAMPFIRE_MAX_FUEL_SECONDS, previousFuel + CAMPFIRE_FUEL_PER_STICK_SECONDS);
+      const addedSeconds = Math.round(fire.fuelSeconds - previousFuel);
+      closeItemActionMenu(false);
+      announce(`Fogueira abastecida com ${itemDefinitions[held.itemId].name}. Combustível aumentado em ${addedSeconds} ${addedSeconds === 1 ? 'segundo' : 'segundos'}${fire.fuelSeconds >= CAMPFIRE_MAX_FUEL_SECONDS ? '; limite de 5 minutos atingido' : ''}.`);
+    }
+    function refreshCampfireActions() {
+      const held = heldInventoryEntry();
+      if (!held) return { nearest: null, actions: [] };
+      const nearest = closestCampfire();
+      const actions = [];
+      const definition = itemDefinitions[held.itemId];
+      if (nearest?.fire.lit && definition.flammable) {
+        const canAddFuel = nearest.fire.fuelSeconds < CAMPFIRE_MAX_FUEL_SECONDS;
+        actions.push({ label: canAddFuel ? 'Abastecer fogueira' : 'Fogueira no limite de combustível', disabled: !canAddFuel, detail: canAddFuel
+          ? `Consome 1 ${definition.name} inflamável e acrescenta 1 minuto. Limite total: 5 minutos.`
+          : 'O combustível já está no limite de 5 minutos.', run: () => refuelCampfire(nearest.fire) });
+      } else if (held.itemId === 'stick') {
+        const enough = held.entry.quantity >= CAMPFIRE_CREATION_STICKS;
+        const dryGround = !isInLakeWater(player.x, player.y) && !isMuddyGround(player.x, player.y);
+        const allowed = !nearest && climbMode === 'ground' && dryGround && enough;
+        let why;
+        if (nearest?.fire.lit) why = 'Já há uma fogueira acesa neste alcance; abasteça-a em vez de criar outra.';
+        else if (nearest) why = 'Há uma fogueira apagada neste alcance. Reacendê-la ainda não está disponível; não é possível construir outra sobre ela.';
+        else if (climbMode !== 'ground') why = 'Disponível apenas no chão, sem nadar nem estar agarrado à árvore.';
+        else if (!dryGround) why = 'Escolha um local seco, fora da água e da margem lamacenta.';
+        else if (!enough) why = `Requer ${CAMPFIRE_CREATION_STICKS} gravetos; você está com ${held.entry.quantity}.`;
+        else why = `Consome ${CAMPFIRE_CREATION_STICKS} gravetos inflamáveis e acende por 1 minuto.`;
+        actions.push({ label: nearest?.fire.lit ? 'Fogueira próxima' : 'Criar fogueira', disabled: !allowed, detail: why, run: createCampfire });
+      }
+      return { nearest, actions };
+    }
+    function closeItemActionMenu(returnFocus = true) {
+      if (!itemActionMenuOpen) return;
+      itemActionMenuOpen = false;
+      itemActionMenu.hidden = true;
+      document.body.classList.remove('item-action-open');
+      if (returnFocus) itemActionReturnFocus?.focus?.();
+      itemActionReturnFocus = null;
+    }
+    function openItemActionMenu() {
+      if (!heldItem || inventoryOpen || itemActionMenuOpen) return;
+      const { nearest, actions } = refreshCampfireActions();
+      itemActionMenuOpen = true;
+      itemActionReturnFocus = document.activeElement;
+      stopMovement();
+      itemActionList.replaceChildren();
+      for (const action of actions) {
+        const li = document.createElement('li');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = action.label;
+        button.disabled = action.disabled;
+        const detail = document.createElement('p');
+        detail.id = `item-action-detail-${itemActionList.children.length}`;
+        detail.textContent = action.detail;
+        button.setAttribute('aria-describedby', detail.id);
+        button.addEventListener('click', action.run);
+        li.append(button, detail);
+        itemActionList.append(li);
+      }
+      itemActionHelp.textContent = nearest
+        ? `Fogueira próxima a ${nearest.distance.toFixed(1)} m. ${nearest.fire.lit ? `Combustível restante: ${Math.ceil(nearest.fire.fuelSeconds)} s.` : 'Esta fogueira já apagou.'}`
+        : 'As opções dependem do item em mãos, da quantidade e do local. Fogueiras só podem ser montadas em chão seco.';
+      if (!actions.length) {
+        const li = document.createElement('li');
+        const info = document.createElement('p');
+        info.textContent = nearest ? 'Não há ações disponíveis para o item em mãos nesta fogueira.' : `Nenhuma ação disponível para ${heldItem} nesta situação.`;
+        li.append(info);
+        itemActionList.append(li);
+      }
+      document.body.classList.add('item-action-open');
+      itemActionMenu.hidden = false;
+      itemActionMenu.querySelector('#item-action-heading').focus();
+    }
+    itemActionCloseButton.addEventListener('click', () => closeItemActionMenu());
+    itemActionMenu.addEventListener('keydown', event => {
+      event.stopPropagation();
+      if (event.key === 'Escape') { event.preventDefault(); closeItemActionMenu(); return; }
+      const buttons = [...itemActionList.querySelectorAll('button:not(:disabled)')];
+      const index = buttons.indexOf(document.activeElement);
+      if (event.key === 'Tab') {
+        const focusable = [...itemActionMenu.querySelectorAll('button:not(:disabled)')];
+        if (!focusable.length) { event.preventDefault(); itemActionCloseButton.focus(); return; }
+        const first = focusable[0], last = focusable.at(-1);
+        if (event.shiftKey && (document.activeElement === first || document.activeElement === itemActionMenu.querySelector('#item-action-heading'))) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+        return;
+      }
+      if (event.altKey && event.code === 'KeyC') { event.preventDefault(); return; }
+      if (!buttons.length || index < 0) return;
+      let target = null;
+      if (event.key === 'ArrowDown') target = buttons[(index + 1) % buttons.length];
+      if (event.key === 'ArrowUp') target = buttons[(index - 1 + buttons.length) % buttons.length];
+      if (event.key === 'Home') target = buttons[0];
+      if (event.key === 'End') target = buttons.at(-1);
+      if (target) { event.preventDefault(); target.focus(); }
+    });
+    function updateCampfires(delta) {
+      for (const fire of campfires) {
+        if (!fire.lit) continue;
+        fire.fuelSeconds = Math.max(0, fire.fuelSeconds - delta);
+        fire.elapsed += delta;
+        const flicker = 1 + Math.sin(fire.elapsed * 12.7) * .1 + Math.sin(fire.elapsed * 7.3) * .08;
+        fire.flame.scale.set(1, flicker, 1);
+        fire.innerFlame.scale.set(1, .9 + Math.sin(fire.elapsed * 16.4) * .12, 1);
+        fire.light.intensity = 2.0 + Math.sin(fire.elapsed * 10.1) * .24;
+        if (fire.fuelSeconds <= 0) {
+          fire.lit = false;
+          fire.flame.visible = false;
+          fire.innerFlame.visible = false;
+          fire.light.intensity = 0;
+          if (Math.hypot(fire.x - player.x, fire.y - player.y) <= CAMPFIRE_LIGHT_RADIUS * 1.5) announce('A fogueira ficou sem combustível e apagou.');
+        }
+      }
+    }
     function equipInventorySlot(index) {
       if (climbMode !== 'ground') { announce('Só é possível equipar ou guardar itens no chão, sem estar nadando ou agarrado à árvore.'); return; }
       const entry = inventory[index];
@@ -1683,6 +1908,13 @@
       const code = event.code;
       const typing = event.target instanceof HTMLElement && (event.target.isContentEditable || ['INPUT','TEXTAREA','SELECT'].includes(event.target.tagName));
       if (typing) return;
+      if (itemActionMenuOpen) return;
+      if (code === 'KeyC' && event.altKey && heldItem) {
+        event.preventDefault();
+        event.stopPropagation();
+        openItemActionMenu();
+        return;
+      }
       if (!inventoryOpen && code === 'Enter' && document.activeElement === inventoryOpenButton) {
         // Enter não é atalho para abrir; I é. A abertura por botão continua disponível por clique/toque.
         event.preventDefault();
@@ -1823,6 +2055,7 @@
     const clock = new THREE.Clock();
     function update(delta) {
       updateWaterRipples(delta);
+      updateCampfires(delta);
       if (activeClimbDirection !== 0 && (climbMode === 'trunkGrip' || climbMode === 'branchGrip')) {
         const now = performance.now();
         if (climbStrokeRemaining <= .001 && now >= nextClimbStrokeAt) {

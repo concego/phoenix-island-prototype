@@ -32,6 +32,12 @@ Selecione um espaço e escolha **Examinar**, **Mover**, **Usar**, **Largar** ou 
 
 Largar cria uma entrada recuperável na lista de itens largados; o botão **Recolher itens largados** recolhe o que couber no inventário. Este é um coletor acessível global, não uma posição física de chão, e não cria objeto 3D nem colisão invisível.
 
+## Ações situacionais e fogueira (experimental)
+
+Com um item equipado nas mãos, **Alt+C** abre o menu de ações contextuais. As opções dependem do item e da situação; por enquanto, graveto é o único material inflamável e fogueira é a única ação implementada. Não há ainda regras de conhecimento, habilidades ou magia. Com gravetos em mãos, **Criar fogueira** exige dez gravetos na pilha, estar no chão e escolher terreno seco, fora da água e da faixa lamacenta. A ação consome os dez gravetos e cria a fogueira no local do jogador. O menu informa os requisitos e mantém indisponível a ação que não puder ser executada.
+
+A fogueira começa acesa com 60 segundos de combustível. Enquanto estiver acesa, um graveto inflamável adiciona até mais 60 segundos; o combustível total não passa de 300 segundos (cinco minutos), e o menu informa quando o limite foi atingido. O fogo consome combustível continuamente mesmo com o menu fechado e apaga ao chegar a zero. Uma fogueira apagada permanece no cenário, mas reacendê-la ainda não está implementado; não se pode criar outra fogueira dentro de 2,4 m dela. O alcance de interação também é 2,4 m. A luz tem alcance configurado de 5,5 m. Esses números e a geometria são parâmetros provisórios do protótipo, não sistemas gerais de sobrevivência.
+
 ## Testar
 
 Abra a página publicada no GitHub Pages. O navegador precisa permitir WebGL e carregar o módulo Three.js hospedado no jsDelivr. O áudio é liberado depois da primeira tecla de movimento ou Espaço, conforme a política dos navegadores.
