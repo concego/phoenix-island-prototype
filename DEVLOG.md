@@ -306,3 +306,11 @@ Revisão estática concluída; delimitadores balanceados e assertions de bounds,
 ### Publicação
 
 Publicado em main, commit final `8a78d53976d1b6cfe50b53176b2c57c9a206a12c`. GitHub Pages workflow 40139327659 concluiu com sucesso. Página de teste: https://concego.github.io/phoenix-island-prototype/. Releases e backups permanecem intocados.
+
+
+## 24 de outubro de 2026 — Enter para coletar pedras soltas
+
+- A tecla Enter chama a coleta de pedras soltas quando o jogador está no chão, sem foco em controle de interface, com mãos vazias e com a pedra mais próxima dentro do alinhamento e alcance existentes.
+- A ação compartilha a rotina de coleta existente, remove a pedra de cena e anuncia a coleta; afloramentos continuam exigindo o martelo e a ação por Espaço. Enter no botão Inventário não abre o inventário e a ativação de controles existentes não é interceptada.
+
+Validação manual de gameplay e leitor de tela pendente. Nenhuma release ou backup foi alterada.
