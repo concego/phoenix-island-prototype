@@ -736,7 +736,7 @@
     const itemDefinitions = { stick: { name: 'graveto', flammable: true, weightKg: null } };
     const campfires = [];
     const CAMPFIRE_INTERACTION_RANGE = 2.4;
-    const CAMPFIRE_INITIAL_FUEL_SECONDS = 60;
+    const CAMPFIRE_INITIAL_FUEL_SECONDS = 180;
     const CAMPFIRE_FUEL_PER_STICK_SECONDS = 60;
     const CAMPFIRE_MAX_FUEL_SECONDS = 300;
     const CAMPFIRE_CREATION_STICKS = 10;
@@ -1441,12 +1441,12 @@
       const held = heldInventoryEntry();
       if (climbMode !== 'ground' || !held || held.itemId !== 'stick' || held.entry.quantity < CAMPFIRE_CREATION_STICKS) return;
       if (isInLakeWater(player.x, player.y) || isMuddyGround(player.x, player.y)) {
-        announce('Não dá para montar uma fogueira na água nem na margem lamacenta.');
+        announce('Não dá para montar uma fogueira simples na água nem na margem lamacenta.');
         return;
       }
       const nearbyFire = closestCampfire();
       if (nearbyFire) {
-        announce(nearbyFire.fire.lit ? 'Já há uma fogueira acesa por perto. Abasteça-a enquanto estiver acesa.' : 'Há uma fogueira apagada por perto. Reacendê-la ainda não está disponível.');
+        announce(nearbyFire.fire.lit ? 'Já há uma fogueira simples acesa por perto. Abasteça-a enquanto estiver acesa.' : 'Há uma fogueira simples apagada por perto. Reacendê-la ainda não está disponível.');
         return;
       }
       if (!consumeHeldItemQuantity(CAMPFIRE_CREATION_STICKS)) return;
@@ -1464,17 +1464,17 @@
         log.position.set(0, .09 + index * .035, 0);
         log.castShadow = true;
         base.add(log);
-        markLookable(log, 'A lenha montada de uma fogueira.', 'campfire');
+        markLookable(log, 'A lenha montada de uma fogueira simples.', 'campfire');
       }
       const flameMaterial = new THREE.MeshBasicMaterial({ color: 0xff8b28, transparent: true, opacity: .92 });
       const flame = new THREE.Mesh(new THREE.ConeGeometry(.19, .68, 7), flameMaterial);
       flame.position.set(0, .46, 0);
       base.add(flame);
-      markLookable(flame, 'A chama de uma fogueira acesa.', 'campfire');
+      markLookable(flame, 'A chama de uma fogueira simples acesa.', 'campfire');
       const innerFlame = new THREE.Mesh(new THREE.ConeGeometry(.095, .42, 6), new THREE.MeshBasicMaterial({ color: 0xffe39a, transparent: true, opacity: .9 }));
       innerFlame.position.set(0, .34, 0);
       base.add(innerFlame);
-      markLookable(innerFlame, 'A chama interna de uma fogueira acesa.', 'campfire');
+      markLookable(innerFlame, 'A chama interna de uma fogueira simples acesa.', 'campfire');
       const light = new THREE.PointLight(0xff8a38, 2.2, CAMPFIRE_LIGHT_RADIUS, 2);
       light.position.set(0, .45, 0);
       base.add(light);
@@ -1487,7 +1487,7 @@
       if (fire.igniteStarted) window.setTimeout(() => startCampfireLoop(fire), 700);
       renderInventory();
       closeItemActionMenu();
-      announce('Fogueira acesa. Ela começa com um minuto de combustível; gravetos inflamáveis podem abastecer o fogo enquanto estiver aceso. Sem combustível, apaga.');
+      announce('Fogueira simples acesa. Ela começa com três minutos de combustível; gravetos inflamáveis podem abastecer o fogo enquanto estiver acesa. Sem combustível, apaga.');
     }
     function refuelCampfire(fire) {
       const held = heldInventoryEntry();
@@ -1497,7 +1497,7 @@
       fire.fuelSeconds = Math.min(CAMPFIRE_MAX_FUEL_SECONDS, previousFuel + CAMPFIRE_FUEL_PER_STICK_SECONDS);
       const addedSeconds = Math.round(fire.fuelSeconds - previousFuel);
       closeItemActionMenu();
-      announce(`Fogueira abastecida com ${itemDefinitions[held.itemId].name}. Combustível aumentado em ${addedSeconds} ${addedSeconds === 1 ? 'segundo' : 'segundos'}${fire.fuelSeconds >= CAMPFIRE_MAX_FUEL_SECONDS ? '; limite de 5 minutos atingido' : ''}.`);
+      announce(`Fogueira simples abastecida com ${itemDefinitions[held.itemId].name}. Combustível aumentado em ${addedSeconds} ${addedSeconds === 1 ? 'segundo' : 'segundos'}${fire.fuelSeconds >= CAMPFIRE_MAX_FUEL_SECONDS ? '; limite de 5 minutos atingido' : ''}.`);
     }
     function refreshCampfireActions() {
       const held = heldInventoryEntry();
@@ -1507,7 +1507,7 @@
       const definition = itemDefinitions[held.itemId];
       if (nearest?.fire.lit && definition.flammable) {
         const canAddFuel = nearest.fire.fuelSeconds < CAMPFIRE_MAX_FUEL_SECONDS;
-        actions.push({ label: canAddFuel ? 'Abastecer fogueira' : 'Fogueira no limite de combustível', disabled: !canAddFuel, detail: canAddFuel
+        actions.push({ label: canAddFuel ? 'Abastecer fogueira simples' : 'Fogueira simples no limite de combustível', disabled: !canAddFuel, detail: canAddFuel
           ? `Consome 1 ${definition.name} inflamável e acrescenta 1 minuto. Limite total: 5 minutos.`
           : 'O combustível já está no limite de 5 minutos.', run: () => refuelCampfire(nearest.fire) });
       } else if (held.itemId === 'stick') {
@@ -1515,13 +1515,13 @@
         const dryGround = !isInLakeWater(player.x, player.y) && !isMuddyGround(player.x, player.y);
         const allowed = !nearest && climbMode === 'ground' && dryGround && enough;
         let why;
-        if (nearest?.fire.lit) why = 'Já há uma fogueira acesa neste alcance; abasteça-a em vez de criar outra.';
-        else if (nearest) why = 'Há uma fogueira apagada neste alcance. Reacendê-la ainda não está disponível; não é possível construir outra sobre ela.';
+        if (nearest?.fire.lit) why = 'Já há uma fogueira simples acesa neste alcance; abasteça-a em vez de criar outra.';
+        else if (nearest) why = 'Há uma fogueira simples apagada neste alcance. Reacendê-la ainda não está disponível; não é possível construir outra sobre ela.';
         else if (climbMode !== 'ground') why = 'Disponível apenas no chão, sem nadar nem estar agarrado à árvore.';
         else if (!dryGround) why = 'Escolha um local seco, fora da água e da margem lamacenta.';
         else if (!enough) why = `Requer ${CAMPFIRE_CREATION_STICKS} gravetos; você está com ${held.entry.quantity}.`;
         else why = `Consome ${CAMPFIRE_CREATION_STICKS} gravetos inflamáveis e acende por 1 minuto.`;
-        actions.push({ label: nearest?.fire.lit ? 'Fogueira próxima' : 'Criar fogueira', disabled: !allowed, detail: why, run: createCampfire });
+        actions.push({ label: nearest?.fire.lit ? 'Fogueira simples próxima' : 'Criar fogueira simples', disabled: !allowed, detail: why, run: createCampfire });
       }
       return { nearest, actions };
     }
@@ -1555,12 +1555,12 @@
         itemActionList.append(li);
       }
       itemActionHelp.textContent = nearest
-        ? `Fogueira próxima a ${nearest.distance.toFixed(1)} m. ${nearest.fire.lit ? `Combustível restante: ${Math.ceil(nearest.fire.fuelSeconds)} s.` : 'Esta fogueira já apagou.'}`
-        : 'As opções dependem do item em mãos, da quantidade e do local. Fogueiras só podem ser montadas em chão seco.';
+        ? `Fogueira simples próxima a ${nearest.distance.toFixed(1)} m. ${nearest.fire.lit ? `Combustível restante: ${Math.ceil(nearest.fire.fuelSeconds)} s.` : 'Esta fogueira simples já apagou.'}`
+        : 'As opções dependem do item em mãos, da quantidade e do local. Fogueiras simples só podem ser montadas em chão seco.';
       if (!actions.length) {
         const li = document.createElement('li');
         const info = document.createElement('p');
-        info.textContent = nearest ? 'Não há ações disponíveis para o item em mãos nesta fogueira.' : `Nenhuma ação disponível para ${heldItem} nesta situação.`;
+        info.textContent = nearest ? 'Não há ações disponíveis para o item em mãos nesta fogueira simples.' : `Nenhuma ação disponível para ${heldItem} nesta situação.`;
         li.append(info);
         itemActionList.append(li);
       }
@@ -1611,7 +1611,7 @@
           fire.flame.visible = false;
           fire.innerFlame.visible = false;
           fire.light.intensity = 0;
-          if (Math.hypot(fire.x - player.x, fire.y - player.y) <= CAMPFIRE_LIGHT_RADIUS * 1.5) announce('A fogueira ficou sem combustível e apagou.');
+          if (Math.hypot(fire.x - player.x, fire.y - player.y) <= CAMPFIRE_LIGHT_RADIUS * 1.5) announce('A fogueira simples ficou sem combustível e apagou.');
         }
       }
     }
@@ -1874,7 +1874,7 @@
         return `Natação: olhar horizontal; W/S mantêm a profundidade. Profundidade atual: ${depth} m.`;
       }
       const targets = [
-        ...campfires.map((fire, index) => ({ category: 'campfire', name: fire.lit ? `a fogueira acesa${campfires.length > 1 ? ` ${index + 1}` : ''}` : `os restos de uma fogueira apagada${campfires.length > 1 ? ` ${index + 1}` : ''}`, point: designToThree(fire.x, fire.y, terrainHeightAt(fire.x, fire.y) + (fire.lit ? .52 : .14)), fire })),
+        ...campfires.map((fire, index) => ({ category: 'campfire', name: fire.lit ? `a fogueira simples acesa${campfires.length > 1 ? ` ${index + 1}` : ''}` : `os restos da fogueira simples apagada${campfires.length > 1 ? ` ${index + 1}` : ''}`, point: designToThree(fire.x, fire.y, terrainHeightAt(fire.x, fire.y) + (fire.lit ? .52 : .14)), fire })),
         { category: 'tree', name: 'o tronco da árvore', point: designToThree(treeX, treeY, 1.35) },
         { category: 'tree', name: 'um galho horizontal', point: designToThree(treeX, treeY, TREE_BRANCH_HEIGHT) },
         { category: 'tree', name: 'a copa da árvore', point: designToThree(treeX, treeY, 3.0) },
