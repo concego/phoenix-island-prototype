@@ -254,11 +254,11 @@ A alteração foi publicada; validar manualmente com teclado e leitor de tela co
 
 ### Verificações automatizadas/estáticas
 
-A lógica e a documentação foram revistas; os arquivos foram submetidos a verificações estáticas e a versão publicada/build será conferida separadamente. Isto não equivale a testar manualmente o ciclo completo de coleta, criação, abastecimento e extinção com leitor de tela.
+A sintaxe do módulo JavaScript passou por parser estático (sem erros) e verificações de presença dos parâmetros/regras. O fluxo completo de gameplay não foi testado automaticamente nem manualmente; o menu depende de coletar e equipar gravetos e requer validação do usuário com leitor de tela.
 
 ### Publicação
 
-Commit e status do GitHub Pages serão registrados após a publicação. Nenhuma release/backup foi alterada.
+Publicado em `main` no commit `b8b18c668042b973fb4f9478fe1cadbd92a5a8a8` (inclui o commit funcional `395c73b31a0f4f71fd0bfce1e1e8aa5748b6bc38` e correção de retorno do foco). O workflow GitHub Pages 40124346567 concluiu com sucesso; a página teste é https://concego.github.io/phoenix-island-prototype/. O HTML servido contém o menu de ações. Nenhuma release/backup foi alterada.
 
 ### Pendente para teste do usuário
 
