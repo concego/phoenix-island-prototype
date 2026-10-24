@@ -216,3 +216,17 @@ A mudança foi preparada para publicação e requer validação manual do usuár
 ### Teste e aprovação
 
 A mudança foi revisada estaticamente e requer teste manual do usuário na versão experimental pública. Não registrar como validação manual do usuário nem como aprovação. A publicação e os checks do Pages serão registrados separadamente quando concluídos.
+
+
+## 24 de outubro de 2026 — acabamento visual e navegação da lista de ações
+
+### Implementado no código
+
+- O inventário agora ativa uma camada escurecida de fundo enquanto está aberto e a remove ao fechar; o painel conserva o layout responsivo em duas áreas no desktop e empilhado em telas estreitas.
+- A lista de comandos recebeu apresentação vertical consistente, destaque claro de foco/hover e contorno de foco reforçado.
+- Com uma ação focada, Setas para cima/baixo percorrem a lista em ciclo, Home/End focam a primeira/última ação. Enter continua ativando os botões nativos e seus handlers existentes; a navegação por setas não produz anúncios adicionais. A navegação da grade e os fluxos de seleção de destino de mover/atalho permanecem separados.
+- O painel preserva um único botão de fechar acessível, além do fechamento por I/Esc.
+
+### Teste e aprovação
+
+A lógica e a documentação foram revisadas estaticamente. A inspeção do código não equivale a uma validação manual da interação; teste com leitor de tela e confirmação do usuário ainda são necessários. A verificação da página publicada/build será registrada separadamente após a publicação.

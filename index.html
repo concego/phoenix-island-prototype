@@ -16,21 +16,36 @@
     p { margin: .35rem 0; line-height: 1.45; }
     #instructions { max-width: 80rem; font-size: .96rem; }
     #instructions strong { color: #b8e2ff; }
-    #inventory-panel { padding: 1rem 1.25rem; background: #202d36; border-bottom: 1px solid #52636d; }
+    body.inventory-open::before { content: ''; position: fixed; inset: 0; z-index: 1000; background: rgb(5 9 8 / 78%); backdrop-filter: blur(3px); }
+    #inventory-panel { position: fixed; z-index: 1001; inset: 50% auto auto 50%; transform: translate(-50%, -50%); width: min(64rem, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); overflow: auto; padding: 1.25rem; color: #ece8d9; background: linear-gradient(145deg, #26352e, #131c18 72%); border: 2px solid #9a8454; border-radius: .6rem; box-shadow: 0 1.2rem 4rem rgb(0 0 0 / 75%), inset 0 0 0 1px rgb(237 215 157 / 14%); }
     #inventory-panel[hidden], #recover-drops[hidden], #inventory-actions[hidden], #inventory-move-area[hidden], #inventory-shortcut-area[hidden] { display: none; }
+    .inventory-titlebar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: .65rem; border-bottom: 1px solid #786742; }
+    .inventory-titlebar h2 { margin: 0; color: #e4ce91; letter-spacing: .06em; text-transform: uppercase; }
+    .inventory-titlebar p { margin: .25rem 0 0; color: #c9c0a9; }
+    #inventory-layout { display: grid; grid-template-columns: minmax(0, 1fr) 14rem; gap: 1rem; margin-top: 1rem; }
+    #inventory-grid-panel, #inventory-command-panel { min-width: 0; padding: .85rem; background: rgb(7 13 10 / 52%); border: 1px solid #665d43; border-radius: .4rem; }
+    #inventory-grid-panel h3, #inventory-command-panel h3 { margin: 0 0 .65rem; color: #d8c58e; font-size: .95rem; letter-spacing: .04em; text-transform: uppercase; }
     #inventory-open, #recover-drops { margin: .4rem 0; padding: .55rem .8rem; }
-    #inventory-panel button { min-height: 2.75rem; padding: .45rem .7rem; color: inherit; background: #16212a; border: 1px solid #637783; border-radius: .35rem; }
-    #inventory-panel button:focus-visible, #inventory-open:focus-visible, #recover-drops:focus-visible { outline: 3px solid #b8e2ff; outline-offset: 2px; }
-    #inventory-slots { display: grid; grid-template-rows: repeat(2, auto); gap: .5rem; max-width: 80rem; }
-    .inventory-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .5rem; }
-    .inventory-slot { width: 100%; min-width: 0; min-height: 4.5rem; padding: .65rem; color: inherit; background: #16212a; border: 1px solid #637783; border-radius: .4rem; text-align: left; }
-    .inventory-slot:focus-visible, #inventory-open-actions:focus-visible, #inventory-actions button:focus-visible { outline: 3px solid #b8e2ff; outline-offset: 2px; }
-    #inventory-open-actions { margin: .35rem 0; }
-    #inventory-actions, #inventory-move-targets, #inventory-shortcut-targets { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
-    #inventory-move-area, #inventory-shortcut-area { margin-top: .75rem; }
+    #inventory-panel button { min-height: 2.75rem; padding: .55rem .7rem; color: #eee8d5; background: linear-gradient(#39483b, #202a22); border: 1px solid #8a7950; border-radius: .3rem; box-shadow: inset 0 1px rgb(255 255 255 / 7%); cursor: pointer; }
+    #inventory-panel button:hover:not(:disabled), #inventory-open:hover, #recover-drops:hover { background: linear-gradient(#4c5a43, #2c382a); border-color: #c7ab62; }
+    #inventory-panel button:focus-visible, #inventory-open:focus-visible, #recover-drops:focus-visible { outline: 3px solid #ecd27e; outline-offset: 3px; }
+    #inventory-slots { display: grid; grid-template-rows: repeat(2, auto); gap: .55rem; max-width: 80rem; }
+    .inventory-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .55rem; }
+    .inventory-slot { width: 100%; min-width: 0; min-height: 5.2rem; padding: .65rem; color: #e7e0c9; background: radial-gradient(ellipse at 35% 20%, #405044, #202a22 72%); border: 1px solid #716749; border-radius: .35rem; text-align: left; }
+    .inventory-slot.is-selected { border-color: #dbbc68; box-shadow: inset 0 0 0 1px #c9a951, 0 0 .6rem rgb(215 180 83 / 25%); }
+    .inventory-slot:focus-visible { outline: 3px solid #ecd27e; outline-offset: 2px; }
+    #inventory-open-actions { width: 100%; margin: 0 0 .75rem; color: #fff2c4; background: linear-gradient(#635536, #3c3323); }
+    #inventory-actions ul { display: grid; grid-template-columns: 1fr; gap: .45rem; margin: 0; padding: 0; list-style: none; }
+    #inventory-actions li { margin: 0; }
+    #inventory-actions button { width: 100%; min-height: 3rem; text-align: left; transition: background-color .12s ease, border-color .12s ease, transform .12s ease; }
+    #inventory-actions button:hover:not(:disabled) { transform: translateX(2px); }
+    #inventory-actions button:focus-visible { outline: 3px solid #ecd27e; outline-offset: 2px; background: #4b5038; border-color: #ecd27e; box-shadow: 0 0 0 5px rgb(236 210 126 / 18%); }
+    #inventory-actions button:disabled { cursor: not-allowed; }
+    #inventory-navigation-help { min-height: 1.35em; color: #c9c0a9; font-size: .9rem; }
+    #inventory-move-area, #inventory-shortcut-area { margin-top: .75rem; padding: .75rem; background: rgb(8 12 10 / 45%); border: 1px solid #665d43; border-radius: .35rem; }
     #inventory-move-area > div, #inventory-shortcut-area > div { display: flex; flex-wrap: wrap; gap: .5rem; }
     #inventory-move-targets button, #inventory-shortcut-targets button { min-width: 2.75rem; }
-    #inventory-panel button:disabled { opacity: .55; }
+    #inventory-panel button:disabled { opacity: .48; cursor: not-allowed; filter: saturate(.45); }
     #stage { position: relative; min-height: 55vh; height: calc(100vh - 190px); overflow: hidden; background: #87b7c8; }
     canvas { display: block; width: 100%; height: 100%; outline: none; }
     #readout { position: absolute; left: 1rem; right: 1rem; bottom: 1rem; max-width: 54rem; padding: .8rem 1rem; border: 1px solid #637783; border-radius: .5rem; background: rgb(12 20 25 / 88%); line-height: 1.45; }
@@ -42,8 +57,11 @@
       #stage { height: calc(100vh - 250px); min-height: 45vh; }
       #readout { left: .5rem; right: .5rem; bottom: .5rem; }
       #inventory-panel { padding: .75rem; }
-      #inventory-slots { gap: .25rem; }
-      .inventory-slot { min-height: 4rem; padding: .4rem; font-size: .85rem; }
+      #inventory-layout { grid-template-columns: 1fr; }
+      #inventory-command-panel { order: -1; }
+      #inventory-slots { gap: .3rem; }
+      .inventory-row { gap: .3rem; }
+      .inventory-slot { min-height: 3.6rem; padding: .4rem; font-size: .85rem; }
     }
   </style>
 </head>
@@ -62,17 +80,32 @@
     </header>
     <button id="inventory-open" type="button" aria-controls="inventory-panel" aria-expanded="false">Inventário (I)</button>
     <section id="inventory-panel" aria-labelledby="inventory-heading" hidden>
-      <h2 id="inventory-heading" tabindex="-1">Inventário</h2>
-      <p id="inventory-count">0 de 10 tipos de item.</p>
-      <p id="inventory-navigation-help">Use as setas para percorrer as duas fileiras da grade.</p>
-      <div id="inventory-slots" role="group" aria-label="Espaços do inventário" aria-describedby="inventory-navigation-help"></div>
-      <button id="inventory-open-actions" type="button" aria-controls="inventory-actions" aria-expanded="false" disabled>Ações (Enter)</button>
-      <div id="inventory-actions" role="group" aria-label="Ações do item selecionado" hidden>
-        <button type="button" data-inventory-action="examine">Examinar</button><button type="button" data-inventory-action="move">Mover</button><button type="button" data-inventory-action="use">Usar</button><button type="button" data-inventory-action="drop">Largar</button><button type="button" data-inventory-action="shortcut">Atribuir atalho</button>
+      <div class="inventory-titlebar">
+        <div><h2 id="inventory-heading" tabindex="-1">Inventário</h2><p id="inventory-count">0 de 10 tipos de item.</p></div>
+        <button id="inventory-close" type="button">Fechar (I/Esc)</button>
+      </div>
+      <div id="inventory-layout">
+        <section id="inventory-grid-panel" aria-labelledby="inventory-grid-title">
+          <h3 id="inventory-grid-title">Mochila</h3>
+          <p id="inventory-navigation-help">Use as setas para percorrer as duas fileiras da grade.</p>
+          <div id="inventory-slots" role="group" aria-label="Espaços do inventário" aria-describedby="inventory-navigation-help"></div>
+        </section>
+        <section id="inventory-command-panel" aria-label="Comandos do inventário">
+          <h3>Comandos</h3>
+          <button id="inventory-open-actions" type="button" aria-controls="inventory-actions" aria-expanded="false" disabled>Ações (Enter)</button>
+          <div id="inventory-actions" role="group" aria-label="Ações do item selecionado" hidden>
+            <ul>
+              <li><button type="button" data-inventory-action="examine">Examinar</button></li>
+              <li><button type="button" data-inventory-action="move">Mover</button></li>
+              <li><button type="button" data-inventory-action="use">Usar</button></li>
+              <li><button type="button" data-inventory-action="drop">Soltar</button></li>
+              <li><button type="button" data-inventory-action="shortcut">Atribuir atalho</button></li>
+            </ul>
+          </div>
+        </section>
       </div>
       <div id="inventory-move-area" hidden><p>Mover para qual espaço? Um espaço ocupado por outro item será trocado; itens iguais serão agrupados.</p><div id="inventory-move-targets"></div></div>
       <div id="inventory-shortcut-area" hidden><p>Escolha uma tecla da fileira numérica (1 a 0). Ela equipará este item; cada tecla pode apontar para um único espaço.</p><div id="inventory-shortcut-targets"></div></div>
-      <button id="inventory-close" type="button">Fechar inventário (I ou Esc)</button>
     </section>
     <button id="recover-drops" type="button" hidden>Recolher itens largados</button>
     <section id="stage" aria-label="Cena tridimensional do protótipo">
@@ -1210,14 +1243,14 @@
       if (inventoryOpen) return;
       inventoryOpen = true; inventoryReturnFocus = document.activeElement;
       stopMovement();
-      inventoryPanel.hidden = false; inventoryOpenButton.setAttribute('aria-expanded', 'true');
+      inventoryPanel.hidden = false; document.body.classList.add('inventory-open'); inventoryOpenButton.setAttribute('aria-expanded', 'true');
       renderInventory();
       focusSelectedInventorySlot();
       announce(inventorySummary());
     }
     function closeInventory() {
       if (!inventoryOpen) return;
-      inventoryOpen = false; inventoryPanel.hidden = true; inventoryOpenButton.setAttribute('aria-expanded', 'false');
+      inventoryOpen = false; inventoryPanel.hidden = true; document.body.classList.remove('inventory-open'); inventoryOpenButton.setAttribute('aria-expanded', 'false');
       inventoryActionsElement.hidden = true; moveArea.hidden = true; shortcutArea.hidden = true;
       inventoryOpenActionsButton.setAttribute('aria-expanded', 'false');
       inventoryOpenButton.focus();
@@ -1665,8 +1698,19 @@
           return;
         }
         const activeSlotButton = document.activeElement.closest?.('[data-slot-index]');
-      const activeActionButton = document.activeElement.closest?.('#inventory-actions button');
-      const activeTargetButton = document.activeElement.closest?.('#inventory-move-targets button, #inventory-shortcut-targets button');
+        const activeActionButton = document.activeElement.closest?.('#inventory-actions button');
+        const activeTargetButton = document.activeElement.closest?.('#inventory-move-targets button, #inventory-shortcut-targets button');
+        if (activeActionButton && ['ArrowUp', 'ArrowDown', 'Home', 'End'].includes(code)) {
+          event.preventDefault();
+          const actions = Array.from(inventoryActionsElement.querySelectorAll('button:not(:disabled)'));
+          const currentIndex = actions.indexOf(activeActionButton);
+          if (actions.length && currentIndex >= 0) {
+            const nextIndex = code === 'Home' ? 0 : code === 'End' ? actions.length - 1
+              : (currentIndex + (code === 'ArrowDown' ? 1 : -1) + actions.length) % actions.length;
+            actions[nextIndex].focus();
+          }
+          return;
+        }
         if (code === 'Enter' && (activeSlotButton || document.activeElement === inventoryOpenActionsButton)) {
           event.preventDefault(); openSelectedInventoryActions(); return;
         }
