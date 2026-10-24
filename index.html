@@ -1371,7 +1371,7 @@
       fire.light = light;
       campfires.push(fire);
       renderInventory();
-      closeItemActionMenu(false);
+      closeItemActionMenu();
       announce('Fogueira acesa. Ela começa com um minuto de combustível; gravetos inflamáveis podem abastecer o fogo enquanto estiver aceso. Sem combustível, apaga.');
     }
     function refuelCampfire(fire) {
@@ -1381,7 +1381,7 @@
       const previousFuel = fire.fuelSeconds;
       fire.fuelSeconds = Math.min(CAMPFIRE_MAX_FUEL_SECONDS, previousFuel + CAMPFIRE_FUEL_PER_STICK_SECONDS);
       const addedSeconds = Math.round(fire.fuelSeconds - previousFuel);
-      closeItemActionMenu(false);
+      closeItemActionMenu();
       announce(`Fogueira abastecida com ${itemDefinitions[held.itemId].name}. Combustível aumentado em ${addedSeconds} ${addedSeconds === 1 ? 'segundo' : 'segundos'}${fire.fuelSeconds >= CAMPFIRE_MAX_FUEL_SECONDS ? '; limite de 5 minutos atingido' : ''}.`);
     }
     function refreshCampfireActions() {
