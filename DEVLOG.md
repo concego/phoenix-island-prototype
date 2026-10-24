@@ -189,3 +189,17 @@ Ambas apontam para o commit `ed01afd6ea3118da96119a0d371ced3617988ef4`. As alter
 Este registro foi produzido comparando o README atual, a implementação vigente e o histórico de 65 commits de 4–13 de outubro de 2026, com consulta adicional dos detalhes disponíveis para commits relevantes. Entradas repetidas ou quase idênticas de publicação foram agrupadas; nomes de commits e seus resumos serviram para estabelecer a sequência, mas não foram tratados como prova de validação do comportamento em execução.
 
 O estado técnico presente foi descrito de acordo com os controles e os limites documentados no README e no código corrente. Em caso de divergência histórica, o texto identifica a evolução e reserva “estado atual” para o comportamento documentado vigente. Este é um retrato do histórico disponível, não uma transcrição de cada decisão conversacional nem uma alegação de que todos os experimentos intermediários foram preservados.
+
+
+## 24 de outubro de 2026 — primeira fatia do inventário
+
+### Implementado no código
+
+- Inventário inicial vazio com dez espaços de tipos distintos, em grade de duas fileiras por cinco; pilhas idênticas se acumulam sem limite artificial. Graveto tem `flammable: true`; `weightKg` fica indefinido (`null`). Não há limite de carga nem recipientes equipáveis nesta etapa. A coleta da árvore agora adiciona gravetos ao inventário e anuncia quando falta espaço.
+- Acesso por I e botão visível, pausa do movimento ao abrir, foco no inventário e fechamento por I/Esc/botão. Controles semânticos e estado de seleção são expostos aos leitores de tela.
+- Examinar, mover, usar/equipar, largar e atribuir atalhos 1–0. Mover para tipo igual agrupa, mover para espaço diferente ocupado troca os itens. Os atalhos equipam/guardam o item associado quando usados fora do inventário.
+- Largar mantém o item numa lista recuperável pelo botão acessível “Recolher itens largados”; isto ainda não é um objeto colocado fisicamente no cenário. O graveto equipado não tem efeito implementado e não é consumido; nadar continua exigindo mãos vazias.
+
+### Teste e aprovação
+
+A mudança foi preparada para publicação e requer validação manual do usuário na página pública; não registrar esta implementação como teste manual de jogabilidade ou como aprovação do usuário. A página pública foi consultada após a publicação e o build do GitHub Pages foi conferido; não foi realizada uma travessia manual de jogabilidade. O status não representa aprovação do usuário.

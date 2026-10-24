@@ -16,6 +16,18 @@
     p { margin: .35rem 0; line-height: 1.45; }
     #instructions { max-width: 80rem; font-size: .96rem; }
     #instructions strong { color: #b8e2ff; }
+    #inventory-panel { padding: 1rem 1.25rem; background: #202d36; border-bottom: 1px solid #52636d; }
+    #inventory-panel[hidden], #recover-drops[hidden] { display: none; }
+    #inventory-open, #recover-drops { margin: .4rem 0; padding: .55rem .8rem; }
+    #inventory-panel button { min-height: 2.75rem; padding: .45rem .7rem; color: inherit; background: #16212a; border: 1px solid #637783; border-radius: .35rem; }
+    #inventory-panel button:focus-visible, #inventory-open:focus-visible, #recover-drops:focus-visible { outline: 3px solid #b8e2ff; outline-offset: 2px; }
+    #inventory-slots li { min-width: 0; }
+    #inventory-move-targets button, #inventory-shortcut-targets button { min-width: 2.75rem; }
+    #inventory-slots { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .5rem; padding: 0; list-style: none; max-width: 80rem; }
+    .inventory-slot { width: 100%; min-height: 4.5rem; padding: .65rem; color: inherit; background: #16212a; border: 1px solid #637783; border-radius: .4rem; text-align: left; }
+    .inventory-slot[aria-pressed="true"] { border: 2px solid #b8e2ff; }
+    #inventory-actions, #inventory-move-targets, #inventory-shortcut-targets { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
+    #inventory-panel button:disabled { opacity: .55; }
     #stage { position: relative; min-height: 55vh; height: calc(100vh - 190px); overflow: hidden; background: #87b7c8; }
     canvas { display: block; width: 100%; height: 100%; outline: none; }
     #readout { position: absolute; left: 1rem; right: 1rem; bottom: 1rem; max-width: 54rem; padding: .8rem 1rem; border: 1px solid #637783; border-radius: .5rem; background: rgb(12 20 25 / 88%); line-height: 1.45; }
@@ -26,6 +38,9 @@
       header { padding: .75rem; }
       #stage { height: calc(100vh - 250px); min-height: 45vh; }
       #readout { left: .5rem; right: .5rem; bottom: .5rem; }
+      #inventory-panel { padding: .75rem; }
+      #inventory-slots { gap: .25rem; }
+      .inventory-slot { min-height: 4rem; padding: .4rem; font-size: .85rem; }
     }
   </style>
 </head>
@@ -34,6 +49,7 @@
     <header>
       <h1>Phoenix Island — teste de caminhada e natação em 3D</h1>
       <div id="instructions">
+        <p><strong>Inventário:</strong> pressione I ou use o botão Inventário. O inventário inicial tem dez espaços para tipos diferentes de item, em duas fileiras de cinco; itens iguais acumulam no mesmo espaço. Selecione um item e use Examinar, Mover, Usar, Largar ou Atribuir atalho. Os atalhos de 1 a 0 equipam o item atribuído; Espaço usa o item que estiver equipado nas mãos. O peso é registrado quando definido, mas ainda não há limite de carga.</p>
         <p><strong>Mapa:</strong> área de 36 × 36 m, com X e Y entre −18 m e +18 m. A colina e a árvore ficam na região central; o topo da colina chega a 1,8 m, com as encostas clareando gradualmente por altitude. O terreno além das laterais dela é plano e caminhável. O lago fica ao norte e a leste, centrado em X=5,0 m e Y=13,2 m, com cerca de 12 × 6,4 m de água. Uma margem lamacenta texturizada de 1,2 m contorna o lago. A faixa rasa ao redor permite caminhar sobre um fundo de até 0,55 m; depois, o fundo desce até 2,7 m na bacia central. A água fica mais translúcida e suave na borda, escurecendo e ganhando densidade no fundo; ondulações leves e círculos aparecem com o movimento. A região profunda bloqueia a passagem a pé. A natação está implementada para o lago de teste; ainda não há passagens subaquáticas.</p>
         <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Segure Shift direito: W corre para frente a 3,6 m/s, A/D correm lateralmente a 3,2 m/s e S corre para trás a 2,4 m/s. Também pode pressionar Shift direito depois de iniciar o movimento; ao soltá-lo, a velocidade volta a 2,4 m/s. A corrida não se aplica à escalada nem à caminhada pelos galhos. Shift esquerdo+A/D giram o corpo 45° para a esquerda/direita; Shift esquerdo+W gira 180°; Shift esquerdo+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°. Durante a natação, a inclinação controla a trajetória de W/S enquanto a tecla é mantida: olhar para baixo faz avançar e descer; para cima, avançar e subir; olhar no horizonte mantém a profundidade. Mudar o olhar sem manter W/S não movimenta o personagem. A/D deslocam lateralmente. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
@@ -41,6 +57,20 @@
         <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; quatro respingos curtos diferentes ao caminhar na faixa rasa do lago; quatro passos próprios na margem lamacenta; quatro variações sintetizadas para braçadas à superfície e quatro para braçadas submersas; efeitos distintos de entrada/saída; dois bipes médios marcam águas profundas, três agudos uma possível saída e um grave longo a margem, apenas ao entrar em cada zona; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina. Caminhando, a cadência sonora é de cerca de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; isso não muda a velocidade da caminhada. Correndo, os intervalos são cerca de 0,30 s no plano, 0,37 s subindo e 0,27 s descendo. O recuo rápido mantém seu próprio ritmo. Há também um alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento ou Espaço, conforme a política do navegador.</p>
       </div>
     </header>
+    <button id="inventory-open" type="button" aria-controls="inventory-panel" aria-expanded="false">Inventário (I)</button>
+    <section id="inventory-panel" aria-labelledby="inventory-heading" hidden>
+      <h2 id="inventory-heading" tabindex="-1">Inventário</h2>
+      <p id="inventory-count">0 de 10 tipos de item.</p>
+      <ol id="inventory-slots" aria-label="Espaços do inventário, duas fileiras de cinco"></ol>
+      <p id="inventory-selection">Nenhum item selecionado.</p>
+      <div id="inventory-actions" aria-label="Ações do item selecionado">
+        <button type="button" data-inventory-action="examine">Examinar</button><button type="button" data-inventory-action="move">Mover</button><button type="button" data-inventory-action="use">Usar</button><button type="button" data-inventory-action="drop">Largar</button><button type="button" data-inventory-action="shortcut">Atribuir atalho</button>
+      </div>
+      <div id="inventory-move-area" hidden><p>Mover para qual espaço? Um espaço ocupado por outro item será trocado; itens iguais serão agrupados.</p><div id="inventory-move-targets"></div></div>
+      <div id="inventory-shortcut-area" hidden><p>Escolha uma tecla da fileira numérica (1 a 0). Ela equipará este item; cada tecla pode apontar para um único espaço.</p><div id="inventory-shortcut-targets"></div></div>
+      <button id="inventory-close" type="button">Fechar inventário (I ou Esc)</button>
+    </section>
+    <button id="recover-drops" type="button" hidden>Recolher itens largados</button>
     <section id="stage" aria-label="Cena tridimensional do protótipo">
       <div id="webgl-warning" hidden>Este navegador ou dispositivo não disponibilizou WebGL para a cena 3D.</div>
       <div id="readout" role="status" aria-live="polite" aria-atomic="true">Posição inicial ao sul do lago em Phoenix Island. A margem lamacenta tem passos próprios; a faixa rasa permite caminhar, e Espaço inicia a natação somente com mãos vazias, na água rasa e voltado para o fundo. Na natação, mantenha W ou S: a inclinação define subida ou descida; no horizonte, mantém a profundidade. Mudar o olhar sozinho não move. Para sair, chegue à superfície e à faixa rasa ou a uma saída para terra e pressione Espaço. Não há passagem subaquática construída neste mapa. Use as setas para olhar, ou C para anunciar as coordenadas.</div>
@@ -648,7 +678,23 @@
     const TREE_GATHER_REACH = 2.3;
     const TREE_AIM_MIN_ALIGNMENT = Math.cos(Math.PI / 3);
     const treeFruitTargets = []; // Filled by addTreeFruitTarget for fruit-bearing trees.
-    const treeHarvest = { sticks: 0, fruits: {} };
+    const itemDefinitions = { stick: { name: 'graveto', flammable: true, weightKg: null } };
+    const INVENTORY_CAPACITY = 10;
+    const inventory = Array(INVENTORY_CAPACITY).fill(null);
+    const itemShortcuts = {};
+    const droppedItems = [];
+    let selectedInventorySlot = null;
+    let inventoryOpen = false;
+    const inventoryPanel = document.querySelector('#inventory-panel');
+    const inventoryOpenButton = document.querySelector('#inventory-open');
+    const inventoryCloseButton = document.querySelector('#inventory-close');
+    const inventorySlotsElement = document.querySelector('#inventory-slots');
+    const inventorySelection = document.querySelector('#inventory-selection');
+    const inventoryCount = document.querySelector('#inventory-count');
+    const moveArea = document.querySelector('#inventory-move-area');
+    const shortcutArea = document.querySelector('#inventory-shortcut-area');
+    const droppedItemsButton = document.querySelector('#recover-drops');
+    const treeHarvest = { fruits: {} };
     addGrassTufts();
     const treeTrunk = addMesh(new THREE.CylinderGeometry(.2, .28, 2.7, 8), materials.bark, [treeX, treeY, 1.35], 'O tronco de uma árvore está à frente.', true, 'tree');
     for (let index = 0; index < 6; index++) {
@@ -871,6 +917,7 @@
     let swimSurfaceContact = false;
     let nextSwimStrokeAt = 0;
     let heldItem = null;
+    let inventoryReturnFocus = null;
     let audioContext = null;
     let audioBuffers = {};
     let audioReady = false;
@@ -1100,6 +1147,115 @@
       lastAnnouncement = text;
       descriptionText.textContent = text;
     }
+    function inventorySummary() {
+      const count = inventory.filter(Boolean).length;
+      return `Inventário: ${count} de ${INVENTORY_CAPACITY} tipos de item.`;
+    }
+    function addInventoryItem(itemId, quantity = 1) {
+      let slot = inventory.findIndex(entry => entry?.itemId === itemId);
+      if (slot < 0) slot = inventory.findIndex(entry => entry === null);
+      if (slot < 0) return false;
+      if (inventory[slot]) inventory[slot].quantity += quantity;
+      else inventory[slot] = { itemId, quantity };
+      renderInventory();
+      return true;
+    }
+    function renderInventory() {
+      inventorySlotsElement.replaceChildren();
+      inventory.forEach((entry, index) => {
+        const li = document.createElement('li');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'inventory-slot';
+        button.setAttribute('aria-pressed', String(selectedInventorySlot === index));
+        const shortcut = entry ? Object.keys(itemShortcuts).find(key => itemShortcuts[key] === index) : null;
+        const label = entry ? `${itemDefinitions[entry.itemId].name}, quantidade ${entry.quantity}${heldItem === itemDefinitions[entry.itemId].name ? ', equipado' : ''}${shortcut ? `, atalho ${shortcut}` : ''}` : `Espaço ${index + 1}, vazio`;
+        button.setAttribute('aria-label', label);
+        button.textContent = entry ? `${itemDefinitions[entry.itemId].name} × ${entry.quantity}` : `Espaço ${index + 1}: vazio`;
+        button.addEventListener('click', () => { selectedInventorySlot = index; renderInventory(); inventorySelection.textContent = entry ? `Selecionado: ${itemDefinitions[entry.itemId].name}, quantidade ${entry.quantity}.` : `Espaço ${index + 1} vazio.`; });
+        li.append(button); inventorySlotsElement.append(li);
+      });
+      inventoryCount.textContent = inventorySummary();
+      const entry = inventory[selectedInventorySlot];
+      inventorySelection.textContent = entry ? `Selecionado: ${itemDefinitions[entry.itemId].name}, quantidade ${entry.quantity}.` : 'Nenhum item selecionado.';
+      document.querySelectorAll('#inventory-actions button').forEach(button => button.disabled = !entry);
+      moveArea.hidden = true; shortcutArea.hidden = true;
+      droppedItemsButton.hidden = droppedItems.length === 0;
+    }
+    function openInventory() {
+      if (inventoryOpen) return;
+      inventoryOpen = true; inventoryReturnFocus = document.activeElement;
+      stopMovement();
+      inventoryPanel.hidden = false; inventoryOpenButton.setAttribute('aria-expanded', 'true');
+      renderInventory();
+      const first = inventorySlotsElement.querySelector('button');
+      (first || inventoryCloseButton).focus();
+      announce(inventorySummary());
+    }
+    function closeInventory() {
+      if (!inventoryOpen) return;
+      inventoryOpen = false; inventoryPanel.hidden = true; inventoryOpenButton.setAttribute('aria-expanded', 'false');
+      inventoryOpenButton.focus();
+    }
+    function equipInventorySlot(index) {
+      const entry = inventory[index];
+      if (!entry) { announce(`O espaço ${index + 1} está vazio.`); return; }
+      const name = itemDefinitions[entry.itemId].name;
+      heldItem = heldItem === name ? null : name;
+      renderInventory();
+      announce(heldItem ? `Você equipou ${name}. Espaço usa o item em mãos; o efeito específico ainda não foi implementado.` : `Você guardou ${name}; suas mãos estão livres.`);
+    }
+    function examineSelectedItem() {
+      const entry = inventory[selectedInventorySlot]; if (!entry) return;
+      const def = itemDefinitions[entry.itemId];
+      announce(`${def.name}, quantidade ${entry.quantity}. Inflamável: ${def.flammable ? 'sim' : 'não'}. Peso por unidade: ${def.weightKg === null ? 'ainda não definido' : `${def.weightKg} kg`}.`);
+    }
+    function moveSelectedItem(targetIndex) {
+      if (selectedInventorySlot === null || !inventory[selectedInventorySlot]) return;
+      if (targetIndex === selectedInventorySlot) { announce('O item já está nesse espaço.'); return; }
+      const sourceIndex = selectedInventorySlot;
+      const source = inventory[sourceIndex], target = inventory[targetIndex];
+      if (!target) { inventory[targetIndex] = source; inventory[sourceIndex] = null; }
+      else if (target.itemId === source.itemId) { target.quantity += source.quantity; inventory[sourceIndex] = null; }
+      else { inventory[targetIndex] = source; inventory[sourceIndex] = target; }
+      selectedInventorySlot = targetIndex; renderInventory();
+      announce(target ? target.itemId === source.itemId ? `Pilha agrupada no espaço ${targetIndex + 1}.` : `Itens trocados entre os espaços ${sourceIndex + 1} e ${targetIndex + 1}.` : `Item movido para o espaço ${targetIndex + 1}.`);
+    }
+    function dropSelectedItem() {
+      const entry = inventory[selectedInventorySlot]; if (!entry) return;
+      droppedItems.push({ ...entry });
+      if (heldItem === itemDefinitions[entry.itemId].name) heldItem = null;
+      inventory[selectedInventorySlot] = null; renderInventory();
+      announce(`${itemDefinitions[entry.itemId].name}, quantidade ${entry.quantity}, largado no mundo. O botão Recolher itens largados permite recuperar os itens disponíveis.`);
+    }
+    function showMoveTargets() {
+      moveArea.hidden = false; const container = document.querySelector('#inventory-move-targets'); container.replaceChildren();
+      inventory.forEach((entry, index) => { if (index === selectedInventorySlot) return; const b=document.createElement('button'); b.type='button'; b.textContent=`${index+1}${entry ? `: ${itemDefinitions[entry.itemId].name} × ${entry.quantity}` : ': vazio'}`; b.setAttribute('aria-label', `Mover para espaço ${index+1}${entry ? `, ocupado por ${itemDefinitions[entry.itemId].name}, quantidade ${entry.quantity}` : ', vazio'}`); b.addEventListener('click',()=>moveSelectedItem(index)); container.append(b); });
+      container.querySelector('button')?.focus();
+    }
+    function showShortcutTargets() {
+      shortcutArea.hidden = false; const container=document.querySelector('#inventory-shortcut-targets'); container.replaceChildren();
+      const labels=['1','2','3','4','5','6','7','8','9','0'];
+      labels.forEach((key,index)=>{const b=document.createElement('button');b.type='button';b.textContent=key;b.setAttribute('aria-label',`Atribuir atalho ${key}${itemShortcuts[key] !== undefined ? `, atualmente no espaço ${itemShortcuts[key]+1}` : ''}`);b.addEventListener('click',()=>{for(const k of Object.keys(itemShortcuts))if(itemShortcuts[k]===selectedInventorySlot)delete itemShortcuts[k];itemShortcuts[key]=selectedInventorySlot;renderInventory();announce(`Atalho ${key} atribuído a ${itemDefinitions[inventory[selectedInventorySlot].itemId].name}. Pressione ${key} fora do inventário para equipar.`);});container.append(b);});
+      container.querySelector('button')?.focus();
+    }
+    document.querySelectorAll('#inventory-actions button').forEach(button => button.addEventListener('click', () => {
+      if (selectedInventorySlot === null || !inventory[selectedInventorySlot]) return;
+      const action=button.dataset.inventoryAction;
+      if(action==='examine') examineSelectedItem();
+      if(action==='move') showMoveTargets();
+      if(action==='use') equipInventorySlot(selectedInventorySlot);
+      if(action==='drop') dropSelectedItem();
+      if(action==='shortcut') showShortcutTargets();
+    }));
+    inventoryOpenButton.addEventListener('click',openInventory);
+    inventoryCloseButton.addEventListener('click',closeInventory);
+    droppedItemsButton.addEventListener('click',()=>{
+      let recovered=0; const remaining=[];
+      for(const entry of droppedItems){if(addInventoryItem(entry.itemId,entry.quantity))recovered+=entry.quantity;else remaining.push(entry);}
+      droppedItems.splice(0,droppedItems.length,...remaining); renderInventory();
+      announce(recovered ? `Recolhidos ${recovered} item(ns) largado(s).` : 'Não há espaço para recolher os itens; libere um espaço e tente novamente.');
+    });
     function getTreeActionTarget() {
       setCamera();
       const viewDirection = camera.getWorldDirection(new THREE.Vector3()).normalize();
@@ -1209,7 +1365,7 @@
         return;
       }
       if (heldItem) {
-        announce(`Você usa ${heldItem}.`);
+        announce(`Você está segurando ${heldItem}; o efeito de uso ainda não foi implementado.`);
         return;
       }
       if (climbMode === 'trunkGrip' || climbMode === 'branchGrip') {
@@ -1274,9 +1430,12 @@
         announce('Os galhos estão fora de alcance; aproxime-se ou suba até eles.');
         return;
       }
-      treeHarvest.sticks += 1;
+      if (!addInventoryItem('stick', 1)) {
+        announce('Inventário cheio: não foi possível extrair o graveto. Libere um espaço antes de tentar novamente.');
+        return;
+      }
       playBuffer('stickHarvest', .31);
-      announce(`Você extraiu um graveto. Total de gravetos: ${treeHarvest.sticks}.`);
+      announce(`Você extraiu um graveto. ${inventorySummary()}.`);
     }
     function lookDescription() {
       setCamera();
@@ -1446,6 +1605,15 @@
 
     window.addEventListener('keydown', async event => {
       const code = event.code;
+      const typing = event.target instanceof HTMLElement && (event.target.isContentEditable || ['INPUT','TEXTAREA','SELECT'].includes(event.target.tagName));
+      if (typing) return;
+      if (inventoryOpen) {
+        if (code === 'KeyI' || code === 'Escape') { event.preventDefault(); closeInventory(); return; }
+        return;
+      }
+      if (code === 'KeyI') { event.preventDefault(); openInventory(); return; }
+      const shortcutKey = /^Digit[0-9]$/.test(code) ? code.slice(5) : null;
+      if (shortcutKey !== null && itemShortcuts[shortcutKey] !== undefined) { event.preventDefault(); equipInventorySlot(itemShortcuts[shortcutKey]); return; }
       if (isRightShiftEvent(event)) {
         event.preventDefault();
         rightShiftHeld = true;
@@ -1526,6 +1694,7 @@
       stopMovement();
     });
 
+    renderInventory();
     const clock = new THREE.Clock();
     function update(delta) {
       updateWaterRipples(delta);
