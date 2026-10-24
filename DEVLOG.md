@@ -301,8 +301,8 @@ Publicado para teste no Pages; teste manual ainda pendente. Releases e backups n
 
 ### Verificação e validação
 
-Revisão estática concluída; verificação de sintaxe do módulo ainda pendente por indisponibilidade de runtime JavaScript no ambiente. A movimentação contínua ao redor da colina, coleta, receita, seleção de alvo e extração ainda requerem teste manual de gameplay e leitor de tela. Não foi alegado teste manual.
+Revisão estática concluída; delimitadores balanceados e assertions de bounds, quantidades de objetos, craft/mining e blockers passaram. Runtime/parser JavaScript não estava disponível neste ambiente, então sintaxe ainda não foi confirmada por parser. A movimentação contínua ao redor da colina, coleta, receita, seleção de alvo e extração ainda requerem teste manual de gameplay e leitor de tela. Não foi alegado teste manual.
 
 ### Publicação
 
-Ainda não publicada nesta etapa. Releases e backups permanecem intocados.
+Publicado em main, commit final `8a78d53976d1b6cfe50b53176b2c57c9a206a12c`. GitHub Pages workflow 40139327659 concluiu com sucesso. Página de teste: https://concego.github.io/phoenix-island-prototype/. Releases e backups permanecem intocados.
