@@ -1894,7 +1894,6 @@
     function useRockAction(target) {
       if (!target) return false;
       if (target.kind === 'loose') {
-        if (heldItem) { announce(`Guarde ${heldItem} para recolher a pedra com as mãos livres.`); return true; }
         if (target.distance > 2.0) { announce('A pedra solta está fora de alcance; aproxime-se e mire nela.'); return true; }
         if (!addInventoryItem('stone', 1)) { announce('Inventário cheio: não foi possível recolher a pedra. Libere um espaço antes de tentar novamente.'); return true; }
         target.stone.collected = true;
