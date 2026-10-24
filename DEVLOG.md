@@ -321,3 +321,11 @@ Validação manual de gameplay e leitor de tela pendente. Nenhuma release ou bac
 - Retirada a exigência de estar com as mãos vazias para recolher uma pedra solta por Enter. A ferramenta ou objeto equipado permanece nas mãos; alcance, mira e espaço no inventário continuam sendo verificados.
 
 Publicado para teste. Validação manual ainda pendente.
+
+
+## 24 de outubro de 2026 — priorizar alvos da árvore sobre pedras próximas
+
+- O uso da ação agora calcula o alvo da árvore e o alvo rochoso antes de escolher. Se tronco, galho, copa ou fruto estiver suficientemente alinhado com a mira, esse alvo tem precedência sobre pedras com alinhamento quase igual.
+- A seleção do alvo da árvore desempata candidatos pelo alinhamento da mira antes da distância, reduzindo a interferência de pedras próximas ao tronco. As pedras continuam coletáveis/mineráveis quando a árvore não é o alvo efetivamente mirado.
+
+Validar manualmente perto das pedras da base e da árvore.
