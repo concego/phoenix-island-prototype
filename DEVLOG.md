@@ -252,6 +252,12 @@ A alteração foi publicada; validar manualmente com teclado e leitor de tela co
 - A fogueira acende com 60 segundos de combustível. Um graveto inflamável consumido de cada vez pode adicionar até 60 segundos, limitado a 300 segundos totais. O combustível decresce no loop do jogo mesmo com o menu fechado; ao zerar, fogo e luz se apagam, com anúncio único se o jogador estiver próximo. Há geometria procedural e luz Three.js.
 - Conhecimento, habilidades e magia ainda não são sistemas implementados; a seleção contextual está limitada às regras presentes no protótipo. Não há salvamento/persistência das fogueiras.
 
+### Sons candidatos conectados à página de teste (24 de outubro)
+
+Foram conectados para revisão quatro WAVs candidatos de passos para cada um destes terrenos: grama, colina, água rasa, lama e galhos. Os passos do chão da colina selecionam um conjunto próprio; as pistas de subida/descida continuam separadas, e os efeitos de agarrar, subir, descer, apoiar-se e soltar na escalada permanecem inalterados. Os conjuntos já existentes permanecem disponíveis como fallback.
+
+A fogueira agora usa candidatos de ignição, loop ambiente de oito segundos e extinção. O loop espacializado é iniciado depois da transição de ignição e só enquanto a fogueira está acesa, com fade ao apagar; os eventos pontuais usam a posição da fogueira correspondente. Os contextos e sons só são ativados após desbloqueio do áudio por interação do usuário. Esta publicação apenas conecta os arquivos para que possam ser testados; não é uma avaliação nem aprovação auditiva, e o fluxo de gameplay continua pendente de validação.
+
 ### Verificações automatizadas/estáticas
 
 A sintaxe do módulo JavaScript passou por parser estático (sem erros) e verificações de presença dos parâmetros/regras. O fluxo completo de gameplay não foi testado automaticamente nem manualmente; o menu depende de coletar e equipar gravetos e requer validação do usuário com leitor de tela.

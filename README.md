@@ -82,3 +82,9 @@ A linha entre os olhos e o alvo é verificada contra a função numérica de alt
 - Escalada: agarrar e soltar com fricção abafada; subir e descer com contatos ritmados diferentes; apoiar-se no galho ou no chão com rangido leve. Esses efeitos foram preservados sem alteração.
 
 Os efeitos são sintetizados em Python e continuam provisórios; ainda precisam de avaliação auditiva e refinamento. Para regenerar os WAVs: `python3 tools/generate_sounds.py`.
+
+### Novos WAVs para revisão no teste
+
+A página de teste agora está conectada a arquivos candidatos originais: quatro variações de passos na grama (`grass-step-01..04.wav`), quatro de passos na colina (`hill-step-01..04.wav`), quatro na água rasa (`water-step-01..04.wav`), quatro na lama (`mud-step-01..04.wav`) e quatro nos galhos (`branch-step-01..04.wav`). Os passos no chão da colina usam seu próprio conjunto, sem substituir as pistas ressonantes já usadas para indicar subida e descida. As variações anteriores permanecem como fallback se os candidatos não carregarem. Os efeitos existentes de agarrar, subir, descer, apoiar-se e soltar na escalada foram mantidos.
+
+A fogueira também tem candidatos de ignição, loop ambiente de oito segundos e extinção. O loop espacializado começa após a transição de ignição, somente enquanto o fogo está aceso, e recebe fade ao apagar. O áudio inicia após interação do jogador, conforme a política do navegador. Estes arquivos estão conectados para revisão na página de teste; sua validação auditiva e de gameplay ainda está pendente.

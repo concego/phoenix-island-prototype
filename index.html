@@ -1010,14 +1010,30 @@
           step2: './assets/footstep-2.wav',
           step3: './assets/footstep-3.wav',
           step4: './assets/footstep-4.wav',
+          step5: './assets/grass-step-01.wav',
+          step6: './assets/grass-step-02.wav',
+          step7: './assets/grass-step-03.wav',
+          step8: './assets/grass-step-04.wav',
+          hillStep1: './assets/hill-step-01.wav',
+          hillStep2: './assets/hill-step-02.wav',
+          hillStep3: './assets/hill-step-03.wav',
+          hillStep4: './assets/hill-step-04.wav',
           waterStep: './assets/water-step.wav',
           waterStep2: './assets/water-step-2.wav',
           waterStep3: './assets/water-step-3.wav',
           waterStep4: './assets/water-step-4.wav',
+          waterStep5: './assets/water-step-01.wav',
+          waterStep6: './assets/water-step-02.wav',
+          waterStep7: './assets/water-step-03.wav',
+          waterStep8: './assets/water-step-04.wav',
           mudStep: './assets/mud-step.wav',
           mudStep2: './assets/mud-step-2.wav',
           mudStep3: './assets/mud-step-3.wav',
           mudStep4: './assets/mud-step-4.wav',
+          mudStep5: './assets/mud-step-01.wav',
+          mudStep6: './assets/mud-step-02.wav',
+          mudStep7: './assets/mud-step-03.wav',
+          mudStep8: './assets/mud-step-04.wav',
           swimSurface: './assets/swim-surface.wav',
           swimSurface2: './assets/swim-surface-2.wav',
           swimSurface3: './assets/swim-surface-3.wav',
@@ -1031,6 +1047,13 @@
           branchStep: './assets/branch-step.wav',
           branchStep2: './assets/branch-step-2.wav',
           branchStep3: './assets/branch-step-3.wav',
+          branchStep4: './assets/branch-step-01.wav',
+          branchStep5: './assets/branch-step-02.wav',
+          branchStep6: './assets/branch-step-03.wav',
+          branchStep7: './assets/branch-step-04.wav',
+          campfireIgnite: './assets/campfire-ignite.wav',
+          campfireLoop: './assets/campfire-loop.wav',
+          campfireExtinguish: './assets/campfire-extinguish.wav',
           stickHarvest: './assets/twig-harvest.wav',
           up: './assets/slope-up.wav',
           down: './assets/slope-down.wav',
@@ -1050,20 +1073,82 @@
             // Se um arquivo não carregar, o protótipo continua e usa tons sintetizados como reserva.
           }
         }));
+        for (const fire of campfires) if (fire.lit) startCampfireLoop(fire);
       }
     }
-    function playBuffer(name, volume = .42) {
+    function startCampfireLoop(fire) {
+      if (!audioContext || audioContext.state !== 'running' || !audioBuffers.campfireLoop || fire.loopSource || !fire.lit) return;
+      const source = audioContext.createBufferSource();
+      const gain = audioContext.createGain();
+      source.buffer = audioBuffers.campfireLoop;
+      source.loop = true;
+      const panner = audioContext.createPanner();
+      panner.panningModel = 'HRTF';
+      panner.distanceModel = 'inverse';
+      panner.refDistance = 1.2;
+      panner.maxDistance = 18;
+      panner.rolloffFactor = 1;
+      panner.positionX.value = fire.x;
+      panner.positionY.value = terrainHeightAt(fire.x, fire.y) + .45;
+      panner.positionZ.value = -fire.y;
+      source.connect(gain).connect(panner).connect(audioContext.destination);
+      fire.loopPanner = panner;
+      const now = audioContext.currentTime;
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(.2, now + .35);
+      source.start();
+      fire.loopSource = source;
+      fire.loopGain = gain;
+    }
+    function stopCampfireLoop(fire) {
+      if (!fire.loopSource || !audioContext) return;
+      const now = audioContext.currentTime;
+      fire.loopGain.gain.cancelScheduledValues(now);
+      fire.loopGain.gain.setTargetAtTime(0, now, .08);
+      const source = fire.loopSource;
+      const gain = fire.loopGain;
+      try { source.stop(now + .35); } catch (_) {}
+      source.onended = () => {
+        source.disconnect();
+        gain.disconnect();
+        fire.loopPanner?.disconnect();
+        fire.loopPanner = null;
+      };
+      fire.loopSource = null;
+      fire.loopGain = null;
+    }
+    function playBuffer(name, volume = .42, spatialFire = null) {
       if (!audioContext || !audioBuffers[name]) return false;
       const source = audioContext.createBufferSource();
       const gain = audioContext.createGain();
       source.buffer = audioBuffers[name];
-      if (name.startsWith('step') || name.startsWith('branchStep') || name.startsWith('waterStep') || name.startsWith('mudStep') || name.startsWith('swimSurface') || name.startsWith('swimUnderwater')) {
+      if (name.startsWith('campfire')) {
+        const panner = audioContext.createPanner();
+        panner.panningModel = 'HRTF';
+        panner.distanceModel = 'inverse';
+        panner.refDistance = 1.2;
+        panner.maxDistance = 18;
+        panner.rolloffFactor = 1;
+        const fire = spatialFire || campfires.at(-1);
+        if (fire) {
+          panner.positionX.value = fire.x;
+          panner.positionY.value = terrainHeightAt(fire.x, fire.y) + .45;
+          panner.positionZ.value = -fire.y;
+        }
+        gain.connect(panner).connect(audioContext.destination);
+      }
+      if (name.startsWith('step') || name.startsWith('hillStep') || name.startsWith('branchStep') || name.startsWith('waterStep') || name.startsWith('mudStep') || name.startsWith('swimSurface') || name.startsWith('swimUnderwater')) {
         source.playbackRate.setValueAtTime(.95 + Math.random() * .1, audioContext.currentTime);
       } else if (name === 'stickHarvest') {
         source.playbackRate.setValueAtTime(.97 + Math.random() * .06, audioContext.currentTime);
       }
       gain.gain.value = volume;
-      source.connect(gain).connect(audioContext.destination);
+      if (name.startsWith('campfire')) {
+        // Campfire one-shots route only through the world-space panner.
+        source.connect(gain);
+      } else {
+        source.connect(gain).connect(audioContext.destination);
+      }
       source.start();
       return true;
     }
@@ -1081,20 +1166,27 @@
       oscillator.start(now);
       oscillator.stop(now + duration + .02);
     }
+    function isOnHillGround(x = player.x, y = player.y) {
+      return climbMode === 'ground' && !isInLakeWater(x, y) && !isMuddyGround(x, y)
+        && Math.abs(x) <= HILL_HALF_WIDTH && y > HILL_RAMP_START_Y && y < HILL_REAR_END_Y;
+    }
     function playStep() {
       const onBranch = climbMode === 'branch';
-      const inShallowWater = !onBranch && climbMode === 'ground' && isInLakeWater(player.x, player.y) && !isDeepLakeWater(player.x, player.y);
-      const onMud = !onBranch && !inShallowWater && climbMode === 'ground' && isMuddyGround(player.x, player.y);
+      const onHill = !onBranch && isOnHillGround();
+      const inShallowWater = !onBranch && !onHill && climbMode === 'ground' && isInLakeWater(player.x, player.y) && !isDeepLakeWater(player.x, player.y);
+      const onMud = !onBranch && !onHill && !inShallowWater && climbMode === 'ground' && isMuddyGround(player.x, player.y);
       if (inShallowWater) spawnWaterRipple(player.x, player.y, .8);
       let variants = onBranch
-        ? ['branchStep', 'branchStep2', 'branchStep3']
-        : inShallowWater
-          ? ['waterStep', 'waterStep2', 'waterStep3', 'waterStep4']
-          : onMud
-            ? ['mudStep', 'mudStep2', 'mudStep3', 'mudStep4']
-            : ['step', 'step2', 'step3', 'step4'];
+        ? ['branchStep', 'branchStep2', 'branchStep3', 'branchStep4', 'branchStep5', 'branchStep6', 'branchStep7']
+        : onHill
+          ? ['hillStep1', 'hillStep2', 'hillStep3', 'hillStep4']
+          : inShallowWater
+            ? ['waterStep', 'waterStep2', 'waterStep3', 'waterStep4', 'waterStep5', 'waterStep6', 'waterStep7', 'waterStep8']
+            : onMud
+              ? ['mudStep', 'mudStep2', 'mudStep3', 'mudStep4', 'mudStep5', 'mudStep6', 'mudStep7', 'mudStep8']
+              : ['step', 'step2', 'step3', 'step4', 'step5', 'step6', 'step7', 'step8'];
       let available = variants.filter(name => audioBuffers[name]);
-      if (!available.length && (onBranch || inShallowWater || onMud)) available = ['step', 'step2', 'step3', 'step4'].filter(name => audioBuffers[name]);
+      if (!available.length && (onHill || onBranch || inShallowWater || onMud)) available = ['step', 'step2', 'step3', 'step4'].filter(name => audioBuffers[name]);
       if (available.length > 1 && lastStepBufferName) {
         const withoutLast = available.filter(name => name !== lastStepBufferName);
         if (withoutLast.length) available = withoutLast;
@@ -1211,6 +1303,24 @@
       );
       camera.lookAt(camera.position.clone().add(direction));
       camera.updateMatrixWorld(true);
+      if (audioContext?.listener) {
+        const listener = audioContext.listener;
+        const now = audioContext.currentTime;
+        if (listener.positionX) {
+          listener.positionX.setTargetAtTime(camera.position.x, now, .025);
+          listener.positionY.setTargetAtTime(camera.position.y, now, .025);
+          listener.positionZ.setTargetAtTime(camera.position.z, now, .025);
+          listener.forwardX.setTargetAtTime(direction.x, now, .025);
+          listener.forwardY.setTargetAtTime(direction.y, now, .025);
+          listener.forwardZ.setTargetAtTime(direction.z, now, .025);
+          listener.upX.setTargetAtTime(0, now, .025);
+          listener.upY.setTargetAtTime(1, now, .025);
+          listener.upZ.setTargetAtTime(0, now, .025);
+        } else {
+          listener.setPosition(camera.position.x, camera.position.y, camera.position.z);
+          listener.setOrientation(direction.x, direction.y, direction.z, 0, 1, 0);
+        }
+      }
     }
     function announce(text) {
       if (text === lastAnnouncement) text += ' ';
@@ -1370,6 +1480,8 @@
       fire.innerFlame = innerFlame;
       fire.light = light;
       campfires.push(fire);
+      fire.igniteStarted = playBuffer('campfireIgnite', .48, fire);
+      if (fire.igniteStarted) window.setTimeout(() => startCampfireLoop(fire), 700);
       renderInventory();
       closeItemActionMenu();
       announce('Fogueira acesa. Ela começa com um minuto de combustível; gravetos inflamáveis podem abastecer o fogo enquanto estiver aceso. Sem combustível, apaga.');
@@ -1479,6 +1591,10 @@
     function updateCampfires(delta) {
       for (const fire of campfires) {
         if (!fire.lit) continue;
+        if (audioContext?.state === 'running' && !fire.loopSource && !fire.igniteStarted) {
+          fire.igniteStarted = playBuffer('campfireIgnite', .48, fire);
+          if (fire.igniteStarted) window.setTimeout(() => startCampfireLoop(fire), 700);
+        }
         fire.fuelSeconds = Math.max(0, fire.fuelSeconds - delta);
         fire.elapsed += delta;
         const flicker = 1 + Math.sin(fire.elapsed * 12.7) * .1 + Math.sin(fire.elapsed * 7.3) * .08;
@@ -1487,6 +1603,8 @@
         fire.light.intensity = 2.0 + Math.sin(fire.elapsed * 10.1) * .24;
         if (fire.fuelSeconds <= 0) {
           fire.lit = false;
+          stopCampfireLoop(fire);
+          if (audioContext?.state === 'running') playBuffer('campfireExtinguish', .4, fire);
           fire.flame.visible = false;
           fire.innerFlame.visible = false;
           fire.light.intensity = 0;
