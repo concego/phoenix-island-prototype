@@ -230,3 +230,14 @@ A mudança foi revisada estaticamente e requer teste manual do usuário na vers�
 ### Teste e aprovação
 
 A lógica e a documentação foram revisadas estaticamente. A inspeção do código não equivale a uma validação manual da interação; teste com leitor de tela e confirmação do usuário ainda são necessários. A verificação da página publicada/build será registrada separadamente após a publicação.
+
+
+## 24 de outubro de 2026 — tecla Enter no botão de abertura
+
+### Implementado no código
+
+- Enter enquanto o foco está no botão geral “Inventário (I)” não abre o painel. A abertura pelo teclado permanece em I; clique/toque no botão continua disponível. Enter dentro da grade mantém a função de abrir as ações do item.
+
+### Teste e aprovação
+
+A alteração foi publicada; validar manualmente com teclado e leitor de tela continua pendente. Não registrar como teste manual ou aprovação do usuário.
