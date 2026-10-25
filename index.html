@@ -86,7 +86,7 @@
         <p><strong>Mapa:</strong> área de 48 × 54 m, com X entre −24 m e +24 m e Y entre −18 m e +36 m. A colina e a árvore ficam na região central; o topo da colina chega a 1,8 m, com as encostas clareando gradualmente por altitude. Há terreno plano e caminhável em volta da colina e espaço para seguir ao norte dela. O lago fica ao norte e a leste, centrado em X=5,0 m e Y=13,2 m, com cerca de 12 × 6,4 m de água. Uma margem lamacenta texturizada de 1,2 m contorna o lago. A faixa rasa ao redor permite caminhar sobre um fundo de até 0,55 m; depois, o fundo desce até 2,7 m na bacia central. A água fica mais translúcida e suave na borda, escurecendo e ganhando densidade no fundo; ondulações leves e círculos aparecem com o movimento. A região profunda bloqueia a passagem a pé. A natação está implementada para o lago de teste; ainda não há passagens subaquáticas.</p>
         <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Segure Shift direito: W corre para frente a 3,6 m/s, A/D correm lateralmente a 3,2 m/s e S corre para trás a 2,4 m/s. Também pode pressionar Shift direito depois de iniciar o movimento; ao soltá-lo, a velocidade volta a 2,4 m/s. A corrida não se aplica à escalada nem à caminhada pelos galhos. Shift esquerdo+A/D giram o corpo 45° para a esquerda/direita; Shift esquerdo+W gira 180°; Shift esquerdo+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°. Durante a natação, a inclinação controla a trajetória de W/S enquanto a tecla é mantida: olhar para baixo faz avançar e descer; para cima, avançar e subir; olhar no horizonte mantém a profundidade. Mudar o olhar sem manter W/S não movimenta o personagem. A/D deslocam lateralmente. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
-        <p><strong>Pedras:</strong> com as mãos vazias, mire uma pedra solta perto da colina e pressione Espaço para recolhê-la. Para montar um martelo, equipe graveto ou pedra e pressione Alt+C; a receita consome 1 graveto e 1 pedra. No topo, mire um afloramento e pressione Espaço com o martelo de pedra equipado para extrair pedras. Cada afloramento rende uma vez; as pedras soltas também desaparecem após a coleta. O martelo não se desgasta nesta versão de teste.</p>
+        <p><strong>Pedras:</strong> mire uma pedra solta perto da colina e pressione Espaço para recolhê-la; Enter também coleta pedras soltas. Para montar um martelo, equipe graveto ou pedra e pressione Alt+C; a receita consome 1 graveto e 1 pedra. No topo, basta ter o martelo de pedra no inventário — não precisa equipá-lo —, mirar um afloramento e pressionar Espaço repetidamente: são 3 ou 4 golpes, com progresso anunciado e sons de impacto, antes do golpe final quebrar a rocha e liberar as pedras. O martelo não se desgasta nesta versão de teste.</p>
         <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com mãos vazias, na faixa rasa e voltado para águas profundas, Espaço inicia a natação. Para sair, mantenha as mãos vazias, esteja na superfície e perto da faixa rasa ou de uma saída para terra, então pressione Espaço; sair não é automático. Ao ficar muito raso, o fundo pode elevar você até a superfície, e o jogo anuncia isso. Um canal subaquático conectado manterá a natação, mas ainda não há passagens no mapa. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S fazem impulsos ritmados de escalada, aproximadamente a cada 0,43 segundo enquanto a tecla estiver mantida; soltar interrompe o movimento. Espaço solta.</p>
         <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; quatro respingos curtos diferentes ao caminhar na faixa rasa do lago; quatro passos próprios na margem lamacenta; quatro variações sintetizadas para braçadas à superfície e quatro para braçadas submersas; efeitos distintos de entrada/saída; dois bipes médios marcam águas profundas, três agudos uma possível saída e um grave longo a margem, apenas ao entrar em cada zona; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina. Caminhando, a cadência sonora é de cerca de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; isso não muda a velocidade da caminhada. Correndo, os intervalos são cerca de 0,30 s no plano, 0,37 s subindo e 0,27 s descendo. O recuo rápido mantém seu próprio ritmo. Há também um alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento ou Espaço, conforme a política do navegador.</p>
       </div>
@@ -768,7 +768,7 @@
       return mesh;
     }
     for (const [index, location] of hillStoneLocations.entries()) {
-      const node = { ...location, z: terrainHeightAt(location.x, location.y), remaining: location.output, meshes: [], point: designToThree(location.x, location.y, terrainHeightAt(location.x, location.y) + .35) };
+      const node = { ...location, z: terrainHeightAt(location.x, location.y), remaining: location.output, totalHits: location.output, hitsTaken: 0, meshes: [], baseScales: [], basePositions: [], baseRotations: [], point: designToThree(location.x, location.y, terrainHeightAt(location.x, location.y) + .35) };
       const shapes = [
         [-.23, 0, .06, [.36, .30, .29], materials.stone],
         [.18, .04, .04, [.30, .27, .24], materials.stoneLight],
@@ -778,6 +778,9 @@
         const mesh = createRockMesh(location.x + dx, location.y + dy, node.z + dz, scale, material, index * .8 + dx);
         markLookable(mesh, 'Pedra bruta de um afloramento no topo da colina.', 'rock');
         node.meshes.push(mesh);
+        node.baseScales.push(mesh.scale.clone());
+        node.basePositions.push(mesh.position.clone());
+        node.baseRotations.push(mesh.rotation.clone());
       }
       hillStoneNodes.push(node);
     }
@@ -1107,6 +1110,9 @@
           campfireIgnite: './assets/campfire-ignite.wav',
           campfireLoop: './assets/campfire-loop.wav',
           campfireExtinguish: './assets/campfire-extinguish.wav',
+          rockStrike1: './assets/rock-strike-01.wav',
+          rockStrike2: './assets/rock-strike-02.wav',
+          rockBreak: './assets/rock-break.wav',
           stickHarvest: './assets/twig-harvest.wav',
           up: './assets/slope-up.wav',
           down: './assets/slope-down.wav',
@@ -1911,17 +1917,53 @@
         announce('Este afloramento exige que você tenha um martelo de pedra no inventário. Monte-o com 1 pedra e 1 graveto usando Alt+C.');
         return true;
       }
-      const amount = target.node.remaining;
-      if (!addInventoryItem('stone', amount)) { announce('Inventário cheio: libere um espaço para guardar as pedras antes de minerar.'); return true; }
-      target.node.remaining = 0;
-      const blockerIndex = blockers.findIndex(blocker => blocker.name.startsWith('afloramento') && blocker.x === target.node.x && blocker.y === target.node.y);
-      if (blockerIndex >= 0) blockers.splice(blockerIndex, 1);
-      for (const mesh of target.node.meshes) {
-        mesh.visible = false;
-        const index = lookables.indexOf(mesh);
-        if (index >= 0) lookables.splice(index, 1);
+      const node = target.node;
+      const finalHit = node.hitsTaken + 1 >= node.totalHits;
+      if (finalHit && !inventory.some(entry => entry?.itemId === 'stone') && !inventory.some(entry => entry === null)) {
+        announce('Inventário cheio: libere um espaço para guardar as pedras antes de concluir a extração. O afloramento não foi danificado.');
+        return true;
       }
-      announce(`Você extraiu ${amount} pedras do afloramento. O afloramento foi esgotado. ${inventorySummary()}.`);
+      node.hitsTaken++;
+      node.remaining = Math.max(0, node.totalHits - node.hitsTaken);
+      for (let index = 0; index < node.meshes.length; index++) {
+        const mesh = node.meshes[index];
+        const baseScale = node.baseScales[index];
+        const basePosition = node.basePositions[index];
+        const baseRotation = node.baseRotations[index];
+        const looseness = .012 * node.hitsTaken;
+        mesh.scale.set(baseScale.x * (1 - .06 * node.hitsTaken), baseScale.y * (1 - .055 * node.hitsTaken), baseScale.z * Math.max(.5, 1 - .11 * node.hitsTaken));
+        mesh.position.set(basePosition.x + (index - 1) * looseness, basePosition.y, basePosition.z + (index % 2 ? -1 : 1) * looseness);
+        mesh.rotation.set(baseRotation.x, baseRotation.y, baseRotation.z + (index - 1) * .015 * node.hitsTaken);
+      }
+      if (finalHit) {
+        const amount = node.output;
+        if (!addInventoryItem('stone', amount)) {
+          node.hitsTaken--;
+          node.remaining = 1;
+          for (let index = 0; index < node.meshes.length; index++) {
+            node.meshes[index].scale.copy(node.baseScales[index]);
+            node.meshes[index].position.copy(node.basePositions[index]);
+            node.meshes[index].rotation.copy(node.baseRotations[index]);
+          }
+          announce('Inventário cheio: libere um espaço para guardar as pedras antes de concluir a extração. O afloramento permanece quase extraído.');
+          return true;
+        }
+        node.remaining = 0;
+        for (const mesh of node.meshes) {
+          mesh.visible = false;
+          const index = lookables.indexOf(mesh);
+          if (index >= 0) lookables.splice(index, 1);
+        }
+        const blockerIndex = blockers.findIndex(blocker => blocker.name.startsWith('afloramento') && blocker.x === node.x && blocker.y === node.y);
+        if (blockerIndex >= 0) blockers.splice(blockerIndex, 1);
+        if (audioContext?.state === 'running') playBuffer('rockBreak', .48);
+        announce(`O afloramento se partiu. Você extraiu ${amount} pedras. ${inventorySummary()}.`);
+      } else {
+        const strikeName = Math.random() < .5 ? 'rockStrike1' : 'rockStrike2';
+        if (audioContext?.state === 'running') playBuffer(strikeName, .42);
+        const stage = Math.round(node.hitsTaken / node.totalHits * 100);
+        announce(`Golpe ${node.hitsTaken} de ${node.totalHits}: pedra trincada, ${stage}% de progresso. Continue mirando e pressione Espaço novamente.`);
+      }
       return true;
     }
     function collectSceneItemWithEnter(event) {

@@ -342,3 +342,18 @@ Validar manualmente perto das pedras da base e da árvore.
 ### Verificação e validação
 
 Revisão estática dos fluxos de alvo, alcance, inventário, recompensa, esgotamento e limpeza de cena. A publicação e a carga pública da página serão verificadas separadamente. Uma carga de página ou análise estática não substitui o teste manual de mineração, inventário cheio e desambiguação perto da árvore; esses testes ainda precisam ser feitos no gameplay publicado.
+
+
+## 24 de outubro de 2026 — mineração em vários golpes e sons de rocha
+
+### Implementado
+
+- A mineração deixa de entregar todas as pedras com um único Espaço. Cada afloramento exige 3 ou 4 golpes — correspondentes ao rendimento de 3 ou 4 pedras — e só concede a recompensa ao golpe final.
+- Cada golpe intermediário anuncia, na região acessível, o número do golpe e o progresso percentual; as malhas do afloramento se retraem, se deslocam e giram gradualmente. As transformações visuais são derivadas sempre da posição, escala e rotação iniciais, evitando deslocamento cumulativo desordenado a cada golpe.
+- Dois WAVs distintos de impacto são sorteados nos golpes intermediários; o golpe final usa o efeito separado de quebra. O áudio obedece ao desbloqueio de áudio já existente no navegador. Os três WAVs originais são PCM mono, 16 bits, 48 kHz e foram conectados ao carregamento de áudio do protótipo.
+- Antes do golpe final, o inventário é verificado. Sem espaço para as pedras, a rocha não recebe dano final nem concede recompensa; se a inserção da recompensa falhar, o progresso visual do último impacto é restaurado para o estado anterior. O martelo continua sendo exigido no inventário, sem precisar equipá-lo, e o afloramento continua selecionável enquanto ainda houver golpes restantes.
+- Atualizados o texto de instruções em jogo e o README para explicar a sequência e a exigência do martelo.
+
+### Verificação e validação
+
+Inspecionados estaticamente os fluxos de seleção, presença do martelo, golpes intermediários/final, anúncio de progresso, capacidade do inventário, limpeza ao esgotar e conexões dos efeitos sonoros. WAVs identificados como RIFF PCM mono, 16 bits, 48 kHz. Não foi feita audição dos arquivos nem teste manual de gameplay; a avaliação auditiva, a coleta real, inventário cheio e acessibilidade no jogo continuam pendentes. A carga dos arquivos e a publicação da página de teste serão verificadas após o commit.
