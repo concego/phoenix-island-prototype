@@ -1809,7 +1809,7 @@
       const useHint = entry.itemId === 'stoneKnife' ? ' Espaço corta um galho caído em um único movimento.'
         : entry.itemId === 'stoneHammer' ? ' O martelo é usado para minerar os afloramentos maiores; para isso basta tê-lo no inventário.'
         : ''; 
-      announce(heldItem ? `Você equipou ${name}.${useHint || ' Espaço usa o item em mãos; o efeito específico ainda não foi implementado.'}` : `Você guardou ${name}.`);
+      announce(heldItem ? `Você equipou ${name}.` : `Você guardou ${name}.`);
     }
     function examineSelectedItem() {
       const entry = inventory[selectedInventorySlot]; if (!entry) return;
