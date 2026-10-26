@@ -2602,7 +2602,7 @@
       }
       if (code === 'KeyI') { event.preventDefault(); openInventory(); return; }
       const shortcutKey = /^Digit[0-9]$/.test(code) ? code.slice(5) : null;
-      if (shortcutKey !== null && itemShortcuts[shortcutKey] !== undefined) { event.preventDefault(); const shortcutSlot = inventory.findIndex(entry => entry?.itemId === itemShortcuts[shortcutKey]); if (shortcutSlot >= 0) equipInventorySlot(shortcutSlot); else announce(`O atalho ${shortcutKey} está atribuído a ${itemDefinitions[itemShortcuts[shortcutKey]].name}, mas esse item não está no inventário.`); return; }
+      if (shortcutKey !== null && itemShortcuts[shortcutKey] !== undefined) { event.preventDefault(); const shortcutSlot = inventory.findIndex(entry => entry?.itemId === itemShortcuts[shortcutKey]); if (shortcutSlot >= 0) equipInventorySlot(shortcutSlot); else announce(`${itemDefinitions[itemShortcuts[shortcutKey]].name} esgotado.`); return; }
       if (isRightShiftEvent(event)) {
         event.preventDefault();
         rightShiftHeld = true;
