@@ -1801,7 +1801,7 @@
     function equipInventorySlot(index) {
       if (climbMode !== 'ground') { announce('Só é possível equipar ou guardar itens no chão, sem estar nadando ou agarrado à árvore.'); return; }
       const entry = inventory[index];
-      if (!entry) { announce(`O espaço ${index + 1} está vazio.`); return; }
+      if (!entry) { announce('vazio'); return; }
       const name = itemDefinitions[entry.itemId].name;
       heldItem = heldItem === name ? null : name;
       renderInventory();
