@@ -449,7 +449,7 @@ A sintaxe, a altura alcançável, o patamar de escalada e os ramos de interaçã
 ### Implementado no código
 
 - A confirmação de criação foi encurtada à frase aprovada.
-- As descrições ao olhar para a fogueira, olhando para baixo ou horizontalmente, com o alvo central ou fora do centro, não anunciam segundos exatos. A estimativa proporcional ao limite máximo usa quatro faixas: chamas altas, estáveis, baixas ou fogo que deve apagar em breve. Fogueira apagada continua descrita como apagada.
+- As descrições ao olhar para a fogueira, olhando para baixo ou horizontalmente, com o alvo central ou fora do centro, não anunciam segundos exatos. A descrição compara o combustível restante ao limite máximo: acima de um terço, “acesa; as chamas estão altas”; com um terço ou menos, “acesa; o fogo deve apagar em breve”. Fogueira apagada continua descrita como apagada.
 - README atualizado para registrar a informação qualitativa e a confirmação concisa.
 
 ### Verificação e validação
