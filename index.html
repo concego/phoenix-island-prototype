@@ -1864,7 +1864,7 @@
       let recovered=0; const remaining=[];
       for(const entry of droppedItems){if(addInventoryItem(entry.itemId,entry.quantity))recovered+=entry.quantity;else remaining.push(entry);}
       droppedItems.splice(0,droppedItems.length,...remaining); renderInventory();
-      announce(recovered ? `Recolhidos ${recovered} item(ns) largado(s).` : 'Não há espaço para recolher os itens; libere um espaço e tente novamente.');
+      announce(recovered ? `Recolhidos ${recovered} item(ns) largado(s).` : 'Inventário cheio.');
     });
     function getTreeActionTarget() {
       setCamera();
