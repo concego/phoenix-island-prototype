@@ -249,7 +249,7 @@ A alteração foi publicada; validar manualmente com teclado e leitor de tela co
 
 - Com item nas mãos, Alt+C abre um diálogo modal de ações contextuais. O movimento para ao abrir; Esc fecha e devolve o foco; Tab permanece no diálogo, e setas/Home/End navegam pelas ações habilitadas. Requisitos e bloqueios são descritos junto às ações, incluindo falta de gravetos, água/lama, modo de movimento e fogueira próxima apagada.
 - Graveto é atualmente o único material inflamável. Criar fogueira exige estar no chão seco e ter pelo menos 10 gravetos na pilha equipada; consome exatamente 10 e a coloca no ponto atual do terreno. Não permite duplicar fogo aceso ou construir sobre fogo apagado a até 2,4 m. Reacender ainda não está disponível.
-- A fogueira acende com 60 segundos de combustível. Um graveto inflamável consumido de cada vez pode adicionar até 60 segundos, limitado a 300 segundos totais. O combustível decresce no loop do jogo mesmo com o menu fechado; ao zerar, fogo e luz se apagam, com anúncio único se o jogador estiver próximo. Há geometria procedural e luz Three.js.
+- A fogueira acende com 60 segundos de combustível. Um material inflamável — graveto, galho ou fibra vegetal — consumido de cada vez pode adicionar até 60 segundos, limitado a 300 segundos totais. O combustível decresce no loop do jogo mesmo com o menu fechado; ao zerar, fogo e luz se apagam, com anúncio único se o jogador estiver próximo. Há geometria procedural e luz Three.js.
 - Conhecimento, habilidades e magia ainda não são sistemas implementados; a seleção contextual está limitada às regras presentes no protótipo. Não há salvamento/persistência das fogueiras.
 
 ### Sons candidatos conectados à página de teste (24 de outubro)
@@ -366,9 +366,25 @@ Inspecionados estaticamente os fluxos de seleção, presença do martelo, golpes
 - Distribuídos 30 arbustos pelo terreno em posições pseudoaleatórias reproduzíveis, evitando lago, colina, árvore e área inicial. Arbustos não geram colisores; as partes visíveis são pontos observáveis e o sistema de olhar informa que fornecem fibra vegetal.
 - Espaço ou Enter colhe um arbusto alcançável e fornece 2 fibras vegetais; o arbusto desaparece após a coleta. A ação checa espaço no inventário e mantém o arbusto intacto quando o item não cabe. A coleta compete com os demais alvos do cenário respeitando mira e prioridades.
 - Atualizada a receita do martelo: consome 1 pedra, 1 graveto e 1 fibra vegetal, que representa a amarração da pedra ao cabo. O martelo segue reutilizável sem desgaste.
-- Adicionada a faca de pedra como nova receita do menu Alt+C quando uma pedra está equipada: requer 3 pedras no total, consome todas e cria a ferramenta. O uso funcional da faca não foi implementado e é anunciado como trabalho futuro.
+- Adicionada a faca de pedra como nova receita do menu Alt+C quando uma pedra está equipada: requer 2 pedras no total (uma nas mãos e outra no inventário) e consome ambas. O uso funcional da faca foi posteriormente implementado como corte de galhos caídos em um único movimento; ver a entrada de 26 de outubro de 2026.
 - Instruções em jogo e README atualizados. Nenhuma mudança em releases ou backups.
 
 ### Verificação e validação
 
 Revisar coleta, distribuição, mira, concorrência de ações, requisitos das receitas, consumo e falta de espaço. Teste manual de gameplay, navegação com leitor de tela e validação visual dos arbustos continuam pendentes; não alegar confirmação manual.
+
+
+## 26 de outubro de 2026 — galhos caídos e função definida para as ferramentas
+
+### Implementado no código
+
+- Receita da faca de pedra definida em 2 pedras no total: uma equipada nas mãos e mais uma no inventário; a fabricação consome ambas. A faca é uma ferramenta de corte e corta/coleta um galho caído em uma ação.
+- Adicionados dez galhos caídos visíveis e descritíveis em terreno caminhável, fora do lago, colina, árvore e área inicial. São maiores e mais resistentes que gravetos; não criam colisores nem bloqueios invisíveis.
+- O martelo é ferramenta de impacto usada exclusivamente para minerar os afloramentos maiores da colina, sem exigir que esteja equipado. Não corta nem quebra galhos; nenhuma ação de galho com martelo foi incluída. Auxílio à construção é futuro e ainda não foi implementado.
+- A faca é a única ferramenta de corte de galhos: corta e coleta galho caído em um movimento. Com um galho equipado, Alt+C oferece “Quebrar galho em gravetos” somente se o jogador tiver uma faca de pedra em algum espaço do inventário (não precisa equipá-la); a ação revalida a faca ao ser executada, consome um galho e produz dois gravetos. A ação acomoda a saída em uma pilha de gravetos ou em espaço liberado pelo consumo; quando a capacidade não permite a saída, preserva o galho.
+- Galhos e fibras vegetais são inflamáveis. A mira/alcance da faca e a capacidade do inventário são verificados antes da coleta; árvores, alvos rochosos e arbustos mantêm suas prioridades de interação.
+
+### Verificação e validação
+
+- Revisão estática de sintaxe JavaScript, receita, consumo, espaço de inventário, mira, alcance, posições dos dez galhos e prioridades. A mineração existente com martelo foi preservada.
+- Teste manual de gameplay, TalkBack/leitor de tela, inspeção visual e audição dos sons não foram realizados. Publicar ou analisar o código não equivale a validação manual.
