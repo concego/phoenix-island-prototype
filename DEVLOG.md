@@ -415,3 +415,25 @@ Revisar sintaxe JavaScript e estaticamente confirmar a seleção contextual, ent
 ### Verificação e validação
 
 A sintaxe, a altura alcançável, o patamar de escalada e os ramos de interação serão verificados estaticamente. É necessário ainda testar manualmente agarre, subida completa, movimentação nas pontas, descida, coleta baixa com/sem faca e leitor de tela. Não tratar revisão estática como playtest.
+
+
+## 26 de outubro de 2026 — cinzas de fogueiras apagadas
+
+### Direção aprovada
+
+- Fogueiras apagadas não podem ser reacendidas. Cada fogueira que se extingue deixa cinzas no local como recurso destinado a ajudar no futuro sistema de plantio.
+- Anderson confirmou que as cinzas são um item do inventário e que cada pilha rende uma unidade.
+- Não foi aprovado nenhum uso atual, receita ou plantio com cinzas; não adicionar funcionalidade além da coleta.
+
+### Implementado no código
+
+- Ao extinguir-se, cada fogueira cria uma única pilha visual e descritível de cinzas no local.
+- A pilha é recolhida com Enter quando o jogador mira e está a até 2 m; a ação adiciona uma cinza ao inventário e remove a pilha do cenário. Se o inventário não tiver espaço, a pilha permanece.
+- Cinzas foram adicionadas como tipo de item não inflamável, sem peso definido e sem ação de uso. O anúncio identifica o alvo, informa alcance ou inventário cheio quando necessário e confirma a coleta.
+- Mensagens de criação e de descrição da fogueira apagada agora deixam claro que ela não pode ser reacendida e que suas cinzas podem ser recolhidas. A descrição de olhar também identifica cinzas próximas.
+- Atualizado o README para registrar regras e limite de uso atual.
+
+### Verificação e validação
+
+- Revisão estática confirma criação uma vez por fogueira, inclusão no inventário, coleta única, preservação da pilha em caso de inventário cheio, suporte à descrição e integração da interação por Enter.
+- Sintaxe e comportamento em gameplay, leitor de tela, prioridade da mira quando há alvos concorrentes e apresentação visual/auditiva ainda exigem teste manual; não foram avaliados. Nenhuma release, tag ou backup foi alterado.
