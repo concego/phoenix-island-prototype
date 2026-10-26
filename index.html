@@ -1834,7 +1834,7 @@
       droppedItems.push({ ...entry });
       if (heldItem === itemDefinitions[entry.itemId].name) heldItem = null;
       inventory[selectedInventorySlot] = null; renderInventory(); focusSelectedInventorySlot();
-      announce(`${itemDefinitions[entry.itemId].name}, quantidade ${entry.quantity}, largado no mundo. O botão Recolher itens largados permite recuperar os itens disponíveis.`);
+      announce(`${itemDefinitions[entry.itemId].name} largado.`);
     }
     function showMoveTargets() {
       moveArea.hidden = false; const container = document.querySelector('#inventory-move-targets'); container.replaceChildren();
