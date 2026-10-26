@@ -1844,7 +1844,7 @@
     function showShortcutTargets() {
       shortcutArea.hidden = false; const container=document.querySelector('#inventory-shortcut-targets'); container.replaceChildren();
       const labels=['1','2','3','4','5','6','7','8','9','0'];
-      labels.forEach((key,index)=>{const b=document.createElement('button');b.type='button';b.textContent=key;b.setAttribute('aria-label',`Atribuir atalho ${key}${itemShortcuts[key] !== undefined ? `, atualmente associado a ${itemDefinitions[itemShortcuts[key]].name}` : ''}`);b.addEventListener('click',()=>{for(const k of Object.keys(itemShortcuts))if(itemShortcuts[k]===selectedInventorySlot)delete itemShortcuts[k];itemShortcuts[key]=inventory[selectedInventorySlot].itemId;renderInventory();announce(`Atalho ${key} atribuído a ${itemDefinitions[inventory[selectedInventorySlot].itemId].name}. Pressione ${key} fora do inventário para equipar.`);});container.append(b);});
+      labels.forEach((key,index)=>{const b=document.createElement('button');b.type='button';b.textContent=key;b.setAttribute('aria-label',`Atribuir atalho ${key}${itemShortcuts[key] !== undefined ? `, atualmente associado a ${itemDefinitions[itemShortcuts[key]].name}` : ''}`);b.addEventListener('click',()=>{for(const k of Object.keys(itemShortcuts))if(itemShortcuts[k]===selectedInventorySlot)delete itemShortcuts[k];itemShortcuts[key]=inventory[selectedInventorySlot].itemId;renderInventory();announce(`Atalho ${key} atribuído a ${itemDefinitions[inventory[selectedInventorySlot].itemId].name}.`);});container.append(b);});
       container.querySelector('button')?.focus();
     }
     document.querySelectorAll('#inventory-actions button').forEach(button => button.addEventListener('click', () => {
