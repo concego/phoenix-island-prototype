@@ -388,3 +388,17 @@ Revisar coleta, distribuição, mira, concorrência de ações, requisitos das r
 
 - Revisão estática de sintaxe JavaScript, receita, consumo, espaço de inventário, mira, alcance, posições dos dez galhos e prioridades. A mineração existente com martelo foi preservada.
 - Teste manual de gameplay, TalkBack/leitor de tela, inspeção visual e audição dos sons não foram realizados. Publicar ou analisar o código não equivale a validação manual.
+
+
+## 26 de outubro de 2026 — galhos baixos da copa cortáveis com faca
+
+### Implementado no código
+
+- A copa agora oferece dois resultados contextuais: sem faca equipada, os galhos continuam fornecendo gravetos como antes; com a faca de pedra nas mãos, olhar para cima e pressionar Espaço corta e coleta um galho da copa. O item recebido é `branch`, inflamável e compatível com as ações já existentes de inventário.
+- A coleta checa alcance e espaço antes de adicionar o item; se o inventário não puder receber um tipo novo, o galho permanece intacto. O corte toca o efeito de colheita de graveto já disponível como feedback provisório. Galhos caídos mantêm seus dez pontos de coleta separados, e sua coleta com faca e a divisão de um galho em dois gravetos continuam sem alteração.
+- A estrutura da árvore foi abaixada: cruzamento/galhos perto de 2,05 m e copa baixa por volta de 2,45–2,63 m, com topo em torno de 3,5 m. Alvos de coleta ficam em torno dos galhos baixos, ao alcance de uma pessoa no chão junto ao tronco ao inclinar o olhar para cima. A árvore continua escalável.
+- Instruções do jogo e README distinguem o galho vivo da copa dos galhos caídos e explicam as duas ações condicionais. Regras de ferramentas permanecem: faca corta galhos; martelo somente minera afloramentos; a faca continua custando duas pedras no total.
+
+### Verificação e validação
+
+Revisar sintaxe JavaScript e estaticamente confirmar a seleção contextual, entrega de `branch`, bloqueio por inventário cheio, preservação da coleta de gravetos sem faca, das dez fontes de galhos caídos e da mineração exclusiva por martelo. Gameplay, altura real de alcance, leitor de tela e áudio ainda precisam de teste manual; o efeito de corte usa o WAV de colheita já existente, ainda não avaliado auditivamente nesta alteração. Nenhuma release, tag ou backup foi alterado.
