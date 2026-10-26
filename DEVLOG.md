@@ -402,3 +402,16 @@ Revisar coleta, distribuição, mira, concorrência de ações, requisitos das r
 ### Verificação e validação
 
 Revisar sintaxe JavaScript e estaticamente confirmar a seleção contextual, entrega de `branch`, bloqueio por inventário cheio, preservação da coleta de gravetos sem faca, das dez fontes de galhos caídos e da mineração exclusiva por martelo. Gameplay, altura real de alcance, leitor de tela e áudio ainda precisam de teste manual; o efeito de corte usa o WAV de colheita já existente, ainda não avaliado auditivamente nesta alteração. Nenhuma release, tag ou backup foi alterado.
+
+
+## 26 de outubro de 2026 — preservar escalada ao baixar galhos de coleta
+
+### Implementado no código
+
+- Separadas as alturas dos recursos baixos da copa (2,05 e 2,35 m) da altura do patamar de escalada (2,75 m). A pessoa pode continuar coletando gravetos do chão sem faca ou cortar um galho vivo com faca equipada, mirando para cima perto do tronco.
+- Reconstruído o cruzamento alto de galhos como patamar distinto; o tronco ainda agarra, W sobe até o patamar, o movimento pelos galhos e a ação de segurar nas pontas para descer com S permanecem. A silhueta da copa continua incluindo galhos altos.
+- Instruções dentro do jogo e README atualizados para explicar as duas rotas: coleta do chão e escalada até o patamar alto.
+
+### Verificação e validação
+
+A sintaxe, a altura alcançável, o patamar de escalada e os ramos de interação serão verificados estaticamente. É necessário ainda testar manualmente agarre, subida completa, movimentação nas pontas, descida, coleta baixa com/sem faca e leitor de tela. Não tratar revisão estática como playtest.
