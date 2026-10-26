@@ -357,3 +357,18 @@ Revisão estática dos fluxos de alvo, alcance, inventário, recompensa, esgotam
 ### Verificação e validação
 
 Inspecionados estaticamente os fluxos de seleção, presença do martelo, golpes intermediários/final, anúncio de progresso, capacidade do inventário, limpeza ao esgotar e conexões dos efeitos sonoros. WAVs identificados como RIFF PCM mono, 16 bits, 48 kHz. Não foi feita audição dos arquivos nem teste manual de gameplay; a avaliação auditiva, a coleta real, inventário cheio e acessibilidade no jogo continuam pendentes. A carga dos arquivos e a publicação da página de teste serão verificadas após o commit.
+
+
+## 26 de outubro de 2026 — arbustos, fibra vegetal e novas receitas
+
+### Implementado no código
+
+- Distribuídos 30 arbustos pelo terreno em posições pseudoaleatórias reproduzíveis, evitando lago, colina, árvore e área inicial. Arbustos não geram colisores; as partes visíveis são pontos observáveis e o sistema de olhar informa que fornecem fibra vegetal.
+- Espaço ou Enter colhe um arbusto alcançável e fornece 2 fibras vegetais; o arbusto desaparece após a coleta. A ação checa espaço no inventário e mantém o arbusto intacto quando o item não cabe. A coleta compete com os demais alvos do cenário respeitando mira e prioridades.
+- Atualizada a receita do martelo: consome 1 pedra, 1 graveto e 1 fibra vegetal, que representa a amarração da pedra ao cabo. O martelo segue reutilizável sem desgaste.
+- Adicionada a faca de pedra como nova receita do menu Alt+C quando uma pedra está equipada: requer 3 pedras no total, consome todas e cria a ferramenta. O uso funcional da faca não foi implementado e é anunciado como trabalho futuro.
+- Instruções em jogo e README atualizados. Nenhuma mudança em releases ou backups.
+
+### Verificação e validação
+
+Revisar coleta, distribuição, mira, concorrência de ações, requisitos das receitas, consumo e falta de espaço. Teste manual de gameplay, navegação com leitor de tela e validação visual dos arbustos continuam pendentes; não alegar confirmação manual.

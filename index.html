@@ -86,7 +86,7 @@
         <p><strong>Mapa:</strong> área de 48 × 54 m, com X entre −24 m e +24 m e Y entre −18 m e +36 m. A colina e a árvore ficam na região central; o topo da colina chega a 1,8 m, com as encostas clareando gradualmente por altitude. Há terreno plano e caminhável em volta da colina e espaço para seguir ao norte dela. O lago fica ao norte e a leste, centrado em X=5,0 m e Y=13,2 m, com cerca de 12 × 6,4 m de água. Uma margem lamacenta texturizada de 1,2 m contorna o lago. A faixa rasa ao redor permite caminhar sobre um fundo de até 0,55 m; depois, o fundo desce até 2,7 m na bacia central. A água fica mais translúcida e suave na borda, escurecendo e ganhando densidade no fundo; ondulações leves e círculos aparecem com o movimento. A região profunda bloqueia a passagem a pé. A natação está implementada para o lago de teste; ainda não há passagens subaquáticas.</p>
         <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Segure Shift direito: W corre para frente a 3,6 m/s, A/D correm lateralmente a 3,2 m/s e S corre para trás a 2,4 m/s. Também pode pressionar Shift direito depois de iniciar o movimento; ao soltá-lo, a velocidade volta a 2,4 m/s. A corrida não se aplica à escalada nem à caminhada pelos galhos. Shift esquerdo+A/D giram o corpo 45° para a esquerda/direita; Shift esquerdo+W gira 180°; Shift esquerdo+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
         <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°. Durante a natação, a inclinação controla a trajetória de W/S enquanto a tecla é mantida: olhar para baixo faz avançar e descer; para cima, avançar e subir; olhar no horizonte mantém a profundidade. Mudar o olhar sem manter W/S não movimenta o personagem. A/D deslocam lateralmente. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
-        <p><strong>Pedras:</strong> mire uma pedra solta perto da colina e pressione Espaço para recolhê-la; Enter também coleta pedras soltas. Para montar um martelo, equipe graveto ou pedra e pressione Alt+C; a receita consome 1 graveto e 1 pedra. No topo, basta ter o martelo de pedra no inventário — não precisa equipá-lo —, mirar um afloramento e pressionar Espaço repetidamente: são 3 ou 4 golpes, com progresso anunciado e sons de impacto, antes do golpe final quebrar a rocha e liberar as pedras. O martelo não se desgasta nesta versão de teste.</p>
+        <p><strong>Coleta e ferramentas:</strong> mire uma pedra solta perto da colina e pressione Espaço ou Enter para recolhê-la; arbustos silvestres espalhados pela ilha também podem ser colhidos com Espaço ou Enter e fornecem 2 fibras vegetais cada. Para montar um martelo, equipe pedra, graveto ou fibra e pressione Alt+C; consome 1 pedra, 1 graveto e 1 fibra vegetal para afixar a pedra ao cabo. Para fabricar uma faca, equipe uma pedra e tenha pelo menos duas outras (3 no total), depois escolha Fabricar faca de pedra no Alt+C; a receita consome 3 pedras. No topo, basta ter o martelo no inventário — não precisa equipá-lo — e pressionar Espaço repetidamente mirando o afloramento: são 3 ou 4 golpes antes da quebra. O martelo não se desgasta; o uso da faca ainda não está implementado.</p>
         <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com mãos vazias, na faixa rasa e voltado para águas profundas, Espaço inicia a natação. Para sair, mantenha as mãos vazias, esteja na superfície e perto da faixa rasa ou de uma saída para terra, então pressione Espaço; sair não é automático. Ao ficar muito raso, o fundo pode elevar você até a superfície, e o jogo anuncia isso. Um canal subaquático conectado manterá a natação, mas ainda não há passagens no mapa. Com as mãos livres e perto da árvore, olhar para o tronco e pressionar Espaço agarra; olhar para um galho ou para a copa ao alcance extrai um graveto. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S fazem impulsos ritmados de escalada, aproximadamente a cada 0,43 segundo enquanto a tecla estiver mantida; soltar interrompe o movimento. Espaço solta.</p>
         <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; quatro respingos curtos diferentes ao caminhar na faixa rasa do lago; quatro passos próprios na margem lamacenta; quatro variações sintetizadas para braçadas à superfície e quatro para braçadas submersas; efeitos distintos de entrada/saída; dois bipes médios marcam águas profundas, três agudos uma possível saída e um grave longo a margem, apenas ao entrar em cada zona; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina. Caminhando, a cadência sonora é de cerca de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; isso não muda a velocidade da caminhada. Correndo, os intervalos são cerca de 0,30 s no plano, 0,37 s subindo e 0,27 s descendo. O recuo rápido mantém seu próprio ritmo. Há também um alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento ou Espaço, conforme a política do navegador.</p>
       </div>
@@ -742,7 +742,9 @@
     const itemDefinitions = {
       stick: { name: 'graveto', flammable: true, weightKg: null },
       stone: { name: 'pedra', flammable: false, weightKg: null },
-      stoneHammer: { name: 'martelo de pedra', flammable: false, weightKg: null, tool: 'stone' }
+      plantFiber: { name: 'fibra vegetal', flammable: false, weightKg: null },
+      stoneHammer: { name: 'martelo de pedra', flammable: false, weightKg: null, tool: 'stone' },
+      stoneKnife: { name: 'faca de pedra', flammable: false, weightKg: null, tool: 'stone' }
     };
     const hillStoneLocations = [
       { x: -.85, y: 5.35, output: 3 },
@@ -789,6 +791,47 @@
       const stone = { ...location, mesh, point: designToThree(location.x, location.y, .22), collected: false };
       markLookable(mesh, 'Uma pedra solta pequena perto da base da colina.', 'rock');
       looseStones.push(stone);
+    }
+    const plantShrubs = [];
+    function createPlantShrub(x, y, index) {
+      const shrub = { x, y, harvested: false, meshes: [], point: designToThree(x, y, terrainHeightAt(x, y) + .34) };
+      const group = new THREE.Group();
+      group.position.copy(designToThree(x, y, terrainHeightAt(x, y)));
+      scene.add(group);
+      let leafSeed = (index * 7919 + 2039) >>> 0;
+      const rand = () => { leafSeed = (Math.imul(leafSeed, 1664525) + 1013904223) >>> 0; return leafSeed / 4294967296; };
+      const leafMaterials = [materials.leaves, materials.leavesLight, materials.leavesShade];
+      const count = 4 + Math.floor(rand() * 3);
+      for (let leaf = 0; leaf < count; leaf++) {
+        const radius = .18 + rand() * .13;
+        const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(radius, 1), leafMaterials[Math.floor(rand() * leafMaterials.length)]);
+        const angle = rand() * Math.PI * 2;
+        const distance = rand() * .23;
+        mesh.position.set(Math.cos(angle) * distance, .16 + rand() * .28, Math.sin(angle) * distance);
+        mesh.scale.set(1 + rand() * .35, .72 + rand() * .45, .85 + rand() * .35);
+        mesh.rotation.set(rand() * .35, angle, rand() * .35);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        group.add(mesh);
+        markLookable(mesh, 'Um arbusto silvestre que pode fornecer fibra vegetal.', 'shrub');
+        shrub.meshes.push(mesh);
+      }
+      shrub.group = group;
+      plantShrubs.push(shrub);
+    }
+    // Pontos pseudoaleatórios reproduzíveis, espalhados pelo terreno caminhável;
+    // evitam o lago, a colina, a árvore e o ponto inicial sem criar colisores.
+    let shrubSeed = 684221;
+    function shrubRandom() { shrubSeed = (Math.imul(shrubSeed, 1664525) + 1013904223) >>> 0; return shrubSeed / 4294967296; }
+    for (let attempts = 0; plantShrubs.length < 30 && attempts < 1200; attempts++) {
+      const x = MAP_BOUNDS.minX + 2 + shrubRandom() * (MAP_BOUNDS.maxX - MAP_BOUNDS.minX - 4);
+      const y = MAP_BOUNDS.minY + 2 + shrubRandom() * (MAP_BOUNDS.maxY - MAP_BOUNDS.minY - 4);
+      if (Math.hypot(x - LAKE.centerX, (y - LAKE.centerY) * .55) < 5.3) continue;
+      if (Math.abs(x) < 2.65 && y > -.4 && y < 9.3) continue;
+      if (Math.hypot(x - treeX, y - treeY) < 2.3) continue;
+      if (Math.hypot(x, y + 2.5) < 3.2) continue;
+      if (plantShrubs.some(shrub => Math.hypot(x - shrub.x, y - shrub.y) < 2.6)) continue;
+      createPlantShrub(x, y, plantShrubs.length);
     }
     const campfires = [];
     const CAMPFIRE_INTERACTION_RANGE = 2.4;
@@ -1566,15 +1609,28 @@
       const definition = itemDefinitions[held.itemId];
       const hasStone = inventoryQuantity('stone') >= 1;
       const hasStick = inventoryQuantity('stick') >= 1;
-      const hasHammerSlot = inventory.some(entry => entry?.itemId === 'stoneHammer') || inventory.some(entry => entry === null);
-      if (hasStone || hasStick) {
-        const craftAllowed = climbMode === 'ground' && hasStone && hasStick && hasHammerSlot;
-        let craftDetail = !hasStone ? 'Requer 1 pedra e 1 graveto; falta uma pedra.'
-          : !hasStick ? 'Requer 1 pedra e 1 graveto; falta um graveto.'
-          : !hasHammerSlot ? 'Requer 1 pedra e 1 graveto; inventário cheio, libere um espaço para o martelo.'
+      const hasFiber = inventoryQuantity('plantFiber') >= 1;
+      const hammerRecipe = { stone: 1, stick: 1, plantFiber: 1 };
+      const hasHammerSlot = canAddCraftedItem('stoneHammer', hammerRecipe);
+      if (hasStone || hasStick || hasFiber) {
+        const craftAllowed = climbMode === 'ground' && hasStone && hasStick && hasFiber && hasHammerSlot;
+        let craftDetail = !hasStone ? 'Requer 1 pedra, 1 graveto e 1 fibra vegetal; falta uma pedra.'
+          : !hasStick ? 'Requer 1 pedra, 1 graveto e 1 fibra vegetal; falta um graveto.'
+          : !hasFiber ? 'Requer 1 pedra, 1 graveto e 1 fibra vegetal; falta uma fibra vegetal.'
+          : !hasHammerSlot ? 'Requer 1 pedra, 1 graveto e 1 fibra vegetal; inventário cheio, libere um espaço para o martelo.'
           : climbMode !== 'ground' ? 'Disponível no chão, sem nadar nem estar agarrado à árvore.'
-          : 'Consome 1 pedra e 1 graveto e cria um martelo de pedra reutilizável.';
+          : 'Consome 1 pedra, 1 graveto e 1 fibra vegetal para afixar a pedra ao cabo e montar um martelo reutilizável.';
         actions.push({ label: 'Montar martelo de pedra', disabled: !craftAllowed, detail: craftDetail, run: craftStoneHammer });
+      }
+      if (held.itemId === 'stone') {
+        const enoughKnappingStone = inventoryQuantity('stone') >= 3;
+        const hasKnifeSlot = canAddCraftedItem('stoneKnife', { stone: 3 });
+        const craftKnifeAllowed = climbMode === 'ground' && enoughKnappingStone && hasKnifeSlot;
+        const knifeDetail = !enoughKnappingStone ? `A faca de pedra requer 3 pedras; você tem ${inventoryQuantity('stone')}.`
+          : !hasKnifeSlot ? 'Requer 3 pedras; inventário cheio, libere um espaço para a faca.'
+          : climbMode !== 'ground' ? 'Disponível no chão, sem nadar nem estar agarrado à árvore.'
+          : 'Consome 3 pedras e talha uma delas para criar uma faca de pedra.';
+        actions.push({ label: 'Fabricar faca de pedra', disabled: !craftKnifeAllowed, detail: knifeDetail, run: craftStoneKnife });
       }
       if (nearest?.fire.lit && definition.flammable) {
         const canAddFuel = nearest.fire.fuelSeconds < CAMPFIRE_MAX_FUEL_SECONDS;
@@ -1626,8 +1682,8 @@
         itemActionList.append(li);
       }
       itemActionHelp.textContent = nearest
-        ? `Fogueira simples próxima a ${nearest.distance.toFixed(1)} m. ${nearest.fire.lit ? `Combustível restante: ${Math.ceil(nearest.fire.fuelSeconds)} s.` : 'Esta fogueira simples já apagou.'} O martelo requer 1 pedra e 1 graveto.`
-        : 'As opções dependem do item em mãos, da quantidade e do local. O martelo de pedra requer 1 pedra e 1 graveto.';
+        ? `Fogueira simples próxima a ${nearest.distance.toFixed(1)} m. ${nearest.fire.lit ? `Combustível restante: ${Math.ceil(nearest.fire.fuelSeconds)} s.` : 'Esta fogueira simples já apagou.'} O martelo requer 1 pedra, 1 graveto e 1 fibra vegetal; a faca requer 3 pedras e uma pedra nas mãos.`
+        : 'As opções dependem do item em mãos, da quantidade e do local. O martelo requer 1 pedra, 1 graveto e 1 fibra vegetal; a faca requer 3 pedras e uma pedra nas mãos.';
       if (!actions.length) {
         const li = document.createElement('li');
         const info = document.createElement('p');
@@ -1872,15 +1928,62 @@
       renderInventory();
       return true;
     }
+    function canAddCraftedItem(itemId, materialCosts) {
+      if (inventory.some(entry => entry?.itemId === itemId)) return true;
+      const costsLeft = { ...materialCosts };
+      let occupiedAfterCost = 0;
+      for (const entry of inventory) {
+        if (!entry) continue;
+        const cost = Math.min(costsLeft[entry.itemId] || 0, entry.quantity);
+        costsLeft[entry.itemId] = (costsLeft[entry.itemId] || 0) - cost;
+        if (entry.quantity - cost > 0) occupiedAfterCost++;
+      }
+      return occupiedAfterCost < INVENTORY_CAPACITY;
+    }
     function craftStoneHammer() {
+      const recipe = { stone: 1, stick: 1, plantFiber: 1 };
       if (climbMode !== 'ground') { announce('Para montar o martelo de pedra, esteja no chão, sem nadar nem estar agarrado à árvore.'); return; }
-      if (inventoryQuantity('stone') < 1 || inventoryQuantity('stick') < 1) { announce('Faltam materiais: o martelo de pedra requer 1 pedra e 1 graveto.'); return; }
-      if (!inventory.some(entry => entry?.itemId === 'stoneHammer') && !inventory.some(entry => entry === null)) { announce('Inventário cheio: libere um espaço para o martelo de pedra. Nenhum material foi consumido.'); return; }
-      consumeInventoryQuantity('stone', 1);
-      consumeInventoryQuantity('stick', 1);
+      if (Object.entries(recipe).some(([itemId, amount]) => inventoryQuantity(itemId) < amount)) { announce('Faltam materiais: o martelo de pedra requer 1 pedra, 1 graveto e 1 fibra vegetal para afixar a pedra ao cabo.'); return; }
+      if (!canAddCraftedItem('stoneHammer', recipe)) { announce('Inventário cheio: libere um espaço para o martelo de pedra. Nenhum material foi consumido.'); return; }
+      for (const [itemId, amount] of Object.entries(recipe)) consumeInventoryQuantity(itemId, amount);
       addInventoryItem('stoneHammer', 1);
       closeItemActionMenu();
-      announce('Martelo de pedra montado. Equipe-o pelo inventário ou por atalho para extrair os afloramentos no topo da colina.');
+      announce('Martelo de pedra montado: pedra afixada ao graveto com fibra vegetal. Equipe-o pelo inventário ou por atalho para extrair os afloramentos no topo da colina.');
+    }
+    function craftStoneKnife() {
+      const recipe = { stone: 3 };
+      if (climbMode !== 'ground') { announce('Para fabricar a faca de pedra, esteja no chão, sem nadar nem estar agarrado à árvore.'); return; }
+      if (heldInventoryEntry()?.itemId !== 'stone' || inventoryQuantity('stone') < 3) { announce('A faca de pedra exige uma pedra nas mãos e mais duas pedras no inventário, totalizando três.'); return; }
+      if (!canAddCraftedItem('stoneKnife', recipe)) { announce('Inventário cheio: libere um espaço para a faca de pedra. Nenhum material foi consumido.'); return; }
+      consumeInventoryQuantity('stone', 3);
+      addInventoryItem('stoneKnife', 1);
+      closeItemActionMenu();
+      announce('Faca de pedra fabricada com 3 pedras. O uso como ferramenta será implementado em outra etapa.');
+    }
+    function getPlantShrubTarget() {
+      if (climbMode !== 'ground') return null;
+      setCamera();
+      const direction = camera.getWorldDirection(new THREE.Vector3()).normalize();
+      return plantShrubs.filter(shrub => !shrub.harvested).map(shrub => {
+        const offset = shrub.point.clone().sub(camera.position);
+        const distance = offset.length();
+        return { shrub, point: shrub.point, distance, alignment: direction.dot(offset.normalize()) };
+      }).filter(target => target.alignment >= TREE_AIM_MIN_ALIGNMENT)
+        .sort((a, b) => b.alignment - a.alignment || a.distance - b.distance)[0] || null;
+    }
+    function usePlantShrub(target) {
+      if (!target) return false;
+      if (target.distance > 2.2) { announce('O arbusto está fora de alcance; aproxime-se e mire nele.'); return true; }
+      if (!addInventoryItem('plantFiber', 2)) { announce('Inventário cheio: libere um espaço para recolher a fibra vegetal. O arbusto não foi colhido.'); return true; }
+      const shrub = target.shrub;
+      shrub.harvested = true;
+      for (const mesh of shrub.meshes) {
+        mesh.visible = false;
+        const index = lookables.indexOf(mesh);
+        if (index >= 0) lookables.splice(index, 1);
+      }
+      announce(`Você recolheu 2 fibras vegetais do arbusto. ${inventorySummary()}.`);
+      return true;
     }
     function getRockActionTarget() {
       if (climbMode !== 'ground') return null;
@@ -1914,7 +2017,7 @@
       }
       if (target.distance > 2.4) { announce('O afloramento está fora de alcance; suba até o topo e aproxime-se.'); return true; }
       if (inventoryQuantity('stoneHammer') < 1) {
-        announce('Este afloramento exige que você tenha um martelo de pedra no inventário. Monte-o com 1 pedra e 1 graveto usando Alt+C.');
+        announce('Este afloramento exige que você tenha um martelo de pedra no inventário. Monte-o com 1 pedra, 1 graveto e 1 fibra vegetal para afixar a pedra ao cabo, usando Alt+C.');
         return true;
       }
       const node = target.node;
@@ -1970,6 +2073,18 @@
       if (event.repeat || inventoryOpen || itemActionMenuOpen || climbMode !== 'ground') return false;
       if (event.target instanceof HTMLElement && event.target.closest('button, a, [role="button"], input, textarea, select, [contenteditable="true"]')) return false;
       const target = getRockActionTarget();
+      const shrubTarget = getPlantShrubTarget();
+      const treeTarget = getTreeActionTarget();
+      const treePreferred = treeTarget && treeTarget.alignment >= TREE_AIM_MIN_ALIGNMENT
+        && (!target || treeTarget.alignment >= target.alignment - .035);
+      const shrubPreferred = shrubTarget && shrubTarget.distance <= 2.2 && !treePreferred
+        && (!target || shrubTarget.alignment > target.alignment + .035);
+      if (shrubPreferred) {
+        event.preventDefault();
+        event.stopPropagation();
+        usePlantShrub(shrubTarget);
+        return true;
+      }
       if (target?.kind !== 'loose') return false;
       event.preventDefault();
       event.stopPropagation();
@@ -1982,6 +2097,7 @@
         return;
       }
       const rockTarget = getRockActionTarget();
+      const shrubTarget = getPlantShrubTarget();
       const treeTarget = climbMode === 'ground' ? getTreeActionTarget() : null;
       const reachableMineableOutcrop = rockTarget?.kind === 'outcrop'
         && rockTarget.distance <= 2.4 && inventoryQuantity('stoneHammer') > 0;
@@ -1989,6 +2105,10 @@
         && (reachableMineableOutcrop
           ? treeTarget.alignment >= rockTarget.alignment + .08
           : !rockTarget || treeTarget.alignment >= rockTarget.alignment - .035);
+      const shrubIsAimed = !treeIsAimed && shrubTarget && shrubTarget.distance <= 2.2
+        && shrubTarget.alignment >= TREE_AIM_MIN_ALIGNMENT
+        && (!rockTarget || shrubTarget.alignment > rockTarget.alignment + .035);
+      if (shrubIsAimed) { usePlantShrub(shrubTarget); return; }
       if (!treeIsAimed && useRockAction(rockTarget)) return;
       if (heldItem) {
         announce(`Você está segurando ${heldItem}; o efeito de uso ainda não foi implementado.`);
@@ -2079,6 +2199,7 @@
       }
       const targets = [
         ...campfires.map((fire, index) => ({ category: 'campfire', name: fire.lit ? `a fogueira simples acesa${campfires.length > 1 ? ` ${index + 1}` : ''}` : `os restos da fogueira simples apagada${campfires.length > 1 ? ` ${index + 1}` : ''}`, point: designToThree(fire.x, fire.y, terrainHeightAt(fire.x, fire.y) + (fire.lit ? .52 : .14)), fire })),
+        ...plantShrubs.filter(shrub => !shrub.harvested).map((shrub, index) => ({ category: 'shrub', name: `um arbusto silvestre${plantShrubs.length > 1 ? ` ${index + 1}` : ''} que fornece fibra vegetal`, point: shrub.point, shrub })),
         { category: 'tree', name: 'o tronco da árvore', point: designToThree(treeX, treeY, 1.35) },
         { category: 'tree', name: 'um galho horizontal', point: designToThree(treeX, treeY, TREE_BRANCH_HEIGHT) },
         { category: 'tree', name: 'a copa da árvore', point: designToThree(treeX, treeY, 3.0) },
