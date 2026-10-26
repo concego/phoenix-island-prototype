@@ -437,3 +437,22 @@ A sintaxe, a altura alcançável, o patamar de escalada e os ramos de interaçã
 
 - Revisão estática confirma criação uma vez por fogueira, inclusão no inventário, coleta única, preservação da pilha em caso de inventário cheio, suporte à descrição e integração da interação por Enter.
 - Sintaxe e comportamento em gameplay, leitor de tela, prioridade da mira quando há alvos concorrentes e apresentação visual/auditiva ainda exigem teste manual; não foram avaliados. Nenhuma release, tag ou backup foi alterado.
+
+
+## 26 de outubro de 2026 — anúncios concisos da fogueira
+
+### Direção aprovada
+
+- A confirmação de criação anuncia somente “Fogueira simples acesa.”
+- Ao olhar para a fogueira, a estimativa do combustível é qualitativa, sem quantidade exata de segundos.
+
+### Implementado no código
+
+- A confirmação de criação foi encurtada à frase aprovada.
+- As descrições ao olhar para a fogueira, olhando para baixo ou horizontalmente, com o alvo central ou fora do centro, não anunciam segundos exatos. A estimativa proporcional ao limite máximo usa quatro faixas: chamas altas, estáveis, baixas ou fogo que deve apagar em breve. Fogueira apagada continua descrita como apagada.
+- README atualizado para registrar a informação qualitativa e a confirmação concisa.
+
+### Verificação e validação
+
+- Revisão estática confirma que todas as variações de olhar usam a mesma estimativa qualitativa e que a confirmação e estado apagado permanecem distintos.
+- Playtest e validação com leitor de tela ainda não foram feitos.
