@@ -681,3 +681,10 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 ## 27 de outubro de 2026 — anúncio de contato apenas com o nome
 
 - O anúncio ao entrar no alcance de interação agora fala somente o nome do objeto, sem explicações ou frases adicionais.
+
+
+## 27 de outubro de 2026 — alinhar anúncio de contato com coleta por Enter
+
+- A fala do nome do coletável e a ação Enter agora chamam o mesmo seletor de alvo. Ele calcula alinhamento e distância a partir dos mesmos pontos geométricos e aplica os mesmos alcances individuais e prioridade da árvore.
+- Isso remove a divergência anterior: a fala de proximidade era calculada só por distância do jogador e podia anunciar alvos que Enter não selecionaria por mira, distância ou prioridade.
+- Alteração publicada; playtest de coleta pelo Anderson ainda necessário.
