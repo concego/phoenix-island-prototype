@@ -102,3 +102,5 @@ A fogueira simples também tem candidatos de ignição, loop ambiente de oito se
 
 
 As pistas espaciais usam o centro dos meshes do próprio recurso para manter a direção sonora alinhada à origem indicada ao olhar. A fonte precisa ser a primeira interseção visível; sua própria malha é excluída apenas da checagem de oclusão, enquanto obstáculos distintos continuam bloqueando a descrição.
+
+Ao caminhar perto de mais de um recurso, a pista atual continua ligada à mesma fonte até você se afastar dela; assim, o panning e o volume não saltam entre itens vizinhos de um beep para o seguinte. A descrição ao olhar para baixo inclui pedras soltas, arbustos, cinzas e galhos visíveis no campo, além de fogueiras.
