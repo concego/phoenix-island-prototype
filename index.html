@@ -2003,7 +2003,7 @@
       const target = contacts[0] || null;
       if (target?.source === currentInteractionContact) return;
       currentInteractionContact = target?.source || null;
-      if (target) announce(`Ao alcance para interagir: ${target.name}.`);
+      if (target) announce(target.name);
     }
 
     function collectAsh(target) {
