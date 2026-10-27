@@ -664,3 +664,8 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - Adicionados padrões sonoros diferentes: duas notas ascendentes para coleta bem-sucedida e outra dupla para ação bem-sucedida do menu contextual.
 - Aplicados aos coletáveis do cenário e às receitas, criação/abastecimento de fogueira; resultados bloqueados e inventário cheio não recebem confirmação falsa.
 - O som só é disparado após iniciar o contexto de áudio por gesto do usuário, incluindo Enter e a ativação de ação no menu.
+
+
+## 27 de outubro de 2026 — revisar mensagem ao entrar na água rasa
+
+- Substituída a mensagem “O fundo permite caminhar”, que confundia a condição do fundo com a ação do jogador, por “Você entrou na água rasa do lago.” A caminhada rasa continua explicada na descrição do mapa/tutorial, sem atribuir a ação ao fundo.
