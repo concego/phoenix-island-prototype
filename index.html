@@ -2297,7 +2297,7 @@
       const nextResistance = Math.max(0, previousResistance - damage);
       if (nextResistance === 0 && !hasBranchCapacity) {
         source.pendingDamage = damage;
-        announce('Sem espaço no inventário. Libere espaço antes de aplicar o golpe que esgotaria o galho.');
+        announce('Sem espaço no inventário.');
         return true;
       }
       source.pendingDamage = null;
@@ -2480,7 +2480,7 @@
       const nextResistance = Math.max(0, previousResistance - damage);
       if (nextResistance === 0 && !hasBranchCapacity) {
         branchSource.pendingDamage = damage;
-        announce('Sem espaço no inventário. Libere espaço antes de aplicar o golpe que esgotaria o galho.');
+        announce('Sem espaço no inventário.');
         return;
       }
       branchSource.pendingDamage = null;
