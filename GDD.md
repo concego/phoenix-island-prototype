@@ -122,16 +122,17 @@ O olhar e a orientação corporal são controles distintos. A/D não giram o cor
 ### Galhos e gravetos
 
 - Galhos são distintos de gravetos, maiores e mais resistentes, são material para receitas e inflamáveis.
-- Galhos podem aparecer na copa ou ser encontrados no chão em outras situações; não confundir a coleta de galho vivo na copa com os galhos caídos no chão.
+- Galhos caídos no chão são itens recolhidos diretamente com Espaço ou Enter, sem faca ou golpes; a coleta exige alcance e espaço no inventário.
+- Galhos vivos baixos da copa são fontes de extração: somente eles exigem faca equipada e golpes sucessivos para serem cortados.
 - Com um galho equipado, o menu oferece a conversão em dois gravetos somente se houver uma faca de pedra em algum espaço do inventário; a faca não precisa estar equipada para esta conversão.
 - A conversão consome um galho e produz dois gravetos. Conferir espaço antes de consumir o recurso.
-- Cada galho caído tem resistência inicial 3; a faca causa dano inteiro sorteado entre 1 e 3. Golpeie até a resistência chegar a zero para coletar um galho. O martelo não interage com galhos.
+- Galhos caídos não têm resistência e são recolhidos diretamente. Galhos vivos baixos da copa têm resistência inicial 6; a faca causa dano inteiro sorteado entre 1 e 3 por golpe até esgotá-los. O martelo não interage com galhos.
 
 ### Dano e resistência
 
 - Cada acerto sorteia um valor inteiro uniforme dentro da faixa de dano da ferramenta usada. O dano é subtraído da resistência da fonte, limitada a zero; ao chegar a zero, a fonte se esgota. A escala é abstrata e não representa medida física.
 - Faca de pedra, ferramenta de corte mais básica: dano inteiro sorteado uniformemente entre 1 e 3 por golpe. Martelo de pedra, ferramenta de impacto mais básico: dano inteiro sorteado uniformemente entre 2 e 4 por golpe.
-- Galho caído: resistência 3; galho vivo: resistência 6; afloramento rochoso: resistência 12. Um galho caído pode ser esgotado num golpe se sair dano 3, mas isso não é garantido.
+- Galho vivo: resistência 6; afloramento rochoso: resistência 12. Galhos caídos são itens recolhíveis e não têm resistência.
 - Enquanto a fonte resistir, cada golpe reduz sua resistência. Ao esgotar, a fonte entrega seu rendimento atual. Se não houver espaço para a recompensa, o golpe que a esgotaria não reduz a resistência; seu dano sorteado fica pendente para ser aplicado sem novo sorteio quando houver espaço.
 - Esta regra e estes valores são os aprovados para as ferramentas/fontes do protótipo; não implementar outras armas, classes ou efeitos de dano por inferência.
 
@@ -139,7 +140,7 @@ O olhar e a orientação corporal são controles distintos. A/D não giram o cor
 
 - Ferramenta de corte.
 - Receita aprovada: duas pedras no total; uma pedra equipada e outra disponível no inventário. A fabricação consome as duas.
-- Corta galhos caídos e permite cortar galho vivo baixo da copa quando equipada.
+- Corta galhos vivos baixos da copa quando equipada. Não é necessária para recolher galhos caídos.
 - A faca não deve ser descrita como ferramenta de impacto.
 
 ### Martelo de pedra
