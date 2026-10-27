@@ -558,7 +558,7 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 
 - Pistas de pedras, arbustos, galhos, cinzas e afloramentos passaram a usar o centro do volume delimitador das malhas 3D do próprio recurso. O mesmo ponto é usado pela descrição ao olhar, mantendo direção sonora e alvo anunciado alinhados.
 - A checagem de oclusão continua ignorando somente as malhas que constituem o alvo selecionado; outros elementos mais próximos ainda o ocultam e preservam a hierarquia. Alvos dos galhos baixos da árvore usam o mesh específico do galho de coleta, não a árvore inteira.
-- Pistas repetem a cada segundo conforme a publicação anterior. Sem avaliação auditiva ou teste manual de gameplay; precisão percebida e visibilidade ainda precisam da validação do Anderson.
+- Pistas repetem a cada segundo conforme a publicação anterior. A validação geral do estado pelo Anderson foi registrada na entrada de 27 de outubro sobre atualização dos documentos e backup; não se atribui aprovação individual a cada som ou cenário.
 
 
 ## 27 de outubro de 2026 — manter a origem da pista e descrever coletáveis no chão
@@ -573,5 +573,13 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 ### Estado documentado
 
 - README, GDD e DEVLOG atualizados para refletir os comportamentos publicados de pistas espaciais, continuidade da origem, descrição de coletáveis ao olhar para baixo, regra de criação de fogueiras próximas e estado de validação. Corrigido no README um trecho que continha separadores de parágrafo literais em vez de quebras de linha.
-- Mantidos distintos o código publicado e os testes manuais ainda pendentes: direção e volume percebidos durante aproximação, visibilidade em gameplay, leitor de tela e avaliação auditiva continuam sem confirmação.
+- Anderson informou que testou o estado publicado e considerou que chegou a um ponto confortável para atualizar documentos e backup. O registro não presume resultados mais específicos do que essa confirmação geral.
 - Criado backup datado deste snapshot após a atualização dos documentos. Os backups anteriores permanecem preservados e sem alteração. Nenhuma release estável foi declarada.
+
+
+## 27 de outubro de 2026 — confirmação do teste e atualização do backup
+
+- Anderson informou que havia testado o estado publicado e que chegamos a um ponto confortável para atualizar os documentos e o backup.
+- Esta confirmação corrige o registro anterior, que havia tratado a validação manual como pendente por não ter inferido o teste a partir do pedido de atualização. O estado testado é o publicado com pistas automáticas a cada segundo, origem espacial estável durante a aproximação e descrição ampliada dos coletáveis no olhar para baixo.
+- O registro não inventa resultados por item ou uma aprovação universal de todos os sons; registra somente que Anderson testou a versão e a considerou suficientemente confortável para atualizar.
+- README, GDD e este DEVLOG passam a refletir essa confirmação. O backup de 27 de outubro será atualizado para apontar para este estado documental corrigido; os backups anteriores continuam intactos.
