@@ -645,3 +645,9 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - O foco no botão Inventário permanece compatível com a coleta; o Enter não abre o painel pelo botão, mas tenta coletar um item alinhado no cenário.
 - Revisada a descrição do olhar para baixo e horizontal para priorizar recursos visíveis numa região maior do enquadramento; a checagem de oclusão continua ativa.
 - Páginas/documentos publicados; teste manual de gameplay ainda necessário para confirmar a experiência percebida.
+
+
+## 27 de outubro de 2026 — ampliar levemente a tolerância de mira
+
+- A tolerância angular comum para interações com objetos passou de 60° para 65° em relação à câmera.
+- Alcance físico, prioridades de seleção, oclusão, controles e movimentação permanecem inalterados.
