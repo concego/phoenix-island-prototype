@@ -2088,7 +2088,7 @@
       if (!consumeInventoryQuantity('branch', 1)) return;
       addInventoryItem('stick', 2);
       closeItemActionMenu();
-      announce(`Você quebrou um galho e obteve 2 gravetos. ${inventorySummary()}.`);
+      announce('Você obteve 2 gravetos.');
     }
     function isBranchTargetPreferred(branchTarget) {
       if (!branchTarget || branchTarget.distance > 2.2) return false;
