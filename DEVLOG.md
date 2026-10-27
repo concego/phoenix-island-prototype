@@ -656,3 +656,11 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 ## 27 de outubro de 2026 — pista grave junto à árvore
 
 - Recursos disponíveis na árvore agora usam o beep grave de fonte coletável, pois a árvore fornece gravetos e galhos. As demais fontes de extração mantêm seu timbre próprio.
+
+
+### 27 de outubro de 2026 — confirmar coleta e ações por áudio
+
+
+- Adicionados padrões sonoros diferentes: duas notas ascendentes para coleta bem-sucedida e outra dupla para ação bem-sucedida do menu contextual.
+- Aplicados aos coletáveis do cenário e às receitas, criação/abastecimento de fogueira; resultados bloqueados e inventário cheio não recebem confirmação falsa.
+- O som só é disparado após iniciar o contexto de áudio por gesto do usuário, incluindo Enter e a ativação de ação no menu.
