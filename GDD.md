@@ -122,7 +122,7 @@ O olhar e a orientação corporal são controles distintos. A/D não giram o cor
 ### Galhos e gravetos
 
 - Galhos são distintos de gravetos, maiores e mais resistentes, são material para receitas e inflamáveis.
-- Galhos caídos no chão são itens recolhidos diretamente com Espaço ou Enter, sem faca ou golpes; a coleta exige alcance e espaço no inventário.
+- Galhos caídos no chão são itens recolhidos somente com Enter, sem faca ou golpes; a coleta exige alcance e espaço no inventário.
 - Galhos vivos baixos da copa são fontes de extração: somente eles exigem faca equipada e golpes sucessivos para serem cortados.
 - Com um galho equipado, o menu oferece a conversão em dois gravetos somente se houver uma faca de pedra em algum espaço do inventário; a faca não precisa estar equipada para esta conversão.
 - A conversão consome um galho e produz dois gravetos. Conferir espaço antes de consumir o recurso.
@@ -153,7 +153,7 @@ O olhar e a orientação corporal são controles distintos. A/D não giram o cor
 
 ### Pedras, arbustos e fibra vegetal
 
-- Pedras soltas são coletadas com Enter quando elegíveis, inclusive com outro item nas mãos.
+- Pedras soltas, arbustos, galhos caídos e cinzas são coletados com Enter quando elegíveis, inclusive com outro item nas mãos. Espaço usa o item equipado; não recolhe esses itens do chão.
 - Afloramentos exigem martelo no inventário e são minerados com Espaço em golpes sucessivos.
 - Arbustos são coletados e fornecem duas fibras vegetais cada no protótipo atual.
 - Fibra vegetal é inflamável e é requisito da receita do martelo.
