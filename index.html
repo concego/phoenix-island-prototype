@@ -1353,6 +1353,13 @@
       oscillator.start(now);
       oscillator.stop(now + duration + .02);
     }
+    function playConfirmation(kind) {
+      if (!audioContext || audioContext.state !== 'running') return;
+      const notes = kind === 'pickup' ? [880, 1175] : [523, 784];
+      notes.forEach((frequency, index) => {
+        window.setTimeout(() => playTone(frequency, .085, 'sine', .055), index * 105);
+      });
+    }
     function playAirSwoosh() {
       if (!audioContext) return;
       const duration = .18;
@@ -1694,6 +1701,7 @@
       if (fire.igniteStarted) window.setTimeout(() => startCampfireLoop(fire), 700);
       renderInventory();
       closeItemActionMenu();
+      playConfirmation('menu-action');
       announce('Fogueira simples acesa.');
     }
     function refuelCampfire(fire) {
@@ -1704,6 +1712,7 @@
       fire.fuelSeconds = Math.min(CAMPFIRE_MAX_FUEL_SECONDS, previousFuel + CAMPFIRE_FUEL_PER_STICK_SECONDS);
       const addedSeconds = Math.round(fire.fuelSeconds - previousFuel);
       closeItemActionMenu();
+      playConfirmation('menu-action');
       announce(`Fogueira simples abastecida. Combustível aumentado em ${addedSeconds} ${addedSeconds === 1 ? 'segundo' : 'segundos'}${fire.fuelSeconds >= CAMPFIRE_MAX_FUEL_SECONDS ? '; limite atingido' : ''}.`);
     }
     function refreshCampfireActions() {
@@ -1786,7 +1795,7 @@
         button.type = 'button';
         button.textContent = action.label;
         button.disabled = action.disabled;
-        button.addEventListener('click', action.run);
+        button.addEventListener('click', async () => { await unlockAudio(); action.run(); });
         li.append(button);
         itemActionList.append(li);
       }
@@ -1965,6 +1974,7 @@
       if (target.distance > 2.0) return true;
       if (!addInventoryItem('ash', 1)) { announce('Inventário cheio.'); return true; }
       target.pile.collected = true;
+      playConfirmation('pickup');
       for (const mesh of target.pile.meshes) {
         mesh.visible = false;
         const index = lookables.indexOf(mesh);
@@ -2061,6 +2071,7 @@
       let recovered=0; const remaining=[];
       for(const entry of droppedItems){if(addInventoryItem(entry.itemId,entry.quantity))recovered+=entry.quantity;else remaining.push(entry);}
       droppedItems.splice(0,droppedItems.length,...remaining); renderInventory();
+      if (recovered) playConfirmation('pickup');
       announce(recovered ? `Recolhidos ${recovered} item(ns) largado(s).` : 'Inventário cheio.');
     });
     function getTreeActionTarget() {
@@ -2202,6 +2213,7 @@
       for (const [itemId, amount] of Object.entries(recipe)) consumeInventoryQuantity(itemId, amount);
       addInventoryItem('stoneHammer', 1);
       closeItemActionMenu();
+      playConfirmation('menu-action');
       announce('Martelo de pedra criado.');
     }
     function craftStoneKnife() {
@@ -2212,6 +2224,7 @@
       consumeInventoryQuantity('stone', 2);
       addInventoryItem('stoneKnife', 1);
       closeItemActionMenu();
+      playConfirmation('menu-action');
       announce('Faca de pedra criada.');
     }
     function splitBranchIntoSticks() {
@@ -2226,6 +2239,7 @@
       if (!consumeInventoryQuantity('branch', 1)) return;
       addInventoryItem('stick', 2);
       closeItemActionMenu();
+      playConfirmation('menu-action');
       announce('Você obteve 2 gravetos.');
     }
     function getFallenBranchTarget() {
@@ -2245,6 +2259,7 @@
       if (!addInventoryItem('branch', 1)) { announce('Sem espaço no inventário.'); return true; }
       const source = target.source;
       source.harvested = true;
+      playConfirmation('pickup');
       source.mesh.visible = false;
       const lookableIndex = lookables.indexOf(source.mesh);
       if (lookableIndex >= 0) lookables.splice(lookableIndex, 1);
@@ -2268,6 +2283,7 @@
       if (!addInventoryItem('plantFiber', 2)) { announce('Sem espaço no inventário.'); return true; }
       const shrub = target.shrub;
       shrub.harvested = true;
+      playConfirmation('pickup');
       for (const mesh of shrub.meshes) {
         mesh.visible = false;
         const index = lookables.indexOf(mesh);
@@ -2300,6 +2316,7 @@
         if (target.distance > 2.0) return true;
         if (!addInventoryItem('stone', 1)) { announce('Sem espaço no inventário.'); return true; }
         target.stone.collected = true;
+        playConfirmation('pickup');
         target.stone.mesh.visible = false;
         const index = lookables.indexOf(target.stone.mesh);
         if (index >= 0) lookables.splice(index, 1);
@@ -2359,6 +2376,7 @@
         const blockerIndex = blockers.findIndex(blocker => blocker.name.startsWith('afloramento') && blocker.x === node.x && blocker.y === node.y);
         if (blockerIndex >= 0) blockers.splice(blockerIndex, 1);
         if (audioContext?.state === 'running') playBuffer('rockBreak', .48);
+        playConfirmation('pickup');
         announce(`Afloramento esgotado: dano ${damage}; resistência zerada. Você extraiu ${amount} pedras. ${inventorySummary()}.`);
       } else {
         const strikeName = Math.random() < .5 ? 'rockStrike1' : 'rockStrike2';
@@ -2433,6 +2451,7 @@
       }
       branchSource.exhausted = true;
       playBuffer('stickHarvest', .38);
+      playConfirmation('pickup');
       announce(`Galho vivo cortado: dano ${damage}; resistência esgotada. Você coletou um galho. ${inventorySummary()}.`);
     }
     function useAction() {
@@ -2507,6 +2526,7 @@
         if (target.distance > TREE_GATHER_REACH) return;
         const fruit = target.fruit;
         fruit.harvested = true;
+        playConfirmation('pickup');
         treeHarvest.fruits[fruit.name] = (treeHarvest.fruits[fruit.name] || 0) + 1;
         if (fruit.mesh) {
           fruit.mesh.visible = false;
@@ -2524,6 +2544,7 @@
         return;
       }
       playBuffer('stickHarvest', .31);
+      playConfirmation('pickup');
       announce(`Você extraiu um graveto. ${inventorySummary()}.`);
     }
     function campfireFuelDescription(fire) {
@@ -2758,11 +2779,13 @@
       }
       if (!inventoryOpen && code === 'Enter' && document.activeElement === inventoryOpenButton) {
         // O botão abre o inventário por clique; Enter continua sendo a ação de coleta no cenário.
+        await unlockAudio();
         if (collectSceneItemWithEnter(event)) return;
         event.preventDefault();
         return;
       }
       if (code === 'Enter' && !inventoryOpen && !itemActionMenuOpen) {
+        await unlockAudio();
         if (collectSceneItemWithEnter(event)) return;
       }
       if (inventoryOpen) {
