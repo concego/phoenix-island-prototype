@@ -1309,6 +1309,32 @@
       oscillator.start(now);
       oscillator.stop(now + duration + .02);
     }
+    function playAirSwoosh() {
+      if (!audioContext) return;
+      const duration = .18;
+      const now = audioContext.currentTime;
+      const sampleCount = Math.max(1, Math.floor(audioContext.sampleRate * duration));
+      const buffer = audioContext.createBuffer(1, sampleCount, audioContext.sampleRate);
+      const samples = buffer.getChannelData(0);
+      for (let index = 0; index < sampleCount; index++) {
+        const progress = index / sampleCount;
+        samples[index] = (Math.random() * 2 - 1) * Math.sin(Math.PI * progress) * (1 - progress);
+      }
+      const source = audioContext.createBufferSource();
+      const filter = audioContext.createBiquadFilter();
+      const gain = audioContext.createGain();
+      source.buffer = buffer;
+      filter.type = 'highpass';
+      filter.frequency.setValueAtTime(650, now);
+      filter.frequency.exponentialRampToValueAtTime(2100, now + duration);
+      filter.Q.value = .7;
+      gain.gain.setValueAtTime(.0001, now);
+      gain.gain.exponentialRampToValueAtTime(.12, now + .018);
+      gain.gain.exponentialRampToValueAtTime(.0001, now + duration);
+      source.connect(filter).connect(gain).connect(audioContext.destination);
+      source.start(now);
+      source.stop(now + duration + .01);
+    }
     function isOnHillGround(x = player.x, y = player.y) {
       return climbMode === 'ground' && !isInLakeWater(x, y) && !isMuddyGround(x, y)
         && Math.abs(x) <= HILL_HALF_WIDTH && y > HILL_RAMP_START_Y && y < HILL_REAR_END_Y;
@@ -1687,7 +1713,7 @@
             const currentHeld = heldInventoryEntry();
             const target = getBranchSourceTarget();
             if (!target || !isBranchTargetPreferred(target) || !currentHeld || currentHeld.itemId !== 'stoneKnife') {
-              announce('A ação não foi executada: mire um galho caído ao alcance e mantenha a faca de pedra equipada.'); return;
+              playAirSwoosh(); return;
             }
             closeItemActionMenu();
             cutBranchWithKnife(target);
