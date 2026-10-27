@@ -536,3 +536,11 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - Pistas de pedra, arbusto, galho vivo/caído, cinzas e fogueira acesa agora disparam automaticamente ao entrar num raio de 6,5 m; cada fonte só rearma depois de afastamento a 8 m e nova aproximação. Intervalo global mínimo de 850 ms entre pistas.
 - Antes de tocar, uma raycast do jogador à fonte verifica se ela é visível como primeira interseção; objetos mais próximos prevalecem, seguindo a prioridade de elementos visíveis. Pista usa HRTF no ponto real da fonte, auxiliando a localizar e virar na direção correta.
 - Verificação estática confirma remoção do botão/tecla de varredura e uso do sistema de prioridade/visibilidade. Falta teste de gameplay, percepção auditiva/direção/distância e leitor de tela pelo Anderson.
+
+
+## 27 de outubro de 2026 — repetição de pistas e dois timbres de recurso
+
+- Corrigida a sinalização que dependia apenas da primeira aproximação: a pista volta a tocar a cada 3,8 segundos enquanto a fonte estiver próxima e visível segundo a prioridade, com intervalo global para evitar sobreposição.
+- Separados dois timbres: som mais claro/agudo para item diretamente coletável; som grave/áspero para fonte que exige extração/ferramenta. Pedras soltas, arbustos e cinzas são coletáveis; galhos caídos/vivos e afloramentos são fontes de extração.
+- Atualizado `tools/generate_sounds.py --resource-locators-only`, que gera somente `locate-collectible.wav` e `locate-extractable.wav`, sem regravar outros sons.
+- Não houve avaliação auditiva do usuário; diferença perceptiva entre os timbres e espaçamento das repetições continuam aguardando validação.
