@@ -1859,9 +1859,10 @@
       setCamera();
       const direction = camera.getWorldDirection(new THREE.Vector3()).normalize();
       return ashPiles.filter(pile => !pile.collected).map(pile => {
-        const offset = pile.point.clone().sub(camera.position);
+        const point = getResourceCuePoint(pile.meshes, pile.point);
+        const offset = point.clone().sub(camera.position);
         const distance = offset.length();
-        return { pile, point: pile.point, distance, alignment: direction.dot(offset.normalize()) };
+        return { pile, point, distance, alignment: direction.dot(offset.normalize()) };
       }).filter(target => target.alignment >= TREE_AIM_MIN_ALIGNMENT)
         .sort((a, b) => b.alignment - a.alignment || a.distance - b.distance)[0] || null;
     }
@@ -2232,9 +2233,10 @@
       setCamera();
       const direction = camera.getWorldDirection(new THREE.Vector3()).normalize();
       return branchSources.filter(source => !source.harvested).map(source => {
-        const offset = source.point.clone().sub(camera.position);
+        const point = getResourceCuePoint([source.mesh], source.point);
+        const offset = point.clone().sub(camera.position);
         const distance = offset.length();
-        return { source, point: source.point, distance, alignment: direction.dot(offset.normalize()) };
+        return { source, point, distance, alignment: direction.dot(offset.normalize()) };
       }).filter(target => target.alignment >= TREE_AIM_MIN_ALIGNMENT)
         .sort((a, b) => b.alignment - a.alignment || a.distance - b.distance)[0] || null;
     }
@@ -2279,7 +2281,7 @@
       setCamera();
       const direction = camera.getWorldDirection(new THREE.Vector3()).normalize();
       const candidates = [
-        ...looseStones.filter(stone => !stone.collected).map(stone => ({ kind: 'loose', stone, point: stone.point })),
+        ...looseStones.filter(stone => !stone.collected).map(stone => ({ kind: 'loose', stone, point: getResourceCuePoint([stone.mesh], stone.point) })),
         ...hillStoneNodes.filter(node => node.resistance > 0).map(node => ({ kind: 'outcrop', node, point: node.point }))
       ];
       const aimed = candidates.map(target => {
@@ -2367,49 +2369,43 @@
     }
     function collectSceneItemWithEnter(event) {
       if (event.repeat || inventoryOpen || itemActionMenuOpen || climbMode !== 'ground') return false;
-      if (event.target instanceof HTMLElement && event.target.closest('button, a, [role="button"], input, textarea, select, [contenteditable="true"]')) return false;
-      const target = getRockActionTarget();
-      const shrubTarget = getPlantShrubTarget();
-      const ashTarget = getAshTarget();
-      const branchTarget = getFallenBranchTarget();
+      if (event.target instanceof HTMLElement && event.target !== inventoryOpenButton && event.target.closest('button, a, [role="button"], input, textarea, select, [contenteditable="true"]')) return false;
+      setCamera();
+      const direction = camera.getWorldDirection(new THREE.Vector3()).normalize();
+      const candidates = [
+        ...looseStones.filter(item => !item.collected).map(item => {
+          const point = getResourceCuePoint([item.mesh], item.point);
+          const offset = point.clone().sub(camera.position);
+          return { kind: 'stone', item, point, distance: offset.length(), alignment: direction.dot(offset.normalize()) };
+        }),
+        ...plantShrubs.filter(item => !item.harvested).map(item => {
+          const point = getResourceCuePoint(item.meshes, item.point);
+          const offset = point.clone().sub(camera.position);
+          return { kind: 'shrub', item, point, distance: offset.length(), alignment: direction.dot(offset.normalize()) };
+        }),
+        ...ashPiles.filter(item => !item.collected).map(item => {
+          const point = getResourceCuePoint(item.meshes, item.point);
+          const offset = point.clone().sub(camera.position);
+          return { kind: 'ash', item, point, distance: offset.length(), alignment: direction.dot(offset.normalize()) };
+        }),
+        ...branchSources.filter(item => !item.harvested).map(item => {
+          const point = getResourceCuePoint([item.mesh], item.point);
+          const offset = point.clone().sub(camera.position);
+          return { kind: 'branch', item, point, distance: offset.length(), alignment: direction.dot(offset.normalize()) };
+        })
+      ].filter(target => target.alignment >= TREE_AIM_MIN_ALIGNMENT && target.distance <= 2.2)
+        .sort((a, b) => b.alignment - a.alignment || a.distance - b.distance);
+      const target = candidates[0];
+      if (!target) return false;
       const treeTarget = getTreeActionTarget();
-      const bestOtherAlignment = Math.max(target?.alignment ?? -1, shrubTarget?.alignment ?? -1, ashTarget?.alignment ?? -1, branchTarget?.alignment ?? -1);
-      const treePreferred = treeTarget && treeTarget.alignment >= TREE_AIM_MIN_ALIGNMENT
-        && treeTarget.alignment >= bestOtherAlignment - .035;
-      const shrubPreferred = shrubTarget && shrubTarget.distance <= 2.2 && !treePreferred
-        && shrubTarget.alignment > (target?.alignment ?? -1) + .035
-        && shrubTarget.alignment > (ashTarget?.alignment ?? -1) + .035;
-      const ashPreferred = ashTarget && !treePreferred
-        && ashTarget.alignment > (target?.alignment ?? -1) + .035
-        && ashTarget.alignment > (shrubTarget?.alignment ?? -1) + .035
-        && ashTarget.alignment > (branchTarget?.alignment ?? -1) + .035;
-      const branchPreferred = branchTarget && branchTarget.distance <= 2.2 && !treePreferred
-        && branchTarget.alignment > (target?.alignment ?? -1) + .035
-        && branchTarget.alignment > (shrubTarget?.alignment ?? -1) + .035
-        && branchTarget.alignment > (ashTarget?.alignment ?? -1) + .035;
-      if (ashPreferred) {
-        event.preventDefault();
-        event.stopPropagation();
-        collectAsh(ashTarget);
-        return true;
-      }
-      if (shrubPreferred) {
-        event.preventDefault();
-        event.stopPropagation();
-        usePlantShrub(shrubTarget);
-        return true;
-      }
-      if (branchPreferred) {
-        event.preventDefault();
-        event.stopPropagation();
-        collectFallenBranch(branchTarget);
-        return true;
-      }
-      if (target?.kind !== 'loose') return false;
+      if (treeTarget && treeTarget.alignment >= TREE_AIM_MIN_ALIGNMENT
+          && treeTarget.alignment >= target.alignment - .035) return false;
       event.preventDefault();
       event.stopPropagation();
-      useRockAction(target);
-      return true;
+      if (target.kind === 'stone') return useRockAction({ kind: 'loose', stone: target.item, distance: target.distance, alignment: target.alignment });
+      if (target.kind === 'shrub') return usePlantShrub({ shrub: target.item, distance: target.distance, alignment: target.alignment });
+      if (target.kind === 'ash') return collectAsh({ pile: target.item, distance: target.distance, alignment: target.alignment });
+      return collectFallenBranch({ source: target.item, distance: target.distance, alignment: target.alignment });
     }
     function hitLivingBranch(branchSource) {
       if (!branchSource || branchSource.exhausted) return;
@@ -2595,21 +2591,21 @@
         return `Olhar para cima: céu aberto no centro da visão, rumo ${heading}.`;
       }
       if (player.pitch < -.12) {
-        const campfire = visible.find(target => target.category === 'campfire' && Math.abs(target.screen.x) < .55 && Math.abs(target.screen.y) < .55);
-        if (campfire) {
-          const fireState = campfireFuelDescription(campfire.fire);
-          return `Olhar para baixo: ${campfire.name} está no campo de visão, a ${campfire.distance.toFixed(1)} unidades. Está ${fireState}`;
-        }
-        const ash = visible.find(target => target.category === 'ash' && Math.abs(target.screen.x) < .55 && Math.abs(target.screen.y) < .55);
-        if (ash) return `Olhar para baixo: ${ash.name} está no campo de visão, a ${ash.distance.toFixed(1)} unidades. Pressione Enter para recolher.`;
         const groundCollectible = visible.find(target => ['rock', 'shrub', 'ash', 'branch'].includes(target.category)
-          && Math.abs(target.screen.x) < .78 && Math.abs(target.screen.y) < .82);
+          && Math.abs(target.screen.x) < .98 && Math.abs(target.screen.y) < .99);
         if (groundCollectible) {
           const side = Math.abs(groundCollectible.screen.x) < .18 ? 'no centro da visão'
             : groundCollectible.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
           return `Olhar para baixo: ${groundCollectible.name} está ${side}, a ${groundCollectible.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
         }
-        const trunk = visible.find(target => target.category === 'tree' && target.name.includes('tronco') && Math.abs(target.screen.x) < .55 && Math.abs(target.screen.y) < .48);
+        const campfire = visible.find(target => target.category === 'campfire' && Math.abs(target.screen.x) < .85 && Math.abs(target.screen.y) < .9);
+        if (campfire) {
+          const fireState = campfireFuelDescription(campfire.fire);
+          return `Olhar para baixo: ${campfire.name} está no campo de visão, a ${campfire.distance.toFixed(1)} unidades. Está ${fireState}`;
+        }
+        const ash = visible.find(target => target.category === 'ash' && Math.abs(target.screen.x) < .85 && Math.abs(target.screen.y) < .9);
+        if (ash) return `Olhar para baixo: ${ash.name} está no campo de visão, a ${ash.distance.toFixed(1)} unidades.`;
+        const trunk = visible.find(target => target.category === 'tree' && target.name.includes('tronco') && Math.abs(target.screen.x) < .85 && Math.abs(target.screen.y) < .9);
         if (trunk) return `Olhar para baixo: ${trunk.name} está no campo de visão, a ${trunk.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
         const lake = visible.find(target => target.category === 'lake');
         if (lake) return `Olhar para baixo: a superfície do lago está no campo de visão, a ${lake.distance.toFixed(1)} unidades. A faixa rasa contorna a margem; o fundo desce para águas profundas no centro.`;
@@ -2617,6 +2613,19 @@
         return `Olhar para baixo: ${surface} ocupa o centro da visão, rumo ${heading}.`;
       }
 
+      const visibleGroundCollectible = visible.find(target => ['rock', 'shrub', 'ash', 'branch'].includes(target.category)
+        && Math.abs(target.screen.x) < .98 && Math.abs(target.screen.y) < .99);
+      if (visibleGroundCollectible) {
+        const side = visibleGroundCollectible.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
+        return `Olhar horizontal: ${visibleGroundCollectible.name} aparece ${side}, a ${visibleGroundCollectible.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
+      }
+      const visibleGroundCollectible = visible.find(target => ['rock', 'shrub', 'ash', 'branch'].includes(target.category)
+        && Math.abs(target.screen.x) < .98 && Math.abs(target.screen.y) < .99);
+      if (visibleGroundCollectible) {
+        const side = Math.abs(visibleGroundCollectible.screen.x) < .18 ? 'no centro da visão'
+          : visibleGroundCollectible.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
+        return `Olhar horizontal: ${visibleGroundCollectible.name} está ${side}, a ${visibleGroundCollectible.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
+      }
       const centered = visible.find(target => target.score < .16);
       if (centered) {
         const side = Math.abs(centered.screen.x) < .18 ? 'no centro da visão' : centered.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
@@ -2634,8 +2643,8 @@
           return `Olhar horizontal: a colina está ${side}, a ${centered.distance.toFixed(1)} unidades. ${slopeText} Rumo do olhar: ${heading}.`;
         }
         if (centered.category === 'rock') return `Olhar horizontal: ${centered.name} está ${side}, a ${centered.distance.toFixed(1)} unidades.${centered.node ? ` Resistência restante: ${centered.node.resistance}.` : ''} Rumo do olhar: ${heading}.`;
-        if (centered.category === 'branch') return `Olhar horizontal: ${centered.name} está ${side}, a ${centered.distance.toFixed(1)} unidades. Resistência restante: ${centered.source.resistance}. Rumo do olhar: ${heading}.`;
-        if (centered.category === 'branch') return `Olhar horizontal: ${centered.name} está ${side}, a ${centered.distance.toFixed(1)} unidades. Resistência restante: ${centered.source.resistance}. Rumo do olhar: ${heading}.`;
+        if (centered.category === 'branch') return `Olhar horizontal: ${centered.name} está ${side}, a ${centered.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
+        if (centered.category === 'branch') return `Olhar horizontal: ${centered.name} está ${side}, a ${centered.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
         if (centered.category === 'lake') return `Olhar horizontal: o centro do lago está ${side}, a ${centered.distance.toFixed(1)} unidades. Uma faixa rasa contorna a margem; o fundo desce para a bacia profunda. Rumo do olhar: ${heading}.`;
         return `Olhar horizontal: ${centered.name} está ${side}, a ${centered.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
       }
@@ -2647,8 +2656,8 @@
           return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro, a ${target.distance.toFixed(1)} unidades. Está ${fireState} Rumo do olhar: ${heading}.`;
         }
         if (target.category === 'rock') return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro, a ${target.distance.toFixed(1)} unidades.${target.node ? ` Resistência restante: ${target.node.resistance}.` : ''} Rumo do olhar: ${heading}.`;
-        if (target.category === 'branch') return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro, a ${target.distance.toFixed(1)} unidades. Resistência restante: ${target.source.resistance}. Rumo do olhar: ${heading}.`;
-        if (target.category === 'branch') return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro, a ${target.distance.toFixed(1)} unidades. Resistência restante: ${target.source.resistance}. Rumo do olhar: ${heading}.`;
+        if (target.category === 'branch') return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro, a ${target.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
+        if (target.category === 'branch') return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro, a ${target.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
         if (target.category === 'lake') return `Olhar horizontal: o lago aparece ${side}, fora do centro. A faixa rasa contorna a margem e o fundo desce para a região profunda. Rumo do olhar: ${heading}.`;
         return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro. Rumo do olhar: ${heading}.`;
       }
@@ -2753,7 +2762,8 @@
         return;
       }
       if (!inventoryOpen && code === 'Enter' && document.activeElement === inventoryOpenButton) {
-        // Enter não é atalho para abrir; I é. A abertura por botão continua disponível por clique/toque.
+        // O botão abre o inventário por clique; Enter continua sendo a ação de coleta no cenário.
+        if (collectSceneItemWithEnter(event)) return;
         event.preventDefault();
         return;
       }
