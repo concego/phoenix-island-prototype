@@ -2393,7 +2393,8 @@
           const offset = point.clone().sub(camera.position);
           return { kind: 'branch', item, point, distance: offset.length(), alignment: direction.dot(offset.normalize()) };
         })
-      ].filter(target => target.alignment >= TREE_AIM_MIN_ALIGNMENT && target.distance <= 2.2)
+      ].filter(target => target.alignment >= TREE_AIM_MIN_ALIGNMENT
+        && target.distance <= (target.kind === 'stone' || target.kind === 'ash' ? 2.0 : 2.2))
         .sort((a, b) => b.alignment - a.alignment || a.distance - b.distance);
       const target = candidates[0];
       if (!target) return false;
