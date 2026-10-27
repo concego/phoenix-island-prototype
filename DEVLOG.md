@@ -496,3 +496,8 @@ A sintaxe, a altura alcançável, o patamar de escalada e os ramos de interaçã
 
 - Revisão estática confirma faixas 1–3 e 2–4 inclusivas, limite inferior zero, dano sorteado por impacto, persistência da resistência entre golpes e preservação do recurso em caso de inventário cheio.
 - Não houve playtest, teste com leitor de tela ou avaliação auditiva. Ainda precisam de validação a persistência dos alvos da copa, resultados variáveis, mineração, disputa de mira e inventário sem espaço.
+
+
+### 27 de outubro de 2026 — correção do golpe final sem espaço
+
+A revisão confirmou que o commit anterior não havia publicado o código do sistema de dano. O sistema aprovado e as atualizações de instrução foram integrados no `index.html` em commit próprio. Também corrigido o caso de inventário sem espaço: o dano é sorteado uma vez; se zeraria a resistência e não houver espaço, ele fica pendente, não reduz a resistência nem remove a fonte. Após liberar espaço, o mesmo resultado pendente é aplicado sem novo sorteio. As demais mudanças publicadas de coleta não foram substituídas. A implementação e as instruções estão publicadas; faltam playtest, validação com leitor de tela e avaliação sonora.
