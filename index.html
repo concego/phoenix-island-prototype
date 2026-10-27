@@ -1896,7 +1896,7 @@
             ? designToThree(treeX, treeY, index === 0 ? TREE_GROUND_GATHER_HEIGHT : TREE_GROUND_GATHER_UPPER_HEIGHT)
             : designToThree(treeX + Math.sin((index - 2) * Math.PI / 4) * .92, treeY + Math.cos((index - 2) * Math.PI / 4) * .92, TREE_GROUND_GATHER_HEIGHT);
           const objects = getTreeHarvestLookObjects(index);
-          return { source, kind: 'extractable', category: 'tree', objects, point: getResourceCuePoint(objects, fallback) };
+          return { source, kind: 'collectible', category: 'tree', objects, point: getResourceCuePoint(objects, fallback) };
         }).filter(item => !item.source.exhausted),
         ...ashPiles.filter(pile => !pile.collected).map(pile => ({ source: pile, kind: 'collectible', category: 'ash', objects: pile.meshes, point: getResourceCuePoint(pile.meshes, pile.point) })),
       ];
