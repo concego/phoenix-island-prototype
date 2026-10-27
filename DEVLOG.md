@@ -544,3 +544,11 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - Separados dois timbres: som mais claro/agudo para item diretamente coletável; som grave/áspero para fonte que exige extração/ferramenta. Pedras soltas, arbustos e cinzas são coletáveis; galhos caídos/vivos e afloramentos são fontes de extração.
 - Atualizado `tools/generate_sounds.py --resource-locators-only`, que gera somente `locate-collectible.wav` e `locate-extractable.wav`, sem regravar outros sons.
 - Não houve avaliação auditiva do usuário; diferença perceptiva entre os timbres e espaçamento das repetições continuam aguardando validação.
+
+
+## 27 de outubro de 2026 — frequência das pistas e visibilidade do alvo
+
+- Ajustado o intervalo global e por fonte das pistas espaciais para 1 segundo, mantendo o alcance de 6,5 m e a prioridade entre recursos próximos.
+- A descrição acessível agora associa os alvos de coleta às suas próprias malhas; a verificação de obstrução ignora somente as malhas pertencentes ao alvo descrito. Objetos distintos mais próximos continuam bloqueando a descrição e as pistas, sem tornar toda uma categoria transparente.
+- Para os galhos vivos, a associação usa a geometria de galho baixo mais próxima, sem dispensar a oclusão por outros elementos da árvore.
+- Validação realizada: revisão estática das alterações, comparação da base remota e verificação de sintaxe pendente. Não foram feitos testes manuais de gameplay, leitor de tela nem avaliação auditiva; esses testes permanecem para o usuário.

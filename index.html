@@ -904,9 +904,13 @@
       ], null, true);
       root.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), designToThree(directionX, directionY, 0).normalize());
     }
+    const treeGroundHarvestMeshes = [];
+    const treeHighBranchMeshes = [];
     function addBranchArm(axisX, axisY, altitude, radius, description) {
       const arm = addMesh(new THREE.CylinderGeometry(radius * .75, radius, TREE_BRANCH_REACH * 2, 8), materials.bark, [treeX, treeY, altitude], description, true, 'tree');
       arm.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), designToThree(axisX, axisY, 0).normalize());
+      (altitude < TREE_BRANCH_HEIGHT ? treeGroundHarvestMeshes : treeHighBranchMeshes).push(arm);
+      return arm;
     }
     // Galhos baixos para coleta do chão e patamar alto para preservar a escalada.
     addBranchArm(1, 0, TREE_GROUND_GATHER_HEIGHT, .1, 'Um galho baixo se estende para fora do tronco; pode ser alcançado do chão.');
@@ -918,6 +922,7 @@
     addBranchArm(1, 1, TREE_BRANCH_HEIGHT, .18, 'Um galho alto forma o patamar de escalada da árvore.');
     addBranchArm(1, -1, TREE_BRANCH_HEIGHT, .18, 'Um galho alto forma o patamar de escalada da árvore.');
     const leafGeometry = new THREE.IcosahedronGeometry(1, 1);
+    const canopyLookMeshes = [];
     const canopyClusters = [
       [0, 0, 2.55, 1.0, .82, .72, materials.leaves],
       [-.56, .08, 2.48, .68, .62, .58, materials.leavesLight],
@@ -934,6 +939,7 @@
         : 'A copa da árvore está acima de você; galhos e folhas entram no campo de visão.';
       const cluster = addMesh(leafGeometry, material, [treeX + offsetX, treeY + offsetY, altitude], description, true, 'tree');
       cluster.scale.set(scaleX, scaleY, scaleZ);
+      canopyLookMeshes.push(cluster);
     }
 
     function addTreeFruitTarget(name, x, y, z) {
@@ -942,6 +948,15 @@
       treeFruitTargets.push(target);
       return target;
     }
+    // Associates a harvest point only with its nearest low branch geometry, not every tree mesh.
+    function getTreeHarvestLookObjects(index) {
+      const point = index < 2
+        ? designToThree(treeX, treeY, index === 0 ? TREE_GROUND_GATHER_HEIGHT : TREE_GROUND_GATHER_UPPER_HEIGHT)
+        : designToThree(treeX + Math.sin((index - 2) * Math.PI / 4) * .92, treeY + Math.cos((index - 2) * Math.PI / 4) * .92, TREE_GROUND_GATHER_HEIGHT);
+      const closest = treeGroundHarvestMeshes.slice().sort((a, b) => a.position.distanceTo(point) - b.position.distanceTo(point))[0];
+      return closest ? [closest] : [];
+    }
+
     // Esta árvore de teste não tem frutos; árvores frutíferas podem adicionar alvos aqui.
 
     const blockers = [{ x: treeX, y: treeY, radius: 1.05, name: 'árvore' }, ...hillStoneNodes.map((node, index) => ({ x: node.x, y: node.y, radius: .38, name: `afloramento de pedra ${index + 1}` }))];
@@ -1871,7 +1886,7 @@
     }
     const RESOURCE_CUE_TRIGGER_DISTANCE = 6.5;
     const RESOURCE_CUE_REARM_DISTANCE = 8.0;
-    const RESOURCE_CUE_MIN_INTERVAL_MS = 3800;
+    const RESOURCE_CUE_MIN_INTERVAL_MS = 1000;
     const RESOURCE_CUE_CHECK_INTERVAL_MS = 220;
     let nextResourceCueCheckAt = 0;
     function getResourceCueSources() {
@@ -1884,7 +1899,7 @@
           source, kind: 'extractable', category: 'tree', point: index < 2
             ? designToThree(treeX, treeY, index === 0 ? TREE_GROUND_GATHER_HEIGHT : TREE_GROUND_GATHER_UPPER_HEIGHT)
             : designToThree(treeX + Math.sin((index - 2) * Math.PI / 4) * .92, treeY + Math.cos((index - 2) * Math.PI / 4) * .92, TREE_GROUND_GATHER_HEIGHT),
-          objects: lookables.filter(object => object.userData.lookCategory === 'tree')
+          objects: getTreeHarvestLookObjects(index)
         })).filter(item => !item.source.exhausted),
         ...ashPiles.filter(pile => !pile.collected).map(pile => ({ source: pile, kind: 'collectible', category: 'ash', point: pile.point, objects: pile.meshes })),
       ];
@@ -2598,19 +2613,19 @@
         return `Natação: olhar horizontal; W/S mantêm a profundidade. Profundidade atual: ${depth} m.`;
       }
       const targets = [
-        ...campfires.map((fire, index) => ({ category: 'campfire', name: fire.lit ? `a fogueira simples acesa${campfires.length > 1 ? ` ${index + 1}` : ''}` : `a fogueira apagada e suas cinzas${campfires.length > 1 ? ` ${index + 1}` : ''}`, point: designToThree(fire.x, fire.y, terrainHeightAt(fire.x, fire.y) + (fire.lit ? .52 : .14)), fire })),
-        ...ashPiles.filter(pile => !pile.collected).map(pile => ({ category: 'ash', name: 'cinzas de uma fogueira apagada', point: pile.point, pile })),
-        ...plantShrubs.filter(shrub => !shrub.harvested).map((shrub, index) => ({ category: 'shrub', name: `um arbusto silvestre${plantShrubs.length > 1 ? ` ${index + 1}` : ''} que fornece fibra vegetal`, point: shrub.point, shrub })),
-        ...branchSources.filter(source => !source.harvested).map((source, index) => ({ category: 'branch', name: `um galho caído${branchSources.length > 1 ? ` ${index + 1}` : ''}, maior e mais resistente que um graveto`, point: source.point, source })),
-        { category: 'tree', name: 'o tronco da árvore', point: designToThree(treeX, treeY, 1.35) },
-        { category: 'tree', name: 'os galhos baixos para coleta', point: designToThree(treeX, treeY, TREE_GROUND_GATHER_HEIGHT) },
-        { category: 'tree', name: 'a copa baixa da árvore', point: designToThree(treeX, treeY, TREE_GROUND_GATHER_UPPER_HEIGHT) },
-        { category: 'tree', name: 'o patamar alto de galhos para escalada', point: designToThree(treeX, treeY, TREE_BRANCH_HEIGHT) },
-        { category: 'tree', name: 'a parte mais alta da copa', point: designToThree(treeX, treeY, TREE_TOP_HEIGHT) },
+        ...campfires.map((fire, index) => ({ category: 'campfire', name: fire.lit ? `a fogueira simples acesa${campfires.length > 1 ? ` ${index + 1}` : ''}` : `a fogueira apagada e suas cinzas${campfires.length > 1 ? ` ${index + 1}` : ''}`, point: designToThree(fire.x, fire.y, terrainHeightAt(fire.x, fire.y) + (fire.lit ? .52 : .14)), fire, objects: fire.base ? lookables.filter(object => object.userData.lookCategory === 'campfire' && fire.base.children.includes(object)) : [] })),
+        ...ashPiles.filter(pile => !pile.collected).map(pile => ({ category: 'ash', name: 'cinzas de uma fogueira apagada', point: pile.point, pile, objects: pile.meshes })),
+        ...plantShrubs.filter(shrub => !shrub.harvested).map((shrub, index) => ({ category: 'shrub', name: `um arbusto silvestre${plantShrubs.length > 1 ? ` ${index + 1}` : ''} que fornece fibra vegetal`, point: shrub.point, shrub, objects: shrub.meshes })),
+        ...branchSources.filter(source => !source.harvested).map((source, index) => ({ category: 'branch', name: `um galho caído${branchSources.length > 1 ? ` ${index + 1}` : ''}, maior e mais resistente que um graveto`, point: source.point, source, objects: [source.mesh] })),
+        { category: 'tree', name: 'o tronco da árvore', point: designToThree(treeX, treeY, 1.35), objects: [treeTrunk] },
+        { category: 'tree', name: 'os galhos baixos para coleta', point: designToThree(treeX, treeY, TREE_GROUND_GATHER_HEIGHT), objects: treeGroundHarvestMeshes },
+        { category: 'tree', name: 'a copa baixa da árvore', point: designToThree(treeX, treeY, TREE_GROUND_GATHER_UPPER_HEIGHT), objects: canopyLookMeshes.filter(mesh => mesh.position.z < designToThree(treeX, treeY, 3.5).z) },
+        { category: 'tree', name: 'o patamar alto de galhos para escalada', point: designToThree(treeX, treeY, TREE_BRANCH_HEIGHT), objects: treeHighBranchMeshes },
+        { category: 'tree', name: 'a parte mais alta da copa', point: designToThree(treeX, treeY, TREE_TOP_HEIGHT), objects: canopyLookMeshes.filter(mesh => mesh.position.z >= designToThree(treeX, treeY, 3.5).z) },
         { category: 'hill', name: 'a encosta da colina', point: designToThree(0, 2.95, .9) },
         { category: 'hill', name: 'o topo da colina', point: designToThree(0, 5.4, 1.8) },
-        ...hillStoneNodes.filter(node => node.resistance > 0).map(node => ({ category: 'rock', name: 'um afloramento de pedra bruta', point: node.point, node })),
-        ...looseStones.filter(stone => !stone.collected).map(stone => ({ category: 'rock', name: 'uma pedra solta pequena na base da colina', point: stone.point, stone })),
+        ...hillStoneNodes.filter(node => node.resistance > 0).map(node => ({ category: 'rock', name: 'um afloramento de pedra bruta', point: node.point, node, objects: node.meshes })),
+        ...looseStones.filter(stone => !stone.collected).map(stone => ({ category: 'rock', name: 'uma pedra solta pequena na base da colina', point: stone.point, stone, objects: [stone.mesh] })),
         { category: 'lake', name: 'a superfície do lago', point: designToThree(LAKE.centerX, LAKE.centerY, LAKE.waterZ) }
       ];
       const raycaster = new THREE.Raycaster();
@@ -2623,8 +2638,9 @@
         const distance = offset.length();
         raycaster.set(camera.position, offset.normalize());
         raycaster.far = distance + .1;
+        const targetObjects = new Set(target.objects || []);
         const blocker = raycaster.intersectObjects(lookables, false).find(hit =>
-          hit.distance < distance - .25 
+          hit.distance < distance - .25 && !targetObjects.has(hit.object)
         );
         if (blocker) continue;
         const score = screen.x * screen.x * .8 + screen.y * screen.y;
