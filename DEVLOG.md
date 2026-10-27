@@ -590,3 +590,13 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - Nas tentativas de golpe que esgotariam um galho caído ou vivo sem espaço para guardá-lo, o anúncio passa a ser apenas “Sem espaço no inventário.”
 - A regra de preservar a resistência e o dano pendente do golpe permanece inalterada; nenhuma mensagem de falta de espaço de outras ações foi modificada.
 - A mudança foi publicada no Pages. Não altera release, tag ou backup.
+
+
+## 27 de outubro de 2026 — galhos caídos são itens recolhíveis
+
+- Corrigida a distinção de design: galho caído no chão é um item recolhível, não uma fonte que deve ser golpeada. Pode ser recolhido com Espaço ou Enter, sem faca; a coleta exige alcance de 2,2 m e espaço no inventário.
+- Removidos o estado de resistência dos galhos caídos, a ação contextual de golpear com faca e a classificação deles como fontes de extração. Pistas sonoras passam a identificá-los como coletáveis.
+- A rotina de coleta remove o galho do cenário somente depois de guardar o item; sem espaço, o galho permanece no chão.
+- Somente os galhos vivos que ainda estão na árvore precisam ser cortados com a faca equipada, com resistência 6 e dano por golpe de 1–3. A conversão de um galho recolhido em dois gravetos com faca no inventário continua sendo ação distinta.
+- README, GDD e instruções acessíveis do jogo atualizados. Entradas históricas que descrevem os galhos caídos como golpeáveis registram o comportamento antigo, substituído por esta decisão.
+- Publicado para teste no Pages; nenhuma release, tag ou backup foi alterado.
