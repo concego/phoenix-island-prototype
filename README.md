@@ -50,7 +50,7 @@ Há pedras soltas pequenas ao redor dos quatro lados da base da colina e três a
 
 Abra a página publicada no GitHub Pages. O navegador precisa permitir WebGL e carregar o módulo Three.js hospedado no jsDelivr. O áudio é liberado depois da primeira tecla de movimento ou Espaço, conforme a política dos navegadores.
 
-Pistas espaciais de recursos: o som toca automaticamente quando você entra a até 6,5 m de uma fonte elegível. Uma mesma fonte só volta a tocar depois de você se afastar a pelo menos 8 m e se aproximar novamente. A pista é espacializada para a posição da fonte; ela só toca quando essa fonte é a primeira atingida pela linha de visão nessa direção, respeitando objetos mais próximos. Não há mais varredura pela tecla V ou botão.
+Pistas espaciais de recursos: sons diferentes indicam fontes de extração (como galhos e afloramentos) e itens coletáveis diretamente (como pedras soltas, arbustos e cinzas). A pista toca ao se aproximar a até 6,5 m e se repete a cada 3,8 s enquanto permanecer perto; pode tocar novamente após novo intervalo se a direção ficar livre. A fonte é espacializada no mundo; só toca se for o primeiro objeto visível naquela direção, respeitando os elementos que se interpõem. Não há varredura manual.
 
 ## Controles
 
