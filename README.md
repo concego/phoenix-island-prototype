@@ -115,3 +115,6 @@ As pistas automáticas têm alcance de 6,5 m, repetem uma vez por segundo e usam
 ### Coleta no campo de visão — 27 de outubro de 2026
 
 O Enter procura o item coletável mais alinhado à mira num raio de 2,2 m, mesmo se o foco estiver no botão Inventário; a árvore mantém prioridade quando está claramente mais alinhada. A descrição acessível inclui recursos visíveis no campo de visão, priorizando coletáveis quando a câmera aponta para o chão ou está próxima da horizontal. A visibilidade continua sujeita à hierarquia de oclusão do cenário.
+
+
+Nota de robustez: as distâncias de coleta do Enter respeitam o alcance próprio de cada item; um alvo fora do alcance não impede selecionar outro elegível. O botão Inventário não bloqueia a coleta do mundo quando recebe foco.
