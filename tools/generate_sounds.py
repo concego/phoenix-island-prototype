@@ -571,24 +571,16 @@ def make_resource_locator(kind: str, seed: int) -> list[float]:
                 return 0.0
             return min(1.0, elapsed / attack) * math.exp(-decay * elapsed)
         value = 0.0
-        if kind == 'stone':
-            value += .18 * math.sin(2 * math.pi * (940 - 180*t) * t) * env(.008, 24, .002)
-            value += .13 * math.sin(2 * math.pi * 710 * (t-.105)) * env(.105, 24, .002)
-            value += .11 * high * env(.004, 85, .001) + .09 * high * env(.105, 85, .001)
-        elif kind == 'plant':
-            value += .18 * high * env(.005, 20, .015)
-            value += .10 * math.sin(2 * math.pi * 420 * t) * env(.035, 18, .01)
-            value += .08 * math.sin(2 * math.pi * 560 * (t-.13)) * env(.13, 22, .008)
-        elif kind == 'branch':
-            value += .16 * math.sin(2 * math.pi * (205 - 45*t) * t) * env(.004, 18, .002)
-            value += .10 * math.sin(2 * math.pi * 290 * (t-.105)) * env(.105, 20, .002)
-            value += .07 * high * env(.004, 90, .001)
-        elif kind == 'ash':
-            value += .16 * high * env(.012, 13, .03)
-            value += .06 * math.sin(2 * math.pi * (360 + 120*t) * t) * env(.02, 13, .025)
-        elif kind == 'fire':
-            value += .10 * high * env(.005, 75, .001) + .08 * high * env(.105, 70, .001)
-            value += .08 * math.sin(2 * math.pi * 310 * t) * env(.008, 23, .004)
+        if kind == 'collectible':
+            # Clear pair of bright, rising glass/stone-like notes: object can be picked up as-is.
+            value += .16 * math.sin(2 * math.pi * (760 + 360*t) * t) * env(.008, 17, .003)
+            value += .14 * math.sin(2 * math.pi * (1040 + 260*t) * (t-.105)) * env(.105, 19, .003)
+            value += .055 * high * env(.006, 75, .001)
+        elif kind == 'extractable':
+            # Lower, rougher double thump: source needs a tool or repeated extraction action.
+            value += .17 * math.sin(2 * math.pi * (190 - 42*t) * t) * env(.006, 15, .002)
+            value += .12 * math.sin(2 * math.pi * 270 * (t-.12)) * env(.12, 17, .002)
+            value += .08 * high * env(.006, 82, .001)
         samples.append(value)
     return samples
 
@@ -596,7 +588,7 @@ def make_resource_locator(kind: str, seed: int) -> list[float]:
 def generate_resource_location_cues() -> None:
     """Gera apenas as pistas novas, sem regravar os outros sons do protótipo."""
     ASSETS.mkdir(parents=True, exist_ok=True)
-    for kind, seed in (("stone", 101), ("plant", 103), ("branch", 107), ("ash", 109), ("fire", 113)):
+    for kind, seed in (("collectible", 101), ("extractable", 107)):
         write_wav(ASSETS / f"locate-{kind}.wav", make_resource_locator(kind, seed))
 
 
