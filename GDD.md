@@ -246,3 +246,10 @@ A tolerância angular comum para mirar objetos interativos é de 65° em relaç�
 ### Pistas de recursos da árvore
 
 A árvore emite a pista grave de recurso coletável quando há gravetos ou galhos disponíveis nela, pois ambos podem ser recolhidos pelo jogador.
+
+
+### Confirmação sonora de coleta e ações
+
+
+- A coleta bem-sucedida de itens emite um som curto próprio de confirmação.
+- Cada ação concluída com sucesso pelo menu contextual do item equipado emite outro som curto, distinto da coleta. Falhas, requisitos não atendidos ou inventário cheio não emitem esses sons.
