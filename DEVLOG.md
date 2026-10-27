@@ -651,3 +651,8 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 
 - A tolerância angular comum para interações com objetos passou de 60° para 65° em relação à câmera.
 - Alcance físico, prioridades de seleção, oclusão, controles e movimentação permanecem inalterados.
+
+
+## 27 de outubro de 2026 — pista grave junto à árvore
+
+- Recursos disponíveis na árvore agora usam o beep grave de fonte coletável, pois a árvore fornece gravetos e galhos. As demais fontes de extração mantêm seu timbre próprio.
