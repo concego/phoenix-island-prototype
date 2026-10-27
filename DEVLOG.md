@@ -513,3 +513,18 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 ### Validação
 
 - Revisão estática confirma que a mensagem anterior foi removida desse ramo e o som é chamado apenas pela falha dessa ação contextual. Teste auditivo e validação com leitor de tela continuam pendentes.
+
+
+## 26 de outubro de 2026 — pistas espaciais de fontes de recurso
+
+### Implementado
+
+- O gerador Python `tools/generate_sounds.py --resource-locators-only` cria cinco WAVs mono curtos e distintos: pedra, planta/arbusto, galho, cinzas e fogueira, sem regravar os outros efeitos.
+- V ou o botão acessível “Localizar fontes próximas” inicia uma varredura pontual das fontes ativas em até 22 m; as pistas tocam uma por vez, da mais próxima, com limite de 12 por varredura.
+- Web Audio usa HRTF e posicionamento tridimensional, com o listener acompanhado pela posição e orientação do jogador. Fontes coletadas/esgotadas e cinzas antes da extinção não geram pista. A busca não toca continuamente.
+- README e GDD foram complementados com controles e princípios de áudio espacial acessível.
+
+### Verificação e validação
+
+- Gerador Python executado: cinco WAVs mono, 24 kHz, 0,24 s cada. Revisão estática confirma que a varredura usa fontes posicionadas e estado ativo.
+- Ainda falta o teste auditivo e validação espacial pelo usuário, inclusive compatibilidade prática com leitor de tela. Não considerei a revisão estática como aprovação qualitativa.
