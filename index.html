@@ -129,7 +129,7 @@
     </section>
     <section id="stage" aria-label="Cena tridimensional do protótipo">
       <div id="webgl-warning" hidden>Este navegador ou dispositivo não disponibilizou WebGL para a cena 3D.</div>
-      <div id="readout" role="status" aria-live="polite" aria-atomic="true">Posição inicial ao sul do lago em Phoenix Island. A margem lamacenta tem passos próprios; a faixa rasa permite caminhar, e Espaço inicia a natação somente com mãos vazias, na água rasa e voltado para o fundo. Na natação, mantenha W ou S: a inclinação define subida ou descida; no horizonte, mantém a profundidade. Mudar o olhar sozinho não move. Para sair, chegue à superfície e à faixa rasa ou a uma saída para terra e pressione Espaço. Não há passagem subaquática construída neste mapa. Use as setas para olhar, ou C para anunciar as coordenadas.</div>
+      <div id="readout" role="status" aria-live="polite" aria-atomic="true">Posição inicial ao sul do lago em Phoenix Island. A margem lamacenta tem passos próprios; a faixa rasa permite caminhar. Não há passagem subaquática construída neste mapa.</div>
     </section>
   </main>
 
@@ -1654,7 +1654,6 @@
       const held = heldInventoryEntry();
       if (climbMode !== 'ground' || !held || held.itemId !== 'stick' || held.entry.quantity < CAMPFIRE_CREATION_STICKS) return;
       if (isInLakeWater(player.x, player.y) || isMuddyGround(player.x, player.y)) {
-        announce('Você precisa de terreno seco para isso.');
         return;
       }
       if (!consumeHeldItemQuantity(CAMPFIRE_CREATION_STICKS)) return;
@@ -1705,7 +1704,7 @@
       fire.fuelSeconds = Math.min(CAMPFIRE_MAX_FUEL_SECONDS, previousFuel + CAMPFIRE_FUEL_PER_STICK_SECONDS);
       const addedSeconds = Math.round(fire.fuelSeconds - previousFuel);
       closeItemActionMenu();
-      announce(`Fogueira simples abastecida com ${itemDefinitions[held.itemId].name}. Combustível aumentado em ${addedSeconds} ${addedSeconds === 1 ? 'segundo' : 'segundos'}${fire.fuelSeconds >= CAMPFIRE_MAX_FUEL_SECONDS ? '; limite de 5 minutos atingido' : ''}.`);
+      announce(`Fogueira simples abastecida. Combustível aumentado em ${addedSeconds} ${addedSeconds === 1 ? 'segundo' : 'segundos'}${fire.fuelSeconds >= CAMPFIRE_MAX_FUEL_SECONDS ? '; limite atingido' : ''}.`);
     }
     function refreshCampfireActions() {
       const held = heldInventoryEntry();
@@ -1787,17 +1786,13 @@
         button.type = 'button';
         button.textContent = action.label;
         button.disabled = action.disabled;
-        const detail = document.createElement('p');
-        detail.id = `item-action-detail-${itemActionList.children.length}`;
-        detail.textContent = action.detail;
-        button.setAttribute('aria-describedby', detail.id);
         button.addEventListener('click', action.run);
-        li.append(button, detail);
+        li.append(button);
         itemActionList.append(li);
       }
       itemActionHelp.textContent = nearest
-        ? `Fogueira simples próxima a ${nearest.distance.toFixed(1)} m. ${nearest.fire.lit ? `Combustível restante: ${Math.ceil(nearest.fire.fuelSeconds)} s.` : 'Esta fogueira simples já apagou.'} O martelo é usado somente para minerar os afloramentos maiores e requer 1 pedra, 1 graveto e 1 fibra vegetal; a faca corta galhos caídos e requer 2 pedras no total, uma nas mãos e outra no inventário.`
-        : 'As opções dependem do item em mãos, da quantidade e do local. O martelo é usado somente para minerar os afloramentos maiores e requer 1 pedra, 1 graveto e 1 fibra vegetal; a faca corta galhos caídos e requer 2 pedras no total, uma nas mãos e outra no inventário.';
+        ? `Fogueira simples próxima a ${nearest.distance.toFixed(1)} m. ${nearest.fire.lit ? `Combustível restante: ${Math.ceil(nearest.fire.fuelSeconds)} s.` : 'Esta fogueira simples já apagou.'}`
+        : 'Ações disponíveis para o item em mãos.';
       if (!actions.length) {
         const li = document.createElement('li');
         const info = document.createElement('p');
@@ -1966,7 +1961,7 @@
 
     function collectAsh(target) {
       if (!target) return false;
-      if (target.distance > 2.0) { announce('As cinzas estão fora de alcance; aproxime-se e mire nelas.'); return true; }
+      if (target.distance > 2.0) return true;
       if (!addInventoryItem('ash', 1)) { announce('Inventário cheio.'); return true; }
       target.pile.collected = true;
       for (const mesh of target.pile.meshes) {
@@ -2003,7 +1998,7 @@
       }
     }
     function equipInventorySlot(index) {
-      if (climbMode !== 'ground') { announce('Só é possível equipar ou guardar itens no chão, sem estar nadando ou agarrado à árvore.'); return; }
+      if (climbMode !== 'ground') return;
       const entry = inventory[index];
       if (!entry) { announce('vazio'); return; }
       const name = itemDefinitions[entry.itemId].name;
@@ -2135,7 +2130,7 @@
       swimSurfaceContact = true;
       nextSwimStrokeAt = 0;
       playBuffer('swimEnter', .34);
-      announce('Você entrou na natação. W/S avançam na direção do olhar e acompanham sua inclinação; A/D deslocam lateralmente. Olhe para cima para subir.');
+      announce('Você entrou na natação.');
     }
     function leaveSwimming() {
       stopMovement();
@@ -2153,23 +2148,16 @@
       announce('Você saiu da natação e está na faixa rasa.');
     }
     function useSwimmingAction() {
-      if (heldItem) {
-        announce(`Você precisa deixar ${heldItem} para nadar ou sair da água.`);
-        return;
-      }
+      if (heldItem) return;
       const atSurface = swimSurfaceContact && isSwimmingAtSurface();
       if (atSurface && isNearSwimmingExit(player.x, player.y)) {
         leaveSwimming();
         return;
       }
       if (!atSurface) {
-        announce(isNearSwimmingExit(player.x, player.y)
-          ? 'Você está longe da superfície. Olhe para cima e avance para subir antes de sair.'
-          : 'Para sair, suba até a superfície e aproxime-se da faixa rasa ou de uma saída para terra.');
         return;
       }
       if (!isNearSwimmingExit(player.x, player.y)) {
-        announce('Você está na superfície, mas longe de uma saída. Aproxime-se da faixa rasa ou de uma saída para terra.');
         return;
       }
     }
@@ -2208,7 +2196,7 @@
     function craftStoneHammer() {
       const recipe = { stone: 1, stick: 1, plantFiber: 1 };
       if (climbMode !== 'ground') return;
-      if (Object.entries(recipe).some(([itemId, amount]) => inventoryQuantity(itemId) < amount)) { announce('Faltam materiais: o martelo de pedra requer 1 pedra, 1 graveto e 1 fibra vegetal para afixar a pedra ao cabo.'); return; }
+      if (Object.entries(recipe).some(([itemId, amount]) => inventoryQuantity(itemId) < amount)) return;
       if (!canAddCraftedItem('stoneHammer', recipe)) { announce('Sem espaço no inventário.'); return; }
       for (const [itemId, amount] of Object.entries(recipe)) consumeInventoryQuantity(itemId, amount);
       addInventoryItem('stoneHammer', 1);
@@ -2218,7 +2206,7 @@
     function craftStoneKnife() {
       const recipe = { stone: 2 };
       if (climbMode !== 'ground') return;
-      if (heldInventoryEntry()?.itemId !== 'stone' || inventoryQuantity('stone') < 2) { announce('A faca de pedra exige uma pedra nas mãos e mais uma pedra no inventário, totalizando duas.'); return; }
+      if (heldInventoryEntry()?.itemId !== 'stone' || inventoryQuantity('stone') < 2) return;
       if (!canAddCraftedItem('stoneKnife', recipe)) { announce('Sem espaço no inventário.'); return; }
       consumeInventoryQuantity('stone', 2);
       addInventoryItem('stoneKnife', 1);
@@ -2228,7 +2216,7 @@
     function splitBranchIntoSticks() {
       if (climbMode !== 'ground') return;
       const held = heldInventoryEntry();
-      if (held?.itemId !== 'branch' || held.entry.quantity < 1) { announce('É necessário estar com um galho nas mãos.'); return; }
+      if (held?.itemId !== 'branch' || held.entry.quantity < 1) return;
       if (inventoryQuantity('stoneKnife') < 1) return;
       const hasStickStack = inventory.some(entry => entry?.itemId === 'stick');
       if (!hasStickStack && !canAddCraftedItem('stick', { branch: 1 })) {
@@ -2274,8 +2262,8 @@
     }
     function usePlantShrub(target) {
       if (!target) return false;
-      if (target.distance > 2.2) { announce('O arbusto está fora de alcance; aproxime-se e mire nele.'); return true; }
-      if (!addInventoryItem('plantFiber', 2)) { announce('Inventário cheio: libere um espaço para recolher a fibra vegetal. O arbusto não foi colhido.'); return true; }
+      if (target.distance > 2.2) return true;
+      if (!addInventoryItem('plantFiber', 2)) { announce('Sem espaço no inventário.'); return true; }
       const shrub = target.shrub;
       shrub.harvested = true;
       for (const mesh of shrub.meshes) {
@@ -2307,8 +2295,8 @@
     function useRockAction(target) {
       if (!target) return false;
       if (target.kind === 'loose') {
-        if (target.distance > 2.0) { announce('A pedra solta está fora de alcance; aproxime-se e mire nela.'); return true; }
-        if (!addInventoryItem('stone', 1)) { announce('Inventário cheio: não foi possível recolher a pedra. Libere um espaço antes de tentar novamente.'); return true; }
+        if (target.distance > 2.0) return true;
+        if (!addInventoryItem('stone', 1)) { announce('Sem espaço no inventário.'); return true; }
         target.stone.collected = true;
         target.stone.mesh.visible = false;
         const index = lookables.indexOf(target.stone.mesh);
@@ -2316,11 +2304,8 @@
         announce(`Você recolheu uma pedra solta. ${inventorySummary()}.`);
         return true;
       }
-      if (target.distance > 2.4) { announce('O afloramento está fora de alcance; suba até o topo e aproxime-se.'); return true; }
-      if (inventoryQuantity('stoneHammer') < 1) {
-        announce('Este afloramento exige que você tenha um martelo de pedra no inventário. Monte-o com 1 pedra, 1 graveto e 1 fibra vegetal para afixar a pedra ao cabo, usando Alt+C.');
-        return true;
-      }
+      if (target.distance > 2.4) return true;
+      if (inventoryQuantity('stoneHammer') < 1) return true;
       const node = target.node;
       const previousResistance = node.resistance;
       const hasStoneCapacity = inventory.some(entry => entry?.itemId === 'stone') || inventory.some(entry => entry === null);
@@ -2329,7 +2314,7 @@
       const finalHit = nextResistance === 0;
       if (finalHit && !hasStoneCapacity) {
         node.pendingDamage = damage;
-        announce('Sem espaço no inventário. Libere espaço antes de aplicar o golpe que esgotaria o afloramento.');
+        announce('Sem espaço no inventário.');
         return true;
       }
       node.pendingDamage = null;
@@ -2474,21 +2459,18 @@
         return;
       }
       if (!treeIsAimed && rockTarget?.kind === 'outcrop' && useRockAction(rockTarget)) return;
-      if (heldItem) {
-        announce(`Você está segurando ${heldItem}; o efeito de uso ainda não foi implementado.`);
-        return;
-      }
+      if (heldItem) return;
       if (climbMode === 'trunkGrip' || climbMode === 'branchGrip') {
         releaseTreeGrip('Você soltou a árvore e voltou ao chão.');
         return;
       }
       if (isNearSwimEntry(player.x, player.y)) {
         if (isFacingDeepWater(player.x, player.y)) enterSwimming();
-        else announce('Você está na faixa rasa. Vire o corpo para águas profundas e pressione Espaço para nadar.');
+        else announce('Você está na faixa rasa.');
         return;
       }
       if (isDeepLakeWater(player.x, player.y)) {
-        announce('Você está na água profunda; caminhe de volta à faixa rasa para iniciar a natação.');
+        announce('Você está na água profunda.');
         return;
       }
 
@@ -2498,45 +2480,34 @@
         climbMode = 'branchGrip';
         stopMovement();
         playBuffer('climbGrip', .26);
-        announce(`Você se segurou na ponta ${branchEdge} do galho. Use S para descer.`);
+        announce(`Você se segurou na ponta ${branchEdge} do galho.`);
         return;
       }
       if (!target || target.alignment < TREE_AIM_MIN_ALIGNMENT) {
         const horizontalDistance = Math.hypot(player.x - treeX, player.y - treeY);
-        announce(horizontalDistance > 2.8
-          ? 'Aproxime-se da árvore para agir.'
-          : 'Olhe para o tronco para se segurar, para baixo da copa e pressione Espaço para coletar gravetos, ou equipe a faca e olhe para cima para cortar um galho.');
         return;
       }
       if (target.kind === 'trunk') {
         if (target.distance > 2.8) {
-          announce('O tronco está fora de alcance; aproxime-se para se segurar.');
           return;
         }
         climbMode = 'trunkGrip';
         player.climbHeight = 0;
         stopMovement();
         playBuffer('climbGrip', .3);
-        announce('Você se segurou no tronco. W sobe pelo tronco até o galho alto; Espaço solta.');
+        announce('Você se segurou no tronco.');
         return;
       }
       if (target.kind === 'canopyBranch') {
-        if (target.distance > TREE_GATHER_REACH) {
-          announce('O galho baixo da copa está fora de alcance; aproxime-se do tronco.');
-          return;
-        }
+        if (target.distance > TREE_GATHER_REACH) return;
         if (heldInventoryEntry()?.itemId !== 'stoneKnife') {
-          announce('A faca de pedra precisa estar equipada para cortar galho vivo. Olhe para cima e pressione Espaço.');
           return;
         }
         hitLivingBranch(target.branchResource);
         return;
       }
       if (target.kind === 'fruit') {
-        if (target.distance > TREE_GATHER_REACH) {
-          announce('O fruto está fora de alcance; aproxime-se da posição dele ou suba.');
-          return;
-        }
+        if (target.distance > TREE_GATHER_REACH) return;
         const fruit = target.fruit;
         fruit.harvested = true;
         treeHarvest.fruits[fruit.name] = (treeHarvest.fruits[fruit.name] || 0) + 1;
@@ -2549,11 +2520,10 @@
         return;
       }
       if (target.distance > TREE_GATHER_REACH) {
-        announce('Os galhos estão fora de alcance; aproxime-se ou suba até eles.');
         return;
       }
       if (!addInventoryItem('stick', 1)) {
-        announce('Inventário cheio: não foi possível extrair o graveto. Libere um espaço antes de tentar novamente.');
+        announce('Sem espaço no inventário.');
         return;
       }
       playBuffer('stickHarvest', .31);
@@ -2949,7 +2919,7 @@
           branchContact = false;
           stopMovement();
           playBuffer('climbSettle', .36);
-          announce('Você concluiu a subida e está no galho. Caminhe até uma ponta para descer.');
+          announce('Você concluiu a subida e está no galho.');
         } else if (activeClimbDirection < 0 && player.climbHeight <= 0) {
           player.climbHeight = 0;
           climbMode = 'ground';
@@ -2983,7 +2953,7 @@
             const ty = player.y + movement.y * stepDistance;
             if (!isInLakeWater(tx, ty) || !isInsideMap(tx, ty)) {
               blockedAtShore = true;
-              if (!swimExitContact) announce('A margem bloqueia a natação; para sair, chegue à superfície e pressione Espaço perto da faixa rasa ou de uma saída para terra.');
+              if (!swimExitContact) announce('A margem bloqueia a natação.');
               swimExitContact = true;
               break;
             }
@@ -3000,8 +2970,8 @@
             player.y = ty;
             player.swimEyeAltitude = nextEyeAltitude;
             moved = true;
-            if (hitBottom && !swimBottomContact) announce('Você chegou ao fundo do lago. Olhe para cima para voltar à superfície.');
-            if (reachedSurface) announce('Você chegou à superfície. O fundo raso também pode elevar você; só então Espaço permite sair perto da faixa rasa ou de uma saída para terra.');
+            if (hitBottom && !swimBottomContact) announce('Você chegou ao fundo do lago.');
+            if (reachedSurface) announce('Você chegou à superfície.');
             swimBottomContact = nextEyeAltitude <= minimumEyeAltitude + 1e-5;
             swimSurfaceContact = nextEyeAltitude >= surface - SWIM_SURFACE_TOLERANCE_METERS;
           }
@@ -3038,7 +3008,7 @@
             if (!isOnBranch(tx, ty)) {
               if (!branchContact) {
                 const edge = branchEdgeAt(player.x, player.y);
-                announce(edge ? `Você chegou à ponta ${edge} do galho. Pressione Espaço para se segurar.` : 'O galho é estreito; mantenha-se sobre os galhos.');
+                announce(edge ? `Você chegou à ponta ${edge} do galho.` : 'O galho é estreito.');
                 branchContact = true;
               }
               blocked = true;
@@ -3053,7 +3023,7 @@
           }
           const obstacle = obstacleAt(tx, ty);
           if (obstacle) {
-            if (!obstacleContact) announce(`A ${obstacle.name} bloqueia o caminho; é preciso contorná-la.`);
+            if (!obstacleContact) announce(`A ${obstacle.name} bloqueia o caminho.`);
             obstacleContact = true;
             blocked = true;
             break;
@@ -3063,7 +3033,7 @@
             if (isDeepLakeWater(tx, ty)) {
               if (!deepWaterContact) {
                 playWaterMarkerBeeps('deep');
-                announce('O fundo do lago desce para águas profundas; caminhe de volta à faixa rasa e use Espaço voltado para o fundo para nadar.');
+                announce('Águas profundas bloqueiam a caminhada.');
               }
               deepWaterContact = true;
               blocked = true;
