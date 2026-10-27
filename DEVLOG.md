@@ -600,3 +600,17 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - Somente os galhos vivos que ainda estão na árvore precisam ser cortados com a faca equipada, com resistência 6 e dano por golpe de 1–3. A conversão de um galho recolhido em dois gravetos com faca no inventário continua sendo ação distinta.
 - README, GDD e instruções acessíveis do jogo atualizados. Entradas históricas que descrevem os galhos caídos como golpeáveis registram o comportamento antigo, substituído por esta decisão.
 - Publicado para teste no Pages; nenhuma release, tag ou backup foi alterado.
+
+
+## 27 de outubro de 2026 — galho caído coleta-se somente com Enter
+
+- Corrigida a interação: recolher itens do cenário é função de Enter; Espaço executa a ação correspondente ao item equipado. Galho caído permanece recolhível, mas sai da ação de Espaço e é coletado somente por Enter.
+- Galhos vivos que ainda estão na árvore continuam sendo cortados pela ação de Espaço com a faca equipada.
+- README e instruções do jogo atualizados para manter essa separação de controles.
+
+
+## 27 de outubro de 2026 — Enter coleta; Espaço usa o item equipado
+
+- Anderson esclareceu a regra dos controles: itens do cenário são coletados com Enter; Espaço realiza a ação do item equipado.
+- Ajustado o fluxo de Espaço para não recolher galhos caídos, arbustos ou pedras soltas. Os galhos caídos são recolhidos somente com Enter, inclusive com outro item equipado; galhos vivos da árvore ainda podem ser cortados com a faca equipada e Espaço. A mineração de afloramentos com martelo também permanece uma ação de Espaço.
+- README e GDD alinhados a essa separação de controles.
