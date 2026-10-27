@@ -1889,19 +1889,34 @@
     const RESOURCE_CUE_MIN_INTERVAL_MS = 1000;
     const RESOURCE_CUE_CHECK_INTERVAL_MS = 220;
     let nextResourceCueCheckAt = 0;
+    function getResourceCuePoint(objects, fallbackPoint) {
+      if (!objects || !objects.length) return fallbackPoint;
+      const bounds = new THREE.Box3();
+      let hasBounds = false;
+      for (const object of objects) {
+        if (!object || object.visible === false) continue;
+        object.updateWorldMatrix(true, false);
+        const objectBounds = new THREE.Box3().setFromObject(object);
+        if (objectBounds.isEmpty()) continue;
+        if (!hasBounds) { bounds.copy(objectBounds); hasBounds = true; }
+        else bounds.union(objectBounds);
+      }
+      return hasBounds ? bounds.getCenter(new THREE.Vector3()) : fallbackPoint;
+    }
     function getResourceCueSources() {
       return [
-        ...looseStones.filter(stone => !stone.collected).map(stone => ({ source: stone, kind: 'collectible', category: 'rock', point: stone.point, objects: [stone.mesh] })),
-        ...hillStoneNodes.filter(node => node.resistance > 0).map(node => ({ source: node, kind: 'extractable', category: 'rock', point: node.point, objects: node.meshes })),
-        ...plantShrubs.filter(shrub => !shrub.harvested).map(shrub => ({ source: shrub, kind: 'collectible', category: 'shrub', point: shrub.point, objects: shrub.meshes })),
-        ...branchSources.filter(branch => !branch.harvested).map(branch => ({ source: branch, kind: 'extractable', category: 'branch', point: branch.point, objects: [branch.mesh] })),
-        ...treeCanopyBranchResources.map((source, index) => ({
-          source, kind: 'extractable', category: 'tree', point: index < 2
+        ...looseStones.filter(stone => !stone.collected).map(stone => ({ source: stone, kind: 'collectible', category: 'rock', objects: [stone.mesh], point: getResourceCuePoint([stone.mesh], stone.point) })),
+        ...hillStoneNodes.filter(node => node.resistance > 0).map(node => ({ source: node, kind: 'extractable', category: 'rock', objects: node.meshes, point: getResourceCuePoint(node.meshes, node.point) })),
+        ...plantShrubs.filter(shrub => !shrub.harvested).map(shrub => ({ source: shrub, kind: 'collectible', category: 'shrub', objects: shrub.meshes, point: getResourceCuePoint(shrub.meshes, shrub.point) })),
+        ...branchSources.filter(branch => !branch.harvested).map(branch => ({ source: branch, kind: 'extractable', category: 'branch', objects: [branch.mesh], point: getResourceCuePoint([branch.mesh], branch.point) })),
+        ...treeCanopyBranchResources.map((source, index) => {
+          const fallback = index < 2
             ? designToThree(treeX, treeY, index === 0 ? TREE_GROUND_GATHER_HEIGHT : TREE_GROUND_GATHER_UPPER_HEIGHT)
-            : designToThree(treeX + Math.sin((index - 2) * Math.PI / 4) * .92, treeY + Math.cos((index - 2) * Math.PI / 4) * .92, TREE_GROUND_GATHER_HEIGHT),
-          objects: getTreeHarvestLookObjects(index)
-        })).filter(item => !item.source.exhausted),
-        ...ashPiles.filter(pile => !pile.collected).map(pile => ({ source: pile, kind: 'collectible', category: 'ash', point: pile.point, objects: pile.meshes })),
+            : designToThree(treeX + Math.sin((index - 2) * Math.PI / 4) * .92, treeY + Math.cos((index - 2) * Math.PI / 4) * .92, TREE_GROUND_GATHER_HEIGHT);
+          const objects = getTreeHarvestLookObjects(index);
+          return { source, kind: 'extractable', category: 'tree', objects, point: getResourceCuePoint(objects, fallback) };
+        }).filter(item => !item.source.exhausted),
+        ...ashPiles.filter(pile => !pile.collected).map(pile => ({ source: pile, kind: 'collectible', category: 'ash', objects: pile.meshes, point: getResourceCuePoint(pile.meshes, pile.point) })),
       ];
     }
     const resourceCueRaycaster = new THREE.Raycaster();
@@ -2614,18 +2629,23 @@
       }
       const targets = [
         ...campfires.map((fire, index) => ({ category: 'campfire', name: fire.lit ? `a fogueira simples acesa${campfires.length > 1 ? ` ${index + 1}` : ''}` : `a fogueira apagada e suas cinzas${campfires.length > 1 ? ` ${index + 1}` : ''}`, point: designToThree(fire.x, fire.y, terrainHeightAt(fire.x, fire.y) + (fire.lit ? .52 : .14)), fire, objects: fire.base ? lookables.filter(object => object.userData.lookCategory === 'campfire' && fire.base.children.includes(object)) : [] })),
-        ...ashPiles.filter(pile => !pile.collected).map(pile => ({ category: 'ash', name: 'cinzas de uma fogueira apagada', point: pile.point, pile, objects: pile.meshes })),
-        ...plantShrubs.filter(shrub => !shrub.harvested).map((shrub, index) => ({ category: 'shrub', name: `um arbusto silvestre${plantShrubs.length > 1 ? ` ${index + 1}` : ''} que fornece fibra vegetal`, point: shrub.point, shrub, objects: shrub.meshes })),
-        ...branchSources.filter(source => !source.harvested).map((source, index) => ({ category: 'branch', name: `um galho caído${branchSources.length > 1 ? ` ${index + 1}` : ''}, maior e mais resistente que um graveto`, point: source.point, source, objects: [source.mesh] })),
+        ...ashPiles.filter(pile => !pile.collected).map(pile => ({ category: 'ash', name: 'cinzas de uma fogueira apagada', point: getResourceCuePoint(pile.meshes, pile.point), pile, objects: pile.meshes })),
+        ...plantShrubs.filter(shrub => !shrub.harvested).map((shrub, index) => ({ category: 'shrub', name: `um arbusto silvestre${plantShrubs.length > 1 ? ` ${index + 1}` : ''} que fornece fibra vegetal`, point: getResourceCuePoint(shrub.meshes, shrub.point), shrub, objects: shrub.meshes })),
+        ...branchSources.filter(source => !source.harvested).map((source, index) => ({ category: 'branch', name: `um galho caído${branchSources.length > 1 ? ` ${index + 1}` : ''}, maior e mais resistente que um graveto`, point: getResourceCuePoint([source.mesh], source.point), source, objects: [source.mesh] })),
         { category: 'tree', name: 'o tronco da árvore', point: designToThree(treeX, treeY, 1.35), objects: [treeTrunk] },
-        { category: 'tree', name: 'os galhos baixos para coleta', point: designToThree(treeX, treeY, TREE_GROUND_GATHER_HEIGHT), objects: treeGroundHarvestMeshes },
-        { category: 'tree', name: 'a copa baixa da árvore', point: designToThree(treeX, treeY, TREE_GROUND_GATHER_UPPER_HEIGHT), objects: canopyLookMeshes.filter(mesh => mesh.position.z < designToThree(treeX, treeY, 3.5).z) },
+        ...treeCanopyBranchResources.map((source, index) => {
+          const fallback = index < 2
+            ? designToThree(treeX, treeY, index === 0 ? TREE_GROUND_GATHER_HEIGHT : TREE_GROUND_GATHER_UPPER_HEIGHT)
+            : designToThree(treeX + Math.sin((index - 2) * Math.PI / 4) * .92, treeY + Math.cos((index - 2) * Math.PI / 4) * .92, TREE_GROUND_GATHER_HEIGHT);
+          const objects = getTreeHarvestLookObjects(index);
+          return { category: 'tree', name: 'um galho baixo para coleta', point: getResourceCuePoint(objects, fallback), objects };
+        }),
         { category: 'tree', name: 'o patamar alto de galhos para escalada', point: designToThree(treeX, treeY, TREE_BRANCH_HEIGHT), objects: treeHighBranchMeshes },
         { category: 'tree', name: 'a parte mais alta da copa', point: designToThree(treeX, treeY, TREE_TOP_HEIGHT), objects: canopyLookMeshes.filter(mesh => mesh.position.z >= designToThree(treeX, treeY, 3.5).z) },
         { category: 'hill', name: 'a encosta da colina', point: designToThree(0, 2.95, .9) },
         { category: 'hill', name: 'o topo da colina', point: designToThree(0, 5.4, 1.8) },
-        ...hillStoneNodes.filter(node => node.resistance > 0).map(node => ({ category: 'rock', name: 'um afloramento de pedra bruta', point: node.point, node, objects: node.meshes })),
-        ...looseStones.filter(stone => !stone.collected).map(stone => ({ category: 'rock', name: 'uma pedra solta pequena na base da colina', point: stone.point, stone, objects: [stone.mesh] })),
+        ...hillStoneNodes.filter(node => node.resistance > 0).map(node => ({ category: 'rock', name: 'um afloramento de pedra bruta', point: getResourceCuePoint(node.meshes, node.point), node, objects: node.meshes })),
+        ...looseStones.filter(stone => !stone.collected).map(stone => ({ category: 'rock', name: 'uma pedra solta pequena na base da colina', point: getResourceCuePoint([stone.mesh], stone.point), stone, objects: [stone.mesh] })),
         { category: 'lake', name: 'a superfície do lago', point: designToThree(LAKE.centerX, LAKE.centerY, LAKE.waterZ) }
       ];
       const raycaster = new THREE.Raycaster();
