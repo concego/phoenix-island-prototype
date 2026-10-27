@@ -1976,34 +1976,49 @@
       }
     }
 
+    function getEnterPickupTarget() {
+      if (inventoryOpen || itemActionMenuOpen || climbMode !== 'ground') return null;
+      setCamera();
+      const direction = camera.getWorldDirection(new THREE.Vector3()).normalize();
+      const candidates = [
+        ...looseStones.filter(item => !item.collected).map(item => {
+          const point = getResourceCuePoint([item.mesh], item.point);
+          const offset = point.clone().sub(camera.position);
+          return { kind: 'stone', item, point, distance: offset.length(), alignment: direction.dot(offset.normalize()) };
+        }),
+        ...plantShrubs.filter(item => !item.harvested).map(item => {
+          const point = getResourceCuePoint(item.meshes, item.point);
+          const offset = point.clone().sub(camera.position);
+          return { kind: 'shrub', item, point, distance: offset.length(), alignment: direction.dot(offset.normalize()) };
+        }),
+        ...ashPiles.filter(item => !item.collected).map(item => {
+          const point = getResourceCuePoint(item.meshes, item.point);
+          const offset = point.clone().sub(camera.position);
+          return { kind: 'ash', item, point, distance: offset.length(), alignment: direction.dot(offset.normalize()) };
+        }),
+        ...branchSources.filter(item => !item.harvested).map(item => {
+          const point = getResourceCuePoint([item.mesh], item.point);
+          const offset = point.clone().sub(camera.position);
+          return { kind: 'branch', item, point, distance: offset.length(), alignment: direction.dot(offset.normalize()) };
+        })
+      ].filter(target => target.alignment >= TREE_AIM_MIN_ALIGNMENT
+        && target.distance <= (target.kind === 'stone' || target.kind === 'ash' ? 2.0 : 2.2))
+        .sort((a, b) => b.alignment - a.alignment || a.distance - b.distance);
+      const target = candidates[0];
+      if (!target) return null;
+      const treeTarget = getTreeActionTarget();
+      if (treeTarget && treeTarget.alignment >= TREE_AIM_MIN_ALIGNMENT
+          && treeTarget.alignment >= target.alignment - .035) return null;
+      return target;
+    }
     let currentInteractionContact = null;
     function updateInteractionContactCue() {
-      if (inventoryOpen || itemActionMenuOpen || climbMode === 'swimming') {
-        currentInteractionContact = null;
-        return;
-      }
-      const contacts = [
-        ...looseStones.filter(item => !item.collected).map(item => ({ source: item, name: 'pedra solta', point: item.point, range: 2.0 })),
-        ...plantShrubs.filter(item => !item.harvested).map(item => ({ source: item, name: 'arbusto silvestre', point: item.point, range: 2.2 })),
-        ...branchSources.filter(item => !item.harvested).map(item => ({ source: item, name: 'galho caído', point: item.point, range: 2.2 })),
-        ...ashPiles.filter(item => !item.collected).map(item => ({ source: item, name: 'cinzas de fogueira apagada', point: item.point, range: 2.0 })),
-        ...hillStoneNodes.filter(item => item.resistance > 0 && inventoryQuantity('stoneHammer') > 0).map(item => ({ source: item, name: 'afloramento de pedra', point: item.point, range: 2.4 })),
-        { source: treeTrunk, name: 'tronco da árvore', point: designToThree(treeX, treeY, 1.35), range: 2.8 },
-        ...treeFruitTargets.filter(item => !item.harvested).map(item => ({ source: item, name: item.name, point: item.point, range: TREE_GATHER_REACH })),
-        ...treeCanopyBranchResources.filter(item => !item.exhausted).map((item, index) => {
-          const point = index < 2
-            ? designToThree(treeX, treeY, index === 0 ? TREE_GROUND_GATHER_HEIGHT : TREE_GROUND_GATHER_UPPER_HEIGHT)
-            : designToThree(treeX + Math.sin((index - 2) * Math.PI / 4) * .92, treeY + Math.cos((index - 2) * Math.PI / 4) * .92, TREE_GROUND_GATHER_HEIGHT);
-          return { source: item, name: heldInventoryEntry()?.itemId === 'stoneKnife' ? 'galho vivo da árvore' : 'galho baixo da árvore, de onde se pode obter um graveto', point, range: TREE_GATHER_REACH };
-        }),
-        ...campfires.map(fire => ({ source: fire, name: 'fogueira simples', point: designToThree(fire.x, fire.y, terrainHeightAt(fire.x, fire.y)), range: CAMPFIRE_INTERACTION_RANGE }))
-      ].map(item => ({ ...item, distance: item.point.distanceTo(designToThree(player.x, player.y, playerEyeAltitude())) }))
-        .filter(item => item.distance <= item.range)
-        .sort((a, b) => a.distance - b.distance);
-      const target = contacts[0] || null;
-      if (target?.source === currentInteractionContact) return;
-      currentInteractionContact = target?.source || null;
-      if (target) announce(target.name);
+      const target = getEnterPickupTarget();
+      if (target?.item === currentInteractionContact) return;
+      currentInteractionContact = target?.item || null;
+      if (!target) return;
+      const names = { stone: 'pedra solta', shrub: 'arbusto silvestre', ash: 'cinzas de fogueira apagada', branch: 'galho caído' };
+      announce(names[target.kind]);
     }
 
     function collectAsh(target) {
@@ -2425,37 +2440,8 @@
     function collectSceneItemWithEnter(event) {
       if (event.repeat || inventoryOpen || itemActionMenuOpen || climbMode !== 'ground') return false;
       if (event.target instanceof HTMLElement && event.target !== inventoryOpenButton && event.target.closest('button, a, [role="button"], input, textarea, select, [contenteditable="true"]')) return false;
-      setCamera();
-      const direction = camera.getWorldDirection(new THREE.Vector3()).normalize();
-      const candidates = [
-        ...looseStones.filter(item => !item.collected).map(item => {
-          const point = getResourceCuePoint([item.mesh], item.point);
-          const offset = point.clone().sub(camera.position);
-          return { kind: 'stone', item, point, distance: offset.length(), alignment: direction.dot(offset.normalize()) };
-        }),
-        ...plantShrubs.filter(item => !item.harvested).map(item => {
-          const point = getResourceCuePoint(item.meshes, item.point);
-          const offset = point.clone().sub(camera.position);
-          return { kind: 'shrub', item, point, distance: offset.length(), alignment: direction.dot(offset.normalize()) };
-        }),
-        ...ashPiles.filter(item => !item.collected).map(item => {
-          const point = getResourceCuePoint(item.meshes, item.point);
-          const offset = point.clone().sub(camera.position);
-          return { kind: 'ash', item, point, distance: offset.length(), alignment: direction.dot(offset.normalize()) };
-        }),
-        ...branchSources.filter(item => !item.harvested).map(item => {
-          const point = getResourceCuePoint([item.mesh], item.point);
-          const offset = point.clone().sub(camera.position);
-          return { kind: 'branch', item, point, distance: offset.length(), alignment: direction.dot(offset.normalize()) };
-        })
-      ].filter(target => target.alignment >= TREE_AIM_MIN_ALIGNMENT
-        && target.distance <= (target.kind === 'stone' || target.kind === 'ash' ? 2.0 : 2.2))
-        .sort((a, b) => b.alignment - a.alignment || a.distance - b.distance);
-      const target = candidates[0];
+      const target = getEnterPickupTarget();
       if (!target) return false;
-      const treeTarget = getTreeActionTarget();
-      if (treeTarget && treeTarget.alignment >= TREE_AIM_MIN_ALIGNMENT
-          && treeTarget.alignment >= target.alignment - .035) return false;
       event.preventDefault();
       event.stopPropagation();
       if (target.kind === 'stone') return useRockAction({ kind: 'loose', stone: target.item, distance: target.distance, alignment: target.alignment });
