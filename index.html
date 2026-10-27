@@ -2469,10 +2469,7 @@
       const toolItemId = heldInventoryEntry()?.itemId;
       // The canopy action must run before the generic held-item response: the knife is meant to stay equipped while cutting.
       if (treeIsAimed && treeTarget.kind === 'canopyBranch' && toolItemId === 'stoneKnife') {
-        if (treeTarget.distance > TREE_GATHER_REACH) {
-          announce('O galho da copa está fora de alcance; aproxime-se da árvore e olhe para cima.');
-          return;
-        }
+        if (treeTarget.distance > TREE_GATHER_REACH) return;
         hitLivingBranch(treeTarget.branchResource);
         return;
       }
