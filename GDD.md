@@ -181,6 +181,7 @@ O olhar e a orientação corporal são controles distintos. A/D não giram o cor
 - Não adicionar mochila, carga, durabilidade ou efeitos de item sem decisão aprovada.
 
 ## 8. Áudio e comunicação
+- A origem espacial e a descrição de um objeto coletável devem usar o centro calculado das malhas visíveis do objeto, não uma coordenada aproximada do solo. A checagem de visibilidade ignora a geometria própria do alvo, mas respeita qualquer outro objeto que o encubra.
 
 - Efeitos sonoros complementam a orientação e o feedback. Sons de passos por superfície, inclinação, natação, árvore, recursos, mineração, limite e fogueira estão em estágio provisório, salvo avaliação explícita registrada.
 - Efeitos de escalada previamente aprovados devem ser preservados quando não houver pedido explícito para alterá-los.
