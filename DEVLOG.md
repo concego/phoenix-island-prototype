@@ -669,3 +669,10 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 ## 27 de outubro de 2026 — revisar mensagem ao entrar na água rasa
 
 - Substituída a mensagem “O fundo permite caminhar”, que confundia a condição do fundo com a ação do jogador, por “Você entrou na água rasa do lago.” A caminhada rasa continua explicada na descrição do mapa/tutorial, sem atribuir a ação ao fundo.
+
+
+## 27 de outubro de 2026 — avisos de contato e robustez do leitor de tela
+
+- Adicionada fala pontual ao entrar no alcance real de um objeto interativo, anunciando seu nome; mudanças de alvo geram novo anúncio, ficar parado não repete.
+- Separado o texto visual da região aria-live. Para repetir a mesma mensagem, a região viva é limpa e atualizada após 75 ms, em vez de anexar um espaço à frase; isso melhora as atualizações repetidas de coordenadas e campo de visão.
+- Mantidas as mensagens visíveis, regras de interação e distâncias de alcance existentes.
