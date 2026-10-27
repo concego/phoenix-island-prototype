@@ -2056,7 +2056,7 @@
       const recipe = { stone: 1, stick: 1, plantFiber: 1 };
       if (climbMode !== 'ground') return;
       if (Object.entries(recipe).some(([itemId, amount]) => inventoryQuantity(itemId) < amount)) { announce('Faltam materiais: o martelo de pedra requer 1 pedra, 1 graveto e 1 fibra vegetal para afixar a pedra ao cabo.'); return; }
-      if (!canAddCraftedItem('stoneHammer', recipe)) { announce('Inventário cheio: libere um espaço para o martelo de pedra. Nenhum material foi consumido.'); return; }
+      if (!canAddCraftedItem('stoneHammer', recipe)) { announce('Sem espaço no inventário.'); return; }
       for (const [itemId, amount] of Object.entries(recipe)) consumeInventoryQuantity(itemId, amount);
       addInventoryItem('stoneHammer', 1);
       closeItemActionMenu();
