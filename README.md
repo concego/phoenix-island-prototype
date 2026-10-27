@@ -123,3 +123,9 @@ Nota de robustez: as distâncias de coleta do Enter respeitam o alcance próprio
 ### Tolerância de mira para interações — 27 de outubro de 2026
 
 A tolerância angular para selecionar objetos interativos foi ampliada ligeiramente, de 60° para 65° em relação à direção da câmera. Distâncias, prioridades entre alvos, oclusão e movimentação permanecem inalteradas.
+
+
+### Pistas sonoras de confirmação — 27 de outubro de 2026
+
+
+Ao recolher um item, toca uma confirmação curta de duas notas ascendentes. Ações bem-sucedidas do menu de ações do item equipado usam outro padrão curto e distinto. Tentativas bloqueadas ou sem espaço não emitem som de confirmação.
