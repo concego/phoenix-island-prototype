@@ -2147,7 +2147,7 @@
     }
     function cutBranchWithKnife(target) {
       if (!target || target.distance > 2.2 || !isBranchTargetPreferred(target)) {
-        if (target && target.distance > 2.2) announce('O galho caído está fora de alcance; aproxime-se e mire nele.');
+        
         return false;
       }
       const held = heldInventoryEntry();
