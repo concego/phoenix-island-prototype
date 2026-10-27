@@ -474,3 +474,25 @@ A sintaxe, a altura alcançável, o patamar de escalada e os ramos de interaçã
 
 - Revisão estática confirma que criar fogueira já não consulta ou bloqueia por fogueiras próximas e que a ação de abastecer continua usando a fogueira acesa mais próxima dentro do alcance.
 - Gameplay, leitor de tela e caso de múltiplas fogueiras próximas ainda precisam de teste manual.
+
+
+## 26 de outubro de 2026 — dano e resistência de ferramentas e recursos
+
+### Direção aprovada
+
+- Cada acerto sorteia dano inteiro dentro da faixa da ferramenta e reduz a resistência da fonte; resistência nunca fica abaixo de zero e a fonte se esgota quando chega a zero. Os valores são abstratos, não medidas físicas.
+- Faca de pedra, ferramenta de corte mais básica: dano 1–3. Martelo de pedra, ferramenta de impacto mais básica: dano 2–4. Galho caído: resistência 3; galho vivo: 6; afloramento rochoso: 12.
+- Um galho caído de resistência 3 pode se esgotar num único golpe apenas quando o dano sorteado for 3; isso não é garantido.
+- Mantidos rendimentos existentes: um galho por galho esgotado e 3 ou 4 pedras por afloramento, conforme definido para cada fonte.
+
+### Implementado no código
+
+- Incluídos sorteio uniforme de dano inteiro nas faixas aprovadas e resistência individual para galhos caídos, cada alvo baixo de galho vivo e afloramentos.
+- Cada golpe reduz a resistência e anuncia dano e resistência restante. A fonte só é removida e entrega seu recurso ao chegar a zero; afloramentos mantêm deformação nos impactos e removem o bloqueio ao esgotar.
+- Se não houver espaço para receber o rendimento, o golpe que esgotaria a fonte não é aplicado e a resistência fica preservada.
+- Atualizados detalhes da faca e do martelo, descrições de afloramento e instruções antigas que afirmavam corte instantâneo ou quantidade fixa de golpes. README atualizado.
+
+### Verificação e validação
+
+- Revisão estática confirma faixas 1–3 e 2–4 inclusivas, limite inferior zero, dano sorteado por impacto, persistência da resistência entre golpes e preservação do recurso em caso de inventário cheio.
+- Não houve playtest, teste com leitor de tela ou avaliação auditiva. Ainda precisam de validação a persistência dos alvos da copa, resultados variáveis, mineração, disputa de mira e inventário sem espaço.
