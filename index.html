@@ -2067,7 +2067,7 @@
     inventoryOpenButton.addEventListener('click',openInventory);
     inventoryCloseButton.addEventListener('click',closeInventory);
     inventoryOpenActionsButton.addEventListener('click',openSelectedInventoryActions);
-    droppedItemsButton.addEventListener('click',()=>{
+    droppedItemsButton.addEventListener('click',async()=>{ await unlockAudio();
       let recovered=0; const remaining=[];
       for(const entry of droppedItems){if(addInventoryItem(entry.itemId,entry.quantity))recovered+=entry.quantity;else remaining.push(entry);}
       droppedItems.splice(0,droppedItems.length,...remaining); renderInventory();
