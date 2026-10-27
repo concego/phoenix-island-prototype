@@ -241,3 +241,8 @@ Este GDD não decide a história final, objetivo de campanha, combate, fome, sed
 ### Seleção de objetos
 
 A tolerância angular comum para mirar objetos interativos é de 65° em relação à direção da câmera, para reduzir a precisão exigida ao coletar ou interagir. A ampliação não altera alcances físicos, prioridade de alvos ou regras de oclusão.
+
+
+### Pistas de recursos da árvore
+
+A árvore emite a pista grave de recurso coletável quando há gravetos ou galhos disponíveis nela, pois ambos podem ser recolhidos pelo jogador.
