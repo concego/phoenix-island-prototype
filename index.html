@@ -2083,7 +2083,7 @@
       if (inventoryQuantity('stoneKnife') < 1) return;
       const hasStickStack = inventory.some(entry => entry?.itemId === 'stick');
       if (!hasStickStack && !canAddCraftedItem('stick', { branch: 1 })) {
-        announce('Inventário cheio: libere um espaço para receber os gravetos. O galho não foi consumido.'); return;
+        announce('Sem espaço no inventário.'); return;
       }
       if (!consumeInventoryQuantity('branch', 1)) return;
       addInventoryItem('stick', 2);
