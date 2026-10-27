@@ -676,3 +676,8 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - Adicionada fala pontual ao entrar no alcance real de um objeto interativo, anunciando seu nome; mudanças de alvo geram novo anúncio, ficar parado não repete.
 - Separado o texto visual da região aria-live. Para repetir a mesma mensagem, a região viva é limpa e atualizada após 75 ms, em vez de anexar um espaço à frase; isso melhora as atualizações repetidas de coordenadas e campo de visão.
 - Mantidas as mensagens visíveis, regras de interação e distâncias de alcance existentes.
+
+
+## 27 de outubro de 2026 — anúncio de contato apenas com o nome
+
+- O anúncio ao entrar no alcance de interação agora fala somente o nome do objeto, sem explicações ou frases adicionais.
