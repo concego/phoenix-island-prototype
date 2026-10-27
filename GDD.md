@@ -1,9 +1,9 @@
 # Phoenix Island — documento de design do jogo (GDD)
 
-**Versão:** 0.2 — rascunho atualizado  
-**Data:** 26 de outubro de 2026  
+**Versão:** 0.3 — atualização de regras vigentes  
+**Data:** 27 de outubro de 2026  
 **Escopo:** direção de design para o protótipo acessível Phoenix Island  
-**Estado:** documento de trabalho; decisões explicitamente aprovadas são registradas como regras, e decisões em aberto continuam pendentes
+**Estado:** documento de direção vigente; decisões aprovadas são registradas como regras, e decisões em aberto continuam pendentes
 
 ## 1. Propósito deste documento
 
@@ -11,7 +11,7 @@ Este GDD registra a intenção de design e os limites que devem orientar mudanç
 
 O GDD descreve decisões de design vigentes. O DEVLOG continua sendo o histórico cronológico do que foi implementado, alterado e testado. O README continua sendo o manual de execução e controles atuais. Se uma frase antiga do README ou do DEVLOG contradisser uma decisão aprovada neste GDD, a decisão mais recente e explicitamente aprovada pelo responsável pelo projeto prevalece; documentação histórica não deve reativar mecânicas descartadas.
 
-Este arquivo é uma proposta de documento. Inclusão ou publicação no repositório público deve ocorrer somente depois de Anderson revisar e aprovar o texto.
+Este GDD está publicado como documento de direção do protótipo. Revisões futuras devem preservar as decisões aprovadas e não significam autorização para alterar releases, tags ou backups.
 
 ## 2. Visão e escopo
 
@@ -181,9 +181,9 @@ O olhar e a orientação corporal são controles distintos. A/D não giram o cor
 - Não adicionar mochila, carga, durabilidade ou efeitos de item sem decisão aprovada.
 
 ## 8. Áudio e comunicação
+
 - Uma pista em curso mantém a identidade da fonte enquanto o jogador permanece na zona de proximidade; não alternar para fontes vizinhas a cada repetição. A descrição ao olhar deve incluir fontes coletáveis no chão quando visíveis, inclusive com olhar inclinado para baixo.
 - A origem espacial e a descrição de um objeto coletável devem usar o centro calculado das malhas visíveis do objeto, não uma coordenada aproximada do solo. A checagem de visibilidade ignora a geometria própria do alvo, mas respeita qualquer outro objeto que o encubra.
-
 - Efeitos sonoros complementam a orientação e o feedback. Sons de passos por superfície, inclinação, natação, árvore, recursos, mineração, limite e fogueira estão em estágio provisório, salvo avaliação explícita registrada.
 - Efeitos de escalada previamente aprovados devem ser preservados quando não houver pedido explícito para alterá-los.
 - Beeps de água indicam zonas definidas; não são bússola nem substituem informação contínua de profundidade.
