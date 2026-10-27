@@ -528,3 +528,11 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 
 - Gerador Python executado: cinco WAVs mono, 24 kHz, 0,24 s cada. Revisão estática confirma que a varredura usa fontes posicionadas e estado ativo.
 - Ainda falta o teste auditivo e validação espacial pelo usuário, inclusive compatibilidade prática com leitor de tela. Não considerei a revisão estática como aprovação qualitativa.
+
+
+## 27 de outubro de 2026 — pistas de recurso ao se aproximar
+
+- A varredura manual (V/botão) foi removida por não ser útil.
+- Pistas de pedra, arbusto, galho vivo/caído, cinzas e fogueira acesa agora disparam automaticamente ao entrar num raio de 6,5 m; cada fonte só rearma depois de afastamento a 8 m e nova aproximação. Intervalo global mínimo de 850 ms entre pistas.
+- Antes de tocar, uma raycast do jogador à fonte verifica se ela é visível como primeira interseção; objetos mais próximos prevalecem, seguindo a prioridade de elementos visíveis. Pista usa HRTF no ponto real da fonte, auxiliando a localizar e virar na direção correta.
+- Verificação estática confirma remoção do botão/tecla de varredura e uso do sistema de prioridade/visibilidade. Falta teste de gameplay, percepção auditiva/direção/distância e leitor de tela pelo Anderson.
