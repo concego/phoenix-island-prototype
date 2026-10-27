@@ -181,6 +181,7 @@ O olhar e a orientação corporal são controles distintos. A/D não giram o cor
 - Não adicionar mochila, carga, durabilidade ou efeitos de item sem decisão aprovada.
 
 ## 8. Áudio e comunicação
+- Uma pista em curso mantém a identidade da fonte enquanto o jogador permanece na zona de proximidade; não alternar para fontes vizinhas a cada repetição. A descrição ao olhar deve incluir fontes coletáveis no chão quando visíveis, inclusive com olhar inclinado para baixo.
 - A origem espacial e a descrição de um objeto coletável devem usar o centro calculado das malhas visíveis do objeto, não uma coordenada aproximada do solo. A checagem de visibilidade ignora a geometria própria do alvo, mas respeita qualquer outro objeto que o encubra.
 
 - Efeitos sonoros complementam a orientação e o feedback. Sons de passos por superfície, inclinação, natação, árvore, recursos, mineração, limite e fogueira estão em estágio provisório, salvo avaliação explícita registrada.
