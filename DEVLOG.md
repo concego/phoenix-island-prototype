@@ -559,3 +559,10 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - Pistas de pedras, arbustos, galhos, cinzas e afloramentos passaram a usar o centro do volume delimitador das malhas 3D do próprio recurso. O mesmo ponto é usado pela descrição ao olhar, mantendo direção sonora e alvo anunciado alinhados.
 - A checagem de oclusão continua ignorando somente as malhas que constituem o alvo selecionado; outros elementos mais próximos ainda o ocultam e preservam a hierarquia. Alvos dos galhos baixos da árvore usam o mesh específico do galho de coleta, não a árvore inteira.
 - Pistas repetem a cada segundo conforme a publicação anterior. Sem avaliação auditiva ou teste manual de gameplay; precisão percebida e visibilidade ainda precisam da validação do Anderson.
+
+
+## 27 de outubro de 2026 — manter a origem da pista e descrever coletáveis no chão
+
+- A pista atual fica vinculada à fonte que a acionou; fontes vizinhas não roubam os beeps seguintes enquanto o jogador continuar perto da fonte inicial. Isso evita que panning/volume aparente recuar ou saltar quando o jogador está caminhando para ela. O vínculo é liberado ao afastar-se a 8 m ou quando a fonte deixa de existir.
+- A descrição de olhar para baixo agora verifica e anuncia pedras soltas, arbustos, galhos e cinzas visíveis, antes de retornar apenas o nome do chão/terreno. Assim, ao virar na direção do som, itens pequenos no solo são considerados pelo canal acessível.
+- O intervalo sonoro continua em 1 s. É necessário testar no jogo real se o panning fica coerente ao avançar e se cada item é de fato anunciado na mira, além de validar com leitor de tela.
