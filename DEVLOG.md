@@ -583,3 +583,10 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - Esta confirmação corrige o registro anterior, que havia tratado a validação manual como pendente por não ter inferido o teste a partir do pedido de atualização. O estado testado é o publicado com pistas automáticas a cada segundo, origem espacial estável durante a aproximação e descrição ampliada dos coletáveis no olhar para baixo.
 - O registro não inventa resultados por item ou uma aprovação universal de todos os sons; registra somente que Anderson testou a versão e a considerou suficientemente confortável para atualizar.
 - README, GDD e este DEVLOG passam a refletir essa confirmação. O backup de 27 de outubro será atualizado para apontar para este estado documental corrigido; os backups anteriores continuam intactos.
+
+
+## 27 de outubro de 2026 — mensagem curta para galho sem espaço no inventário
+
+- Nas tentativas de golpe que esgotariam um galho caído ou vivo sem espaço para guardá-lo, o anúncio passa a ser apenas “Sem espaço no inventário.”
+- A regra de preservar a resistência e o dano pendente do golpe permanece inalterada; nenhuma mensagem de falta de espaço de outras ações foi modificada.
+- A mudança foi publicada no Pages. Não altera release, tag ou backup.
