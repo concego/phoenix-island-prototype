@@ -456,3 +456,21 @@ A sintaxe, a altura alcançável, o patamar de escalada e os ramos de interaçã
 
 - Revisão estática confirma que todas as variações de olhar usam a mesma estimativa qualitativa e que a confirmação e estado apagado permanecem distintos.
 - Playtest e validação com leitor de tela ainda não foram feitos.
+
+
+## 26 de outubro de 2026 — criar fogueira perto de outra
+
+### Direção aprovada
+
+- O jogador pode escolher criar outra fogueira mesmo se já houver uma acesa ou apagada por perto. A presença de uma fogueira não bloqueia a criação.
+- Criar outra fogueira continua exigindo os requisitos já existentes, incluindo gravetos suficientes e terreno seco. Fogueiras apagadas continuam sem poder ser reacendidas.
+
+### Implementado no código
+
+- Removida a restrição de proximidade tanto da execução quanto da disponibilidade da ação no menu. “Criar fogueira simples” permanece como ação separada de “Abastecer fogueira simples”; se ambas forem possíveis, o jogador pode escolher.
+- README atualizado para esclarecer que o alcance de 2,4 m vale para abastecer e não impede construir outra fogueira em terreno seco.
+
+### Verificação e validação
+
+- Revisão estática confirma que criar fogueira já não consulta ou bloqueia por fogueiras próximas e que a ação de abastecer continua usando a fogueira acesa mais próxima dentro do alcance.
+- Gameplay, leitor de tela e caso de múltiplas fogueiras próximas ainda precisam de teste manual.
