@@ -129,8 +129,9 @@
     </section>
     <section id="stage" aria-label="Cena tridimensional do protótipo">
       <div id="webgl-warning" hidden>Este navegador ou dispositivo não disponibilizou WebGL para a cena 3D.</div>
-      <div id="readout" role="status" aria-live="polite" aria-atomic="true">Posição inicial ao sul do lago em Phoenix Island. A margem lamacenta tem passos próprios; a faixa rasa permite caminhar. Não há passagem subaquática construída neste mapa.</div>
+      <div id="readout" aria-hidden="true">Posição inicial ao sul do lago em Phoenix Island. A margem lamacenta tem passos próprios; a faixa rasa permite caminhar. Não há passagem subaquática construída neste mapa.</div>
     </section>
+    <div id="live-announcer" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
   </main>
 
   <script type="module">
@@ -140,6 +141,8 @@
     const readout = document.querySelector('#readout');
     const warning = document.querySelector('#webgl-warning');
     const descriptionText = readout;
+    const liveAnnouncer = document.querySelector('#live-announcer');
+    let announcementTimer = 0;
 
     let renderer;
     try {
@@ -1543,9 +1546,13 @@
       }
     }
     function announce(text) {
-      if (text === lastAnnouncement) text += ' ';
       lastAnnouncement = text;
       descriptionText.textContent = text;
+      window.clearTimeout(announcementTimer);
+      liveAnnouncer.textContent = '';
+      announcementTimer = window.setTimeout(() => {
+        liveAnnouncer.textContent = text;
+      }, 75);
     }
     function inventorySummary() {
       const count = inventory.filter(Boolean).length;
@@ -1967,6 +1974,36 @@
         currentResourceCueSource = cueCandidate.source;
         nextResourceCueAt = now + RESOURCE_CUE_MIN_INTERVAL_MS;
       }
+    }
+
+    let currentInteractionContact = null;
+    function updateInteractionContactCue() {
+      if (inventoryOpen || itemActionMenuOpen || climbMode === 'swimming') {
+        currentInteractionContact = null;
+        return;
+      }
+      const contacts = [
+        ...looseStones.filter(item => !item.collected).map(item => ({ source: item, name: 'pedra solta', point: item.point, range: 2.0 })),
+        ...plantShrubs.filter(item => !item.harvested).map(item => ({ source: item, name: 'arbusto silvestre', point: item.point, range: 2.2 })),
+        ...branchSources.filter(item => !item.harvested).map(item => ({ source: item, name: 'galho caído', point: item.point, range: 2.2 })),
+        ...ashPiles.filter(item => !item.collected).map(item => ({ source: item, name: 'cinzas de fogueira apagada', point: item.point, range: 2.0 })),
+        ...hillStoneNodes.filter(item => item.resistance > 0 && inventoryQuantity('stoneHammer') > 0).map(item => ({ source: item, name: 'afloramento de pedra', point: item.point, range: 2.4 })),
+        { source: treeTrunk, name: 'tronco da árvore', point: designToThree(treeX, treeY, 1.35), range: 2.8 },
+        ...treeFruitTargets.filter(item => !item.harvested).map(item => ({ source: item, name: item.name, point: item.point, range: TREE_GATHER_REACH })),
+        ...treeCanopyBranchResources.filter(item => !item.exhausted).map((item, index) => {
+          const point = index < 2
+            ? designToThree(treeX, treeY, index === 0 ? TREE_GROUND_GATHER_HEIGHT : TREE_GROUND_GATHER_UPPER_HEIGHT)
+            : designToThree(treeX + Math.sin((index - 2) * Math.PI / 4) * .92, treeY + Math.cos((index - 2) * Math.PI / 4) * .92, TREE_GROUND_GATHER_HEIGHT);
+          return { source: item, name: heldInventoryEntry()?.itemId === 'stoneKnife' ? 'galho vivo da árvore' : 'galho baixo da árvore, de onde se pode obter um graveto', point, range: TREE_GATHER_REACH };
+        }),
+        ...campfires.map(fire => ({ source: fire, name: 'fogueira simples', point: designToThree(fire.x, fire.y, terrainHeightAt(fire.x, fire.y)), range: CAMPFIRE_INTERACTION_RANGE }))
+      ].map(item => ({ ...item, distance: item.point.distanceTo(designToThree(player.x, player.y, playerEyeAltitude())) }))
+        .filter(item => item.distance <= item.range)
+        .sort((a, b) => a.distance - b.distance);
+      const target = contacts[0] || null;
+      if (target?.source === currentInteractionContact) return;
+      currentInteractionContact = target?.source || null;
+      if (target) announce(`Ao alcance para interagir: ${target.name}.`);
     }
 
     function collectAsh(target) {
@@ -2925,6 +2962,7 @@
       updateWaterRipples(delta);
       updateCampfires(delta);
       updateResourceProximityCues();
+      updateInteractionContactCue();
       if (activeClimbDirection !== 0 && (climbMode === 'trunkGrip' || climbMode === 'branchGrip')) {
         const now = performance.now();
         if (climbStrokeRemaining <= .001 && now >= nextClimbStrokeAt) {
