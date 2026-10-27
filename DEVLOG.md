@@ -552,3 +552,10 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - A descrição acessível agora associa os alvos de coleta às suas próprias malhas; a verificação de obstrução ignora somente as malhas pertencentes ao alvo descrito. Objetos distintos mais próximos continuam bloqueando a descrição e as pistas, sem tornar toda uma categoria transparente.
 - Para os galhos vivos, a associação usa a geometria de galho baixo mais próxima, sem dispensar a oclusão por outros elementos da árvore.
 - Validação realizada: revisão estática das alterações, comparação da base remota e verificação de sintaxe pendente. Não foram feitos testes manuais de gameplay, leitor de tela nem avaliação auditiva; esses testes permanecem para o usuário.
+
+
+## 27 de outubro de 2026 — alinhamento entre som espacial e alvo visível
+
+- Pistas de pedras, arbustos, galhos, cinzas e afloramentos passaram a usar o centro do volume delimitador das malhas 3D do próprio recurso. O mesmo ponto é usado pela descrição ao olhar, mantendo direção sonora e alvo anunciado alinhados.
+- A checagem de oclusão continua ignorando somente as malhas que constituem o alvo selecionado; outros elementos mais próximos ainda o ocultam e preservam a hierarquia. Alvos dos galhos baixos da árvore usam o mesh específico do galho de coleta, não a árvore inteira.
+- Pistas repetem a cada segundo conforme a publicação anterior. Sem avaliação auditiva ou teste manual de gameplay; precisão percebida e visibilidade ainda precisam da validação do Anderson.
