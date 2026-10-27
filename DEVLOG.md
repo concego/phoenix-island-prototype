@@ -614,3 +614,9 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - Anderson esclareceu a regra dos controles: itens do cenário são coletados com Enter; Espaço realiza a ação do item equipado.
 - Ajustado o fluxo de Espaço para não recolher galhos caídos, arbustos ou pedras soltas. Os galhos caídos são recolhidos somente com Enter, inclusive com outro item equipado; galhos vivos da árvore ainda podem ser cortados com a faca equipada e Espaço. A mineração de afloramentos com martelo também permanece uma ação de Espaço.
 - README e GDD alinhados a essa separação de controles.
+
+
+## 27 de outubro de 2026 — remover aviso de alcance do galho da copa
+
+- Removido apenas o anúncio “O galho da copa está fora de alcance; aproxime-se da árvore e olhe para cima.” Se o alvo da copa estiver além do alcance, a ação de Espaço não prossegue e não anuncia esse aviso.
+- O requisito de alcance permanece; golpes em galhos vivos dentro de alcance mantêm o comportamento existente.
