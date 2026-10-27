@@ -2066,7 +2066,7 @@
       const recipe = { stone: 2 };
       if (climbMode !== 'ground') return;
       if (heldInventoryEntry()?.itemId !== 'stone' || inventoryQuantity('stone') < 2) { announce('A faca de pedra exige uma pedra nas mãos e mais uma pedra no inventário, totalizando duas.'); return; }
-      if (!canAddCraftedItem('stoneKnife', recipe)) { announce('Inventário cheio: libere um espaço para a faca de pedra. Nenhum material foi consumido.'); return; }
+      if (!canAddCraftedItem('stoneKnife', recipe)) { announce('Sem espaço no inventário.'); return; }
       consumeInventoryQuantity('stone', 2);
       addInventoryItem('stoneKnife', 1);
       closeItemActionMenu();
