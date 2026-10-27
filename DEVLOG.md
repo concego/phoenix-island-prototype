@@ -629,3 +629,11 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - Removidos do menu contextual os parágrafos explicativos de requisito; a lista ainda apresenta os nomes das ações e seu estado disponível/indisponível.
 - Atualizado o texto inicial de estado para não apresentar comandos.
 - Publicado para teste; sem alterar release, tag ou backup.
+
+
+## 27 de outubro de 2026 — corrigir Enter e ampliar a prioridade de descrição dos coletáveis
+
+- Corrigido o filtro do Enter: o foco no botão Inventário já não impede a tentativa de recolher item no cenário. O alvo é escolhido entre itens coletáveis dentro de 2,2 m pelo alinhamento mais forte da mira; a árvore claramente mais alinhada continua com prioridade.
+- O cálculo usa o centro dos meshes para pedras, cinzas, arbustos e galhos caídos, mantendo mira, descrição e posição física consistentes.
+- A descrição para baixo abrange a maior parte do enquadramento e informa primeiro o coletável visível. A descrição horizontal também verifica recursos antes de devolver descrições genéricas do terreno. Elementos distintos continuam sujeitos à oclusão.
+- Revisão estática confirmou a presença dos alvos e a remoção do bloqueio do botão Inventário. O código foi publicado; confirmação em gameplay do Anderson ainda é necessária.
