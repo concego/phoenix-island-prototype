@@ -1577,7 +1577,7 @@
       const held = heldInventoryEntry();
       if (climbMode !== 'ground' || !held || held.itemId !== 'stick' || held.entry.quantity < CAMPFIRE_CREATION_STICKS) return;
       if (isInLakeWater(player.x, player.y) || isMuddyGround(player.x, player.y)) {
-        announce('Não dá para montar uma fogueira simples na água nem na margem lamacenta.');
+        announce('Você precisa de terreno seco para isso.');
         return;
       }
       const nearbyFire = closestCampfire();
