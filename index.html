@@ -2749,9 +2749,10 @@
       const typing = event.target instanceof HTMLElement && (event.target.isContentEditable || ['INPUT','TEXTAREA','SELECT'].includes(event.target.tagName));
       if (typing) return;
       if (itemActionMenuOpen) return;
-      if (code === 'KeyC' && event.altKey && heldItem) {
+      if ((code === 'KeyC' || String(event.key || '').toLowerCase() === 'c') && event.altKey && heldItem) {
         event.preventDefault();
         event.stopPropagation();
+        if (inventoryOpen) closeInventory();
         openItemActionMenu();
         return;
       }
