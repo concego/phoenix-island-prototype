@@ -118,3 +118,8 @@ O Enter procura o item coletável mais alinhado à mira num raio de 2,2 m, mesmo
 
 
 Nota de robustez: as distâncias de coleta do Enter respeitam o alcance próprio de cada item; um alvo fora do alcance não impede selecionar outro elegível. O botão Inventário não bloqueia a coleta do mundo quando recebe foco.
+
+
+### Tolerância de mira para interações — 27 de outubro de 2026
+
+A tolerância angular para selecionar objetos interativos foi ampliada ligeiramente, de 60° para 65° em relação à direção da câmera. Distâncias, prioridades entre alvos, oclusão e movimentação permanecem inalteradas.
