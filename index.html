@@ -92,7 +92,6 @@
       </div>
     </header>
     <button id="inventory-open" type="button" aria-controls="inventory-panel" aria-expanded="false">Inventário (I)</button>
-    <button id="resource-scan" type="button" aria-label="Ouvir pistas espaciais das fontes de recurso próximas (V)">Localizar fontes próximas (V)</button>
     <section id="inventory-panel" aria-labelledby="inventory-heading" hidden>
       <div class="inventory-titlebar">
         <div><h2 id="inventory-heading" tabindex="-1">Inventário</h2><p id="inventory-count">0 de 10 tipos de item.</p></div>
@@ -1132,6 +1131,8 @@
     let audioContext = null;
     let audioBuffers = {};
     let audioReady = false;
+    const resourceCueStates = new WeakMap();
+    let nextResourceCueAt = 0;
     let lastStepBufferName = null;
     let lastSwimBufferName = null;
     let nextStepAt = 0;
@@ -1871,41 +1872,83 @@
       }).filter(target => target.alignment >= TREE_AIM_MIN_ALIGNMENT)
         .sort((a, b) => b.alignment - a.alignment || a.distance - b.distance)[0] || null;
     }
-    const RESOURCE_LOCATOR_RANGE = 22;
-    function playNearbyResourceCues() {
-      if (!audioContext || audioContext.state !== 'running') return;
-      const sources = [
-        ...looseStones.filter(stone => !stone.collected).map(stone => ({ kind: 'stone', point: stone.point })),
-        ...hillStoneNodes.filter(node => node.resistance > 0).map(node => ({ kind: 'stone', point: node.point })),
-        ...plantShrubs.filter(shrub => !shrub.harvested).map(shrub => ({ kind: 'plant', point: shrub.point })),
-        ...branchSources.filter(branch => !branch.harvested).map(branch => ({ kind: 'branch', point: branch.point })),
-        ...treeCanopyBranchResources.map((branch, index) => ({
-          kind: 'branch', point: index < 2
+    const RESOURCE_CUE_TRIGGER_DISTANCE = 6.5;
+    const RESOURCE_CUE_REARM_DISTANCE = 8.0;
+    const RESOURCE_CUE_MIN_INTERVAL_MS = 850;
+    function getResourceCueSources() {
+      return [
+        ...looseStones.filter(stone => !stone.collected).map(stone => ({ source: stone, kind: 'stone', category: 'rock', point: stone.point, objects: [stone.mesh] })),
+        ...hillStoneNodes.filter(node => node.resistance > 0).map(node => ({ source: node, kind: 'stone', category: 'rock', point: node.point, objects: node.meshes })),
+        ...plantShrubs.filter(shrub => !shrub.harvested).map(shrub => ({ source: shrub, kind: 'plant', category: 'shrub', point: shrub.point, objects: shrub.meshes })),
+        ...branchSources.filter(branch => !branch.harvested).map(branch => ({ source: branch, kind: 'branch', category: 'branch', point: branch.point, objects: [branch.mesh] })),
+        ...treeCanopyBranchResources.map((source, index) => ({
+          source, kind: 'branch', category: 'tree', point: index < 2
             ? designToThree(treeX, treeY, index === 0 ? TREE_GROUND_GATHER_HEIGHT : TREE_GROUND_GATHER_UPPER_HEIGHT)
             : designToThree(treeX + Math.sin((index - 2) * Math.PI / 4) * .92, treeY + Math.cos((index - 2) * Math.PI / 4) * .92, TREE_GROUND_GATHER_HEIGHT),
-          unavailable: branch.exhausted
-        })).filter(branch => !branch.unavailable),
-        ...ashPiles.filter(pile => !pile.collected).map(pile => ({ kind: 'ash', point: pile.point })),
-        ...campfires.map(fire => ({ kind: 'fire', point: designToThree(fire.x, fire.y, terrainHeightAt(fire.x, fire.y) + .45) }))
+          objects: lookables.filter(object => object.userData.lookCategory === 'tree')
+        })).filter(item => !item.source.exhausted),
+        ...ashPiles.filter(pile => !pile.collected).map(pile => ({ source: pile, kind: 'ash', category: 'ash', point: pile.point, objects: pile.meshes })),
+        ...campfires.filter(fire => fire.lit).map(fire => ({
+          source: fire, kind: 'fire', category: 'campfire',
+          point: designToThree(fire.x, fire.y, terrainHeightAt(fire.x, fire.y) + .45),
+          objects: lookables.filter(object => object.userData.lookCategory === 'campfire' && fire.base?.children.includes(object))
+        }))
       ];
-      const playerPoint = designToThree(player.x, player.y, playerEyeAltitude());
-      const cueNames = { stone: 'locateStone', plant: 'locatePlant', branch: 'locateBranch', ash: 'locateAsh', fire: 'locateFire' };
-      const cues = sources.map(source => ({ ...source, distance: source.point.distanceTo(playerPoint) }))
-        .filter(source => source.distance <= RESOURCE_LOCATOR_RANGE)
-        .sort((a, b) => a.distance - b.distance)
-        .slice(0, 12);
-      cues.forEach((cue, index) => {
-        window.setTimeout(() => {
-          if (audioContext?.state === 'running') playSpatialResourceCue(cueNames[cue.kind], cue.point);
-        }, index * 300);
-      });
-      announce(cues.length
-        ? `Pistas espaciais tocadas para ${cues.length} fontes próximas.`
-        : 'Nenhuma fonte de recurso a até 22 metros.');
     }
-    async function activateResourceLocator() {
-      await unlockAudio();
-      playNearbyResourceCues();
+    const resourceCueRaycaster = new THREE.Raycaster();
+    function resourceCueHasClearPriority(target, distance) {
+      // A sound is emitted only when the source would be the first relevant object
+      // of its category in that direction. Other categories keep the look system's hierarchy.
+      const offset = target.point.clone().sub(camera.position);
+      resourceCueRaycaster.set(camera.position, offset.clone().normalize());
+      resourceCueRaycaster.far = Math.max(0, distance - .18);
+      const allowedObjects = new Set(target.objects);
+      const blocker = resourceCueRaycaster.intersectObjects(lookables, false).find(hit =>
+        hit.distance < distance - .25 && !allowedObjects.has(hit.object)
+      );
+      return !blocker;
+    }
+    function updateResourceProximityCues() {
+      if (climbMode === 'swimming' || inventoryOpen || itemActionMenuOpen) return;
+      const now = performance.now();
+      const listenerPoint = designToThree(player.x, player.y, playerEyeAltitude());
+      const nearby = getResourceCueSources().map(target => ({
+        ...target,
+        distance: target.point.distanceTo(listenerPoint)
+      })).sort((a, b) => a.distance - b.distance);
+      let cueCandidate = null;
+      for (const target of nearby) {
+        let state = resourceCueStates.get(target.source);
+        if (!state) {
+          state = { armed: true, inside: false, pending: false };
+          resourceCueStates.set(target.source, state);
+        }
+        if (target.distance >= RESOURCE_CUE_REARM_DISTANCE) {
+          state.armed = true;
+          state.inside = false;
+          state.pending = false;
+          continue;
+        }
+        if (target.distance <= RESOURCE_CUE_TRIGGER_DISTANCE && state.armed && !state.inside) {
+          state.inside = true;
+          state.pending = true;
+        }
+        if (!state.pending || target.distance > RESOURCE_CUE_TRIGGER_DISTANCE) continue;
+        if (!audioContext || audioContext.state !== 'running') continue;
+        setCamera();
+        scene.updateMatrixWorld(true);
+        if (!resourceCueHasClearPriority(target, target.distance)) continue;
+        cueCandidate = { ...target, state };
+        break;
+      }
+      if (!cueCandidate || now < nextResourceCueAt) return;
+      const cueNames = { stone: 'locateStone', plant: 'locatePlant', branch: 'locateBranch', ash: 'locateAsh', fire: 'locateFire' };
+      if (playSpatialResourceCue(cueNames[cueCandidate.kind], cueCandidate.point, .62)) {
+        cueCandidate.state.pending = false;
+        cueCandidate.state.armed = false;
+        resourceCueStates.set(cueCandidate.source, cueCandidate.state);
+        nextResourceCueAt = now + RESOURCE_CUE_MIN_INTERVAL_MS;
+      }
     }
 
     function collectAsh(target) {
@@ -2003,7 +2046,6 @@
       if (action === 'shortcut') showShortcutTargets();
     }));
     inventoryOpenButton.addEventListener('click',openInventory);
-    document.querySelector('#resource-scan').addEventListener('click', activateResourceLocator);
     inventoryCloseButton.addEventListener('click',closeInventory);
     inventoryOpenActionsButton.addEventListener('click',openSelectedInventoryActions);
     droppedItemsButton.addEventListener('click',()=>{
@@ -2814,7 +2856,6 @@
         return;
       }
       if (code === 'KeyI') { event.preventDefault(); openInventory(); return; }
-      if (code === 'KeyV') { event.preventDefault(); if (!event.repeat) await activateResourceLocator(); return; }
       const shortcutKey = /^Digit[0-9]$/.test(code) ? code.slice(5) : null;
       if (shortcutKey !== null && itemShortcuts[shortcutKey] !== undefined) { event.preventDefault(); const shortcutSlot = inventory.findIndex(entry => entry?.itemId === itemShortcuts[shortcutKey]); if (shortcutSlot >= 0) equipInventorySlot(shortcutSlot); else announce(`${itemDefinitions[itemShortcuts[shortcutKey]].name} esgotado.`); return; }
       if (isRightShiftEvent(event)) {
@@ -2902,6 +2943,7 @@
     function update(delta) {
       updateWaterRipples(delta);
       updateCampfires(delta);
+      updateResourceProximityCues();
       if (activeClimbDirection !== 0 && (climbMode === 'trunkGrip' || climbMode === 'branchGrip')) {
         const now = performance.now();
         if (climbStrokeRemaining <= .001 && now >= nextClimbStrokeAt) {
