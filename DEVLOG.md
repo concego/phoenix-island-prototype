@@ -182,7 +182,7 @@ Há duas releases de backup registradas:
 - [backup-2026-10-04](https://github.com/concego/phoenix-island-prototype/releases/tag/backup-2026-10-04)
 - [backup-2026-10-08](https://github.com/concego/phoenix-island-prototype/releases/tag/backup-2026-10-08)
 
-Ambas apontam para o commit `ed01afd6ea3118da96119a0d371ced3617988ef4`. As alterações experimentais posteriores não atualizaram essas releases. Este diário não as altera nem redefine a versão do protótipo. A referência de código mais recente conhecida ao preparar o documento é `9ae38bb123a39d426ed58f4a1bc4c169e1a2fb49`.
+Ambas apontam para o commit `ed01afd6ea3118da96119a0d371ced3617988ef4`. As alterações experimentais posteriores não atualizaram essas releases. Este diário não as altera nem redefine a versão do protótipo. A cronologia de outubro continua abaixo, com os commits posteriores à consolidação inicial registrados em entradas próprias. O estado de código corrente é indicado na entrada mais recente e no histórico do repositório.
 
 ## Fontes e método de reconstrução
 
@@ -566,3 +566,12 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - A pista atual fica vinculada à fonte que a acionou; fontes vizinhas não roubam os beeps seguintes enquanto o jogador continuar perto da fonte inicial. Isso evita que panning/volume aparente recuar ou saltar quando o jogador está caminhando para ela. O vínculo é liberado ao afastar-se a 8 m ou quando a fonte deixa de existir.
 - A descrição de olhar para baixo agora verifica e anuncia pedras soltas, arbustos, galhos e cinzas visíveis, antes de retornar apenas o nome do chão/terreno. Assim, ao virar na direção do som, itens pequenos no solo são considerados pelo canal acessível.
 - O intervalo sonoro continua em 1 s. É necessário testar no jogo real se o panning fica coerente ao avançar e se cada item é de fato anunciado na mira, além de validar com leitor de tela.
+
+
+## 27 de outubro de 2026 — atualizar os documentos e criar backup de teste
+
+### Estado documentado
+
+- README, GDD e DEVLOG atualizados para refletir os comportamentos publicados de pistas espaciais, continuidade da origem, descrição de coletáveis ao olhar para baixo, regra de criação de fogueiras próximas e estado de validação. Corrigido no README um trecho que continha separadores de parágrafo literais em vez de quebras de linha.
+- Mantidos distintos o código publicado e os testes manuais ainda pendentes: direção e volume percebidos durante aproximação, visibilidade em gameplay, leitor de tela e avaliação auditiva continuam sem confirmação.
+- Criado backup datado deste snapshot após a atualização dos documentos. Os backups anteriores permanecem preservados e sem alteração. Nenhuma release estável foi declarada.
