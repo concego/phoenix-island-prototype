@@ -253,3 +253,9 @@ A árvore emite a pista grave de recurso coletável quando há gravetos ou galho
 
 - A coleta bem-sucedida de itens emite um som curto próprio de confirmação.
 - Cada ação concluída com sucesso pelo menu contextual do item equipado emite outro som curto, distinto da coleta. Falhas, requisitos não atendidos ou inventário cheio não emitem esses sons.
+
+
+### Feedback de proximidade e anúncios
+
+- Ao entrar na área física de contato/interação de um elemento, anunciar o nome do alvo mais próximo; não repetir continuamente enquanto o jogador permanecer junto a ele. Incluir itens de coleta, recursos, árvore e fogueira, sem ultrapassar os alcances definidos por cada mecânica.
+- Manter o texto visual da cena separado da região viva para leitor de tela. Reanunciar a mesma informação após pausa breve, sem depender da inserção de espaços invisíveis no texto, sobretudo nas coordenadas e descrições do campo de visão.
