@@ -102,6 +102,7 @@ A distribuição, quantidades e dimensões são parâmetros do protótipo e pode
 - Shift esquerdo+A/D: girar o corpo em 45°; Shift esquerdo+W: girar 180°; Shift esquerdo+S: recuo rápido.
 - Setas: olhar em passos de 15°, com limites laterais e verticais descritos no README.
 - C: anunciar coordenadas.
+- V: iniciar uma varredura pontual de fontes ativas próximas, com pistas curtas espacializadas em relação à posição/orientação do jogador; a busca é limitada e não toca continuamente.
 - Espaço: interagir, usar o item em mãos ou iniciar/confirmar saída da natação conforme a situação.
 - Enter: recolher pedra solta ou fibra de arbusto quando o alvo e a interação forem elegíveis; não substitui a mineração de afloramentos.
 - I: abrir inventário. Alt+C com item equipado: abrir ações situacionais.
@@ -186,6 +187,8 @@ O olhar e a orientação corporal são controles distintos. A/D não giram o cor
 - Efeitos de escalada previamente aprovados devem ser preservados quando não houver pedido explícito para alterá-los.
 - Beeps de água indicam zonas definidas; não são bússola nem substituem informação contínua de profundidade.
 - Um som de referência deve ter significado consistente, ser distinguível dos demais e não remover silenciosamente informação que o leitor de tela necessita.
+- Pistas espaciais de objetos e fontes de recurso devem usar fontes posicionadas no mundo em relação ao jogador; complementam e nunca substituem a informação acessível.
+- Não tocar camada contínua de sons de recursos por padrão. A varredura é acionada explicitamente pelo jogador e limitada para evitar sobrecarga do áudio ou do leitor de tela.
 - Não fazer avaliação auditiva em nome do usuário; registrar os efeitos como pendentes até receber avaliação.
 
 ## 9. Limites: fazer e não fazer
