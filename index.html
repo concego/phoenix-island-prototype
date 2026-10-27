@@ -1148,6 +1148,7 @@
     let audioReady = false;
     const resourceCueStates = new WeakMap();
     let nextResourceCueAt = 0;
+    let currentResourceCueSource = null;
     let lastStepBufferName = null;
     let lastSwimBufferName = null;
     let nextStepAt = 0;
@@ -1942,8 +1943,15 @@
         ...target,
         distance: target.point.distanceTo(listenerPoint)
       })).sort((a, b) => a.distance - b.distance);
+      if (currentResourceCueSource) {
+        const current = nearby.find(target => target.source === currentResourceCueSource);
+        if (!current || current.distance >= RESOURCE_CUE_REARM_DISTANCE) currentResourceCueSource = null;
+      }
+      const ordered = currentResourceCueSource
+        ? [...nearby.filter(target => target.source === currentResourceCueSource), ...nearby.filter(target => target.source !== currentResourceCueSource)]
+        : nearby;
       let cueCandidate = null;
-      for (const target of nearby) {
+      for (const target of ordered) {
         let state = resourceCueStates.get(target.source);
         if (!state) {
           state = { nextAt: 0 };
@@ -1966,6 +1974,7 @@
       if (playSpatialResourceCue(cueNames[cueCandidate.kind], cueCandidate.point, .62)) {
         cueCandidate.state.nextAt = now + RESOURCE_CUE_MIN_INTERVAL_MS;
         resourceCueStates.set(cueCandidate.source, cueCandidate.state);
+        currentResourceCueSource = cueCandidate.source;
         nextResourceCueAt = now + RESOURCE_CUE_MIN_INTERVAL_MS;
       }
     }
@@ -2681,6 +2690,13 @@
         }
         const ash = visible.find(target => target.category === 'ash' && Math.abs(target.screen.x) < .55 && Math.abs(target.screen.y) < .55);
         if (ash) return `Olhar para baixo: ${ash.name} está no campo de visão, a ${ash.distance.toFixed(1)} unidades. Pressione Enter para recolher.`;
+        const groundCollectible = visible.find(target => ['rock', 'shrub', 'ash', 'branch'].includes(target.category)
+          && Math.abs(target.screen.x) < .78 && Math.abs(target.screen.y) < .82);
+        if (groundCollectible) {
+          const side = Math.abs(groundCollectible.screen.x) < .18 ? 'no centro da visão'
+            : groundCollectible.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
+          return `Olhar para baixo: ${groundCollectible.name} está ${side}, a ${groundCollectible.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
+        }
         const trunk = visible.find(target => target.category === 'tree' && target.name.includes('tronco') && Math.abs(target.screen.x) < .55 && Math.abs(target.screen.y) < .48);
         if (trunk) return `Olhar para baixo: ${trunk.name} está no campo de visão, a ${trunk.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
         const lake = visible.find(target => target.category === 'lake');
