@@ -2077,7 +2077,7 @@
       announce('Faca de pedra criada.');
     }
     function splitBranchIntoSticks() {
-      if (climbMode !== 'ground') { announce('Para quebrar um galho, esteja no chão, sem nadar nem estar agarrado à árvore.'); return; }
+      if (climbMode !== 'ground') return;
       const held = heldInventoryEntry();
       if (held?.itemId !== 'branch' || held.entry.quantity < 1) { announce('É necessário estar com um galho nas mãos.'); return; }
       if (inventoryQuantity('stoneKnife') < 1) { announce('Para quebrar um galho em gravetos, é necessário ter uma faca de pedra no inventário; não precisa equipá-la. O galho não foi consumido.'); return; }
