@@ -2080,7 +2080,7 @@
       if (climbMode !== 'ground') return;
       const held = heldInventoryEntry();
       if (held?.itemId !== 'branch' || held.entry.quantity < 1) { announce('É necessário estar com um galho nas mãos.'); return; }
-      if (inventoryQuantity('stoneKnife') < 1) { announce('Para quebrar um galho em gravetos, é necessário ter uma faca de pedra no inventário; não precisa equipá-la. O galho não foi consumido.'); return; }
+      if (inventoryQuantity('stoneKnife') < 1) return;
       const hasStickStack = inventory.some(entry => entry?.itemId === 'stick');
       if (!hasStickStack && !canAddCraftedItem('stick', { branch: 1 })) {
         announce('Inventário cheio: libere um espaço para receber os gravetos. O galho não foi consumido.'); return;
