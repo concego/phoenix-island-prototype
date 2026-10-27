@@ -264,3 +264,8 @@ A árvore emite a pista grave de recurso coletável quando há gravetos ou galho
 
 
 A fala ao entrar na área de contato deve conter somente o nome do objeto, sem prefixo ou explicação adicional.
+
+
+### Coerência entre contato e coleta
+
+- O anúncio de um item coletável como alvo ao alcance deve usar exatamente o mesmo seletor do Enter: mesma geometria de referência, mira angular, alcance individual e prioridade entre objetos. Assim, o alvo nomeado é o que Enter tentará recolher.
