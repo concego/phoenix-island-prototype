@@ -134,3 +134,8 @@ Ao recolher um item, toca uma confirmação curta de duas notas ascendentes. Aç
 ### Interação próxima e anúncios acessíveis — 27 de outubro de 2026
 
 Ao entrar no alcance de contato de um alvo, o jogo anuncia seu nome, uma única vez por entrada ou troca de alvo. A região visual da cena foi separada da região ARIA; mensagens repetidas, como coordenadas e descrição do campo de visão, são reapresentadas após breve pausa para melhorar a percepção em leitores de tela.
+
+
+### Coerência entre anúncio e coleta
+
+A fala do nome de um coletável e a seleção do Enter usam o mesmo alvo, direção da câmera, tolerância angular, distância e prioridade da árvore. Se o nome de um coletável é anunciado como alvo atual, o Enter tenta recolher esse mesmo alvo pelas regras de inventário vigentes.
