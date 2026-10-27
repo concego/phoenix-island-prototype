@@ -236,3 +236,8 @@ Uma mudança implementada só deve ser considerada concluída quando:
 ## 11. Decisões ainda não aprovadas
 
 Este GDD não decide a história final, objetivo de campanha, combate, fome, sede, saúde, morte, salvamento, persistência, respawn de recursos, construção, durabilidade de ferramentas, receitas futuras ou progressão. Essas lacunas não são autorização para inventar uma solução. Quando forem necessárias para uma implementação, apresentar a decisão no chat antes de codificar.
+
+
+### Seleção de objetos
+
+A tolerância angular comum para mirar objetos interativos é de 65° em relação à direção da câmera, para reduzir a precisão exigida ao coletar ou interagir. A ampliação não altera alcances físicos, prioridade de alvos ou regras de oclusão.
