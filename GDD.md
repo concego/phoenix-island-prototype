@@ -41,6 +41,8 @@ Uma interação só deve existir se tiver utilidade clara para a experiência ou
 
 Implementar o que foi solicitado, sem acrescentar comportamentos, variações, receitas, efeitos, itens ou sistemas não pedidos. Não ampliar o escopo por iniciativa própria. Se uma ideia adicional parecer útil, apresentá-la como proposta separada e aguardar decisão antes de incluí-la no código.
 
+Quando algo for solicitado, não atribuir explicações ou funções extras além do que foi solicitado.
+
 ### Recursos com resultado intencional
 
 Destruir, consumir, transformar, esgotar ou remover um recurso precisa ter um resultado coerente, previsível e intencional, ligado à ação e à utilidade do recurso. Verificar o que o jogador recebe, o que perde, se a ação pode falhar e se a falha consome algo. Não remover recursos nem criar conversões cujo propósito ou consequência não estejam definidos.
