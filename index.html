@@ -1580,11 +1580,6 @@
         announce('Você precisa de terreno seco para isso.');
         return;
       }
-      const nearbyFire = closestCampfire();
-      if (nearbyFire) {
-        announce(nearbyFire.fire.lit ? 'Já há uma fogueira simples acesa por perto. Abasteça-a enquanto estiver acesa.' : 'Fogueiras apagadas não podem ser reacendidas; as cinzas podem ser recolhidas com Enter.');
-        return;
-      }
       if (!consumeHeldItemQuantity(CAMPFIRE_CREATION_STICKS)) return;
       const fuelMaterial = itemDefinitions.stick.name;
       const fire = { x: player.x, y: player.y, fuelSeconds: CAMPFIRE_INITIAL_FUEL_SECONDS, lit: true, elapsed: 0, fuelMaterial };
@@ -1699,15 +1694,13 @@
       } else if (held.itemId === 'stick') {
         const enough = held.entry.quantity >= CAMPFIRE_CREATION_STICKS;
         const dryGround = !isInLakeWater(player.x, player.y) && !isMuddyGround(player.x, player.y);
-        const allowed = !nearest && climbMode === 'ground' && dryGround && enough;
+        const allowed = climbMode === 'ground' && dryGround && enough;
         let why;
-        if (nearest?.fire.lit) why = 'Já há uma fogueira simples acesa neste alcance; abasteça-a em vez de criar outra.';
-        else if (nearest) why = 'Fogueiras apagadas não podem ser reacendidas nem substituídas por outra no mesmo local.';
-        else if (climbMode !== 'ground') why = 'Disponível apenas no chão, sem nadar nem estar agarrado à árvore.';
-        else if (!dryGround) why = 'Escolha um local seco, fora da água e da margem lamacenta.';
+        if (climbMode !== 'ground') why = 'Disponível apenas no chão, sem nadar nem estar agarrado à árvore.';
+        else if (!dryGround) why = 'Você precisa de terreno seco para isso.';
         else if (!enough) why = `Requer ${CAMPFIRE_CREATION_STICKS} gravetos; você está com ${held.entry.quantity}.`;
         else why = `Consome ${CAMPFIRE_CREATION_STICKS} gravetos inflamáveis e acende por 1 minuto.`;
-        actions.push({ label: nearest?.fire.lit ? 'Fogueira simples próxima' : 'Criar fogueira simples', disabled: !allowed, detail: why, run: createCampfire });
+        actions.push({ label: 'Criar fogueira simples', disabled: !allowed, detail: why, run: createCampfire });
       }
       return { nearest, actions };
     }
