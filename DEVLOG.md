@@ -637,3 +637,11 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - O cálculo usa o centro dos meshes para pedras, cinzas, arbustos e galhos caídos, mantendo mira, descrição e posição física consistentes.
 - A descrição para baixo abrange a maior parte do enquadramento e informa primeiro o coletável visível. A descrição horizontal também verifica recursos antes de devolver descrições genéricas do terreno. Elementos distintos continuam sujeitos à oclusão.
 - Revisão estática confirmou a presença dos alvos e a remoção do bloqueio do botão Inventário. O código foi publicado; confirmação em gameplay do Anderson ainda é necessária.
+
+
+## 27 de outubro de 2026 — refinar alcance e foco da coleta com Enter
+
+- A seleção com Enter agora usa a origem geométrica efetiva de cada coletável e filtra cada alvo pelo alcance próprio antes de escolher; um item fora de alcance não encobre outro elegível.
+- O foco no botão Inventário permanece compatível com a coleta; o Enter não abre o painel pelo botão, mas tenta coletar um item alinhado no cenário.
+- Revisada a descrição do olhar para baixo e horizontal para priorizar recursos visíveis numa região maior do enquadramento; a checagem de oclusão continua ativa.
+- Páginas/documentos publicados; teste manual de gameplay ainda necessário para confirmar a experiência percebida.
