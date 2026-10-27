@@ -1208,11 +1208,11 @@
           climbDown: './assets/climb-down.wav',
           climbSettle: './assets/climb-settle.wav',
           climbRelease: './assets/climb-release.wav',
-          locateStone: './assets/locate-stone.wav',
-          locatePlant: './assets/locate-plant.wav',
-          locateBranch: './assets/locate-branch.wav',
-          locateAsh: './assets/locate-ash.wav',
-          locateFire: './assets/locate-fire.wav'
+          locateCollectible: './assets/locate-collectible.wav',
+          locateExtractable: './assets/locate-extractable.wav',
+          ,
+          ,
+          
         };
         await Promise.all(Object.entries(audioFiles).map(async ([name, path]) => {
           try {
@@ -1874,25 +1874,22 @@
     }
     const RESOURCE_CUE_TRIGGER_DISTANCE = 6.5;
     const RESOURCE_CUE_REARM_DISTANCE = 8.0;
-    const RESOURCE_CUE_MIN_INTERVAL_MS = 850;
+    const RESOURCE_CUE_MIN_INTERVAL_MS = 3800;
+    const RESOURCE_CUE_CHECK_INTERVAL_MS = 220;
+    let nextResourceCueCheckAt = 0;
     function getResourceCueSources() {
       return [
-        ...looseStones.filter(stone => !stone.collected).map(stone => ({ source: stone, kind: 'stone', category: 'rock', point: stone.point, objects: [stone.mesh] })),
-        ...hillStoneNodes.filter(node => node.resistance > 0).map(node => ({ source: node, kind: 'stone', category: 'rock', point: node.point, objects: node.meshes })),
-        ...plantShrubs.filter(shrub => !shrub.harvested).map(shrub => ({ source: shrub, kind: 'plant', category: 'shrub', point: shrub.point, objects: shrub.meshes })),
-        ...branchSources.filter(branch => !branch.harvested).map(branch => ({ source: branch, kind: 'branch', category: 'branch', point: branch.point, objects: [branch.mesh] })),
+        ...looseStones.filter(stone => !stone.collected).map(stone => ({ source: stone, kind: 'collectible', category: 'rock', point: stone.point, objects: [stone.mesh] })),
+        ...hillStoneNodes.filter(node => node.resistance > 0).map(node => ({ source: node, kind: 'extractable', category: 'rock', point: node.point, objects: node.meshes })),
+        ...plantShrubs.filter(shrub => !shrub.harvested).map(shrub => ({ source: shrub, kind: 'collectible', category: 'shrub', point: shrub.point, objects: shrub.meshes })),
+        ...branchSources.filter(branch => !branch.harvested).map(branch => ({ source: branch, kind: 'extractable', category: 'branch', point: branch.point, objects: [branch.mesh] })),
         ...treeCanopyBranchResources.map((source, index) => ({
-          source, kind: 'branch', category: 'tree', point: index < 2
+          source, kind: 'extractable', category: 'tree', point: index < 2
             ? designToThree(treeX, treeY, index === 0 ? TREE_GROUND_GATHER_HEIGHT : TREE_GROUND_GATHER_UPPER_HEIGHT)
             : designToThree(treeX + Math.sin((index - 2) * Math.PI / 4) * .92, treeY + Math.cos((index - 2) * Math.PI / 4) * .92, TREE_GROUND_GATHER_HEIGHT),
           objects: lookables.filter(object => object.userData.lookCategory === 'tree')
         })).filter(item => !item.source.exhausted),
-        ...ashPiles.filter(pile => !pile.collected).map(pile => ({ source: pile, kind: 'ash', category: 'ash', point: pile.point, objects: pile.meshes })),
-        ...campfires.filter(fire => fire.lit).map(fire => ({
-          source: fire, kind: 'fire', category: 'campfire',
-          point: designToThree(fire.x, fire.y, terrainHeightAt(fire.x, fire.y) + .45),
-          objects: lookables.filter(object => object.userData.lookCategory === 'campfire' && fire.base?.children.includes(object))
-        }))
+        ...ashPiles.filter(pile => !pile.collected).map(pile => ({ source: pile, kind: 'collectible', category: 'ash', point: pile.point, objects: pile.meshes })),
       ];
     }
     const resourceCueRaycaster = new THREE.Raycaster();
@@ -1911,6 +1908,8 @@
     function updateResourceProximityCues() {
       if (climbMode === 'swimming' || inventoryOpen || itemActionMenuOpen) return;
       const now = performance.now();
+      if (now < nextResourceCueCheckAt) return;
+      nextResourceCueCheckAt = now + RESOURCE_CUE_CHECK_INTERVAL_MS;
       const listenerPoint = designToThree(player.x, player.y, playerEyeAltitude());
       const nearby = getResourceCueSources().map(target => ({
         ...target,
@@ -1920,20 +1919,14 @@
       for (const target of nearby) {
         let state = resourceCueStates.get(target.source);
         if (!state) {
-          state = { armed: true, inside: false, pending: false };
+          state = { nextAt: 0 };
           resourceCueStates.set(target.source, state);
         }
         if (target.distance >= RESOURCE_CUE_REARM_DISTANCE) {
-          state.armed = true;
-          state.inside = false;
-          state.pending = false;
+          state.nextAt = 0;
           continue;
         }
-        if (target.distance <= RESOURCE_CUE_TRIGGER_DISTANCE && state.armed && !state.inside) {
-          state.inside = true;
-          state.pending = true;
-        }
-        if (!state.pending || target.distance > RESOURCE_CUE_TRIGGER_DISTANCE) continue;
+        if (target.distance > RESOURCE_CUE_TRIGGER_DISTANCE || now < state.nextAt) continue;
         if (!audioContext || audioContext.state !== 'running') continue;
         setCamera();
         scene.updateMatrixWorld(true);
@@ -1942,10 +1935,9 @@
         break;
       }
       if (!cueCandidate || now < nextResourceCueAt) return;
-      const cueNames = { stone: 'locateStone', plant: 'locatePlant', branch: 'locateBranch', ash: 'locateAsh', fire: 'locateFire' };
+      const cueNames = { extractable: 'locateExtractable', collectible: 'locateCollectible' };
       if (playSpatialResourceCue(cueNames[cueCandidate.kind], cueCandidate.point, .62)) {
-        cueCandidate.state.pending = false;
-        cueCandidate.state.armed = false;
+        cueCandidate.state.nextAt = now + RESOURCE_CUE_MIN_INTERVAL_MS;
         resourceCueStates.set(cueCandidate.source, cueCandidate.state);
         nextResourceCueAt = now + RESOURCE_CUE_MIN_INTERVAL_MS;
       }
@@ -2635,7 +2627,7 @@
         raycaster.set(camera.position, offset.normalize());
         raycaster.far = distance + .1;
         const blocker = raycaster.intersectObjects(lookables, false).find(hit =>
-          hit.distance < distance - .25 && hit.object.userData.lookCategory !== target.category
+          hit.distance < distance - .25 
         );
         if (blocker) continue;
         const score = screen.x * screen.x * .8 + screen.y * screen.y;
