@@ -129,3 +129,8 @@ A tolerância angular para selecionar objetos interativos foi ampliada ligeirame
 
 
 Ao recolher um item, toca uma confirmação curta de duas notas ascendentes. Ações bem-sucedidas do menu de ações do item equipado usam outro padrão curto e distinto. Tentativas bloqueadas ou sem espaço não emitem som de confirmação.
+
+
+### Interação próxima e anúncios acessíveis — 27 de outubro de 2026
+
+Ao entrar no alcance de contato de um alvo, o jogo anuncia seu nome, uma única vez por entrada ou troca de alvo. A região visual da cena foi separada da região ARIA; mensagens repetidas, como coordenadas e descrição do campo de visão, são reapresentadas após breve pausa para melhorar a percepção em leitores de tela.
