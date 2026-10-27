@@ -259,3 +259,6 @@ A árvore emite a pista grave de recurso coletável quando há gravetos ou galho
 
 - Ao entrar na área física de contato/interação de um elemento, anunciar o nome do alvo mais próximo; não repetir continuamente enquanto o jogador permanecer junto a ele. Incluir itens de coleta, recursos, árvore e fogueira, sem ultrapassar os alcances definidos por cada mecânica.
 - Manter o texto visual da cena separado da região viva para leitor de tela. Reanunciar a mesma informação após pausa breve, sem depender da inserção de espaços invisíveis no texto, sobretudo nas coordenadas e descrições do campo de visão.
+
+
+A fala ao entrar na área de contato deve conter somente o nome do objeto, sem prefixo ou explicação adicional.
