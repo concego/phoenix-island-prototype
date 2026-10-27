@@ -501,3 +501,15 @@ A sintaxe, a altura alcançável, o patamar de escalada e os ramos de interaçã
 ### 27 de outubro de 2026 — correção do golpe final sem espaço
 
 A revisão confirmou que o commit anterior não havia publicado o código do sistema de dano. O sistema aprovado e as atualizações de instrução foram integrados no `index.html` em commit próprio. Também corrigido o caso de inventário sem espaço: o dano é sorteado uma vez; se zeraria a resistência e não houver espaço, ele fica pendente, não reduz a resistência nem remove a fonte. Após liberar espaço, o mesmo resultado pendente é aplicado sem novo sorteio. As demais mudanças publicadas de coleta não foram substituídas. A implementação e as instruções estão publicadas; faltam playtest, validação com leitor de tela e avaliação sonora.
+
+
+## 26 de outubro de 2026 — swoosh de golpe no ar ao falhar alvo de galho caído
+
+### Mudança implementada
+
+- A tentativa pela ação contextual de golpear um galho caído que não pode prosseguir por alvo/mira/alcance ou faca não anuncia mais a explicação longa. Ela toca um breve swoosh conceitual de golpe no ar.
+- O swoosh é sintetizado com ruído filtrado e envelope curto no Web Audio, sem depender de arquivo ou serviço externo; a alteração não muda requisitos, consumo ou resultado de outros golpes.
+
+### Validação
+
+- Revisão estática confirma que a mensagem anterior foi removida desse ramo e o som é chamado apenas pela falha dessa ação contextual. Teste auditivo e validação com leitor de tela continuam pendentes.
