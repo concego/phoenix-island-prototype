@@ -551,5 +551,59 @@ def main() -> None:
     print("Sons WAV gerados em:", ASSETS)
 
 
+
+
+def make_resource_locator(kind: str, seed: int) -> list[float]:
+    """Gera uma pista mono curta e identificável para espacialização no jogo."""
+    rng = random.Random(seed)
+    duration = .24
+    count = int(RATE * duration)
+    low = 0.0
+    samples = []
+    for index in range(count):
+        t = index / RATE
+        noise = rng.uniform(-1, 1)
+        low += .13 * (noise - low)
+        high = noise - low
+        def env(start: float, decay: float, attack: float = .004) -> float:
+            elapsed = t - start
+            if elapsed < 0:
+                return 0.0
+            return min(1.0, elapsed / attack) * math.exp(-decay * elapsed)
+        value = 0.0
+        if kind == 'stone':
+            value += .18 * math.sin(2 * math.pi * (940 - 180*t) * t) * env(.008, 24, .002)
+            value += .13 * math.sin(2 * math.pi * 710 * (t-.105)) * env(.105, 24, .002)
+            value += .11 * high * env(.004, 85, .001) + .09 * high * env(.105, 85, .001)
+        elif kind == 'plant':
+            value += .18 * high * env(.005, 20, .015)
+            value += .10 * math.sin(2 * math.pi * 420 * t) * env(.035, 18, .01)
+            value += .08 * math.sin(2 * math.pi * 560 * (t-.13)) * env(.13, 22, .008)
+        elif kind == 'branch':
+            value += .16 * math.sin(2 * math.pi * (205 - 45*t) * t) * env(.004, 18, .002)
+            value += .10 * math.sin(2 * math.pi * 290 * (t-.105)) * env(.105, 20, .002)
+            value += .07 * high * env(.004, 90, .001)
+        elif kind == 'ash':
+            value += .16 * high * env(.012, 13, .03)
+            value += .06 * math.sin(2 * math.pi * (360 + 120*t) * t) * env(.02, 13, .025)
+        elif kind == 'fire':
+            value += .10 * high * env(.005, 75, .001) + .08 * high * env(.105, 70, .001)
+            value += .08 * math.sin(2 * math.pi * 310 * t) * env(.008, 23, .004)
+        samples.append(value)
+    return samples
+
+
+def generate_resource_location_cues() -> None:
+    """Gera apenas as pistas novas, sem regravar os outros sons do protótipo."""
+    ASSETS.mkdir(parents=True, exist_ok=True)
+    for kind, seed in (("stone", 101), ("plant", 103), ("branch", 107), ("ash", 109), ("fire", 113)):
+        write_wav(ASSETS / f"locate-{kind}.wav", make_resource_locator(kind, seed))
+
+
 if __name__ == "__main__":
-    main()
+    import sys
+    if "--resource-locators-only" in sys.argv:
+        generate_resource_location_cues()
+        print("Pistas espaciais para fontes de recurso geradas em:", ASSETS)
+    else:
+        main()
