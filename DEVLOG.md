@@ -620,3 +620,12 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 
 - Removido apenas o anúncio “O galho da copa está fora de alcance; aproxime-se da árvore e olhe para cima.” Se o alvo da copa estiver além do alcance, a ação de Espaço não prossegue e não anuncia esse aviso.
 - O requisito de alcance permanece; golpes em galhos vivos dentro de alcance mantêm o comportamento existente.
+
+
+## 27 de outubro de 2026 — fluxo normal sem instruções de comandos
+
+- Removidas do fluxo normal as falas que ensinavam combinações de teclas, mira, alcance, receitas ou requisitos para executar uma ação. Condições não atendidas deixam de narrar instruções; os guards e os requisitos mecânicos permanecem.
+- Mantidos descrições de olhar, estados do ambiente, resultados de ações, danos/progresso, falta de espaço e confirmações concisas. Não foi criado um tutorial nem uma nova tela de ajuda.
+- Removidos do menu contextual os parágrafos explicativos de requisito; a lista ainda apresenta os nomes das ações e seu estado disponível/indisponível.
+- Atualizado o texto inicial de estado para não apresentar comandos.
+- Publicado para teste; sem alterar release, tag ou backup.
