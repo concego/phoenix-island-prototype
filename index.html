@@ -2620,13 +2620,6 @@
         const side = visibleGroundCollectible.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
         return `Olhar horizontal: ${visibleGroundCollectible.name} aparece ${side}, a ${visibleGroundCollectible.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
       }
-      const visibleGroundCollectible = visible.find(target => ['rock', 'shrub', 'ash', 'branch'].includes(target.category)
-        && Math.abs(target.screen.x) < .98 && Math.abs(target.screen.y) < .99);
-      if (visibleGroundCollectible) {
-        const side = Math.abs(visibleGroundCollectible.screen.x) < .18 ? 'no centro da visão'
-          : visibleGroundCollectible.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
-        return `Olhar horizontal: ${visibleGroundCollectible.name} está ${side}, a ${visibleGroundCollectible.distance.toFixed(1)} unidades. Rumo do olhar: ${heading}.`;
-      }
       const centered = visible.find(target => target.score < .16);
       if (centered) {
         const side = Math.abs(centered.screen.x) < .18 ? 'no centro da visão' : centered.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
