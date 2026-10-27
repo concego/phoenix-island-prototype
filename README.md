@@ -110,3 +110,8 @@ Ao caminhar perto de mais de um recurso, a pista atual continua ligada à mesma 
 ## Estado e validação das pistas de recursos — 27 de outubro de 2026
 
 As pistas automáticas têm alcance de 6,5 m, repetem uma vez por segundo e usam timbres diferentes para itens coletáveis diretamente e fontes que exigem extração. O som e a descrição ao olhar compartilham um ponto derivado da geometria da fonte; uma pista mantém a mesma fonte ao caminhar perto de itens vizinhos. Ao olhar para baixo, a descrição também procura pedras, arbustos, cinzas e galhos no campo de visão. O teste ainda precisa confirmar no gameplay a visibilidade de cada item e se a percepção de direção/distância do beep acompanha o movimento. A página publicada não substitui essa validação manual, de leitor de tela e avaliação auditiva.
+
+
+### Coleta no campo de visão — 27 de outubro de 2026
+
+O Enter procura o item coletável mais alinhado à mira num raio de 2,2 m, mesmo se o foco estiver no botão Inventário; a árvore mantém prioridade quando está claramente mais alinhada. A descrição acessível inclui recursos visíveis no campo de visão, priorizando coletáveis quando a câmera aponta para o chão ou está próxima da horizontal. A visibilidade continua sujeita à hierarquia de oclusão do cenário.
