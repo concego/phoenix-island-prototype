@@ -139,3 +139,9 @@ Ao entrar no alcance de contato de um alvo, o jogo anuncia seu nome, uma única 
 ### Coerência entre anúncio e coleta
 
 A fala do nome de um coletável e a seleção do Enter usam o mesmo alvo, direção da câmera, tolerância angular, distância e prioridade da árvore. Se o nome de um coletável é anunciado como alvo atual, o Enter tenta recolher esse mesmo alvo pelas regras de inventário vigentes.
+
+
+### Apresentação da cena
+
+
+As instruções extensas ficam recolhidas por padrão em “Instruções e detalhes do protótipo”. O título e o botão de inventário permanecem compactos, e a cena recebe a área restante da janela tanto em desktop quanto em telas móveis. As instruções completas continuam disponíveis ao expandir o painel, inclusive por teclado e leitor de tela.
