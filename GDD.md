@@ -269,3 +269,10 @@ A fala ao entrar na área de contato deve conter somente o nome do objeto, sem p
 ### Coerência entre contato e coleta
 
 - O anúncio de um item coletável como alvo ao alcance deve usar exatamente o mesmo seletor do Enter: mesma geometria de referência, mira angular, alcance individual e prioridade entre objetos. Assim, o alvo nomeado é o que Enter tentará recolher.
+
+
+### Apresentação inicial e espaço de cena
+
+
+- A tela inicial deve priorizar a cena jogável: instruções extensas ficam recolhidas por padrão, mantendo um controle acessível para expandi-las.
+- Reservar à cena a área restante da janela; o cabeçalho e os controles permanentes devem permanecer compactos, inclusive em telas móveis. Recolher texto não deve removê-lo nem torná-lo indisponível a teclado/leitor de tela.
