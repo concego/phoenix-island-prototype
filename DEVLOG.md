@@ -688,3 +688,11 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - A fala do nome do coletável e a ação Enter agora chamam o mesmo seletor de alvo. Ele calcula alinhamento e distância a partir dos mesmos pontos geométricos e aplica os mesmos alcances individuais e prioridade da árvore.
 - Isso remove a divergência anterior: a fala de proximidade era calculada só por distância do jogador e podia anunciar alvos que Enter não selecionaria por mira, distância ou prioridade.
 - Alteração publicada; playtest de coleta pelo Anderson ainda necessário.
+
+
+27 de outubro de 2026 — reduzir obstrução visual inicial
+
+
+- Recolhidas por padrão as instruções extensas, com controle acessível para expandi-las sem remover conteúdo.
+- Ajustado o layout para manter título e inventário compactos e reservar à cena tridimensional a área restante da janela em desktop e mobile.
+- Publicação verificada por build; teste responsivo manual ainda necessário.
