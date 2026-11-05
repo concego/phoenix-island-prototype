@@ -59,12 +59,11 @@ Se o pedido ou uma decisão de design deixar margem para mais de uma interpreta�
 - Controles e interações precisam ser testáveis sem exigir que o jogador interprete elementos puramente visuais.
 - O protótipo está em estágio básico e ainda não tem menu. A prioridade atual é implementar as mecânicas previstas, testá-las, validá-las e aprimorá-las. A criação do menu integrado ao início do jogo e das opções de apresentação/acessibilidade fica para depois que o protótipo sair do estágio básico; não antecipar essa etapa. Esc e F1 não devem ser usados como atalhos neste momento. Não presumir que TTS embutido ou outras propostas de assistência para pessoas cegas sejam eficazes; validar qualquer solução com Anderson antes de apresentá-la como útil.
 
-### Tutorial e fluxo normal de jogo
-- Instruções explicativas pertencem ao tutorial: como executar ações, quais ferramentas ou materiais são necessários, onde eles precisam estar no inventário e o que a ação consome ou produz.
-- O fluxo normal não deve repetir essas instruções como mensagens de erro a cada tentativa. Uma informação necessária de aprendizado deve ser ensinada pelo tutorial, fora da sequência normal de jogo.
-- Durante o jogo, manter mensagens concisas e contextuais, priorizando resultado ou estado relevante. Não narrar novamente requisitos já ensinados nem converter toda ação indisponível em uma explicação falada.
-- Se uma ação não puder prosseguir por um requisito conhecido e já ensinado, não executar a ação nem consumir/transformar o recurso; omitir a mensagem explicativa, salvo se houver uma confirmação curta especificamente aprovada.
-- Não inventar nem implementar um sistema de tutorial por causa desta diretriz: o conteúdo e a forma do tutorial continuam sujeitos a decisão específica.
+### Tutorial, ajuda e controles visíveis
+- Nesta fase não há tutorial nem menu de ajuda planejados ou implementados. Não adicionar um tutorial, manual na tela ou menu de ajuda sem uma decisão e pedido futuros.
+- Os controles podem ser descritos em documentação externa do projeto, mas não devem aparecer na interface durante o jogo nesta fase. Não mostrar listas de teclas, comandos, instruções ou lembretes de controles na tela. Exibi-los só poderá ser considerado se futuramente forem explicitamente requeridos como parte de um tutorial ou de menus de ajuda aprovados.
+- Mensagens normais de jogo devem ser concisas e contextuais, priorizando estados e resultados; não devem ensinar comandos ou repetir requisitos.
+- Se uma ação não puder prosseguir por requisito conhecido, não executar a ação nem consumir/transformar recursos indevidamente; não substituir a ausência de tutorial por explicações repetitivas em jogo.
 
 ### Preservar antes de substituir
 
@@ -274,8 +273,8 @@ A fala ao entrar na área de contato deve conter somente o nome do objeto, sem p
 - O anúncio de um item coletável como alvo ao alcance deve usar exatamente o mesmo seletor do Enter: mesma geometria de referência, mira angular, alcance individual e prioridade entre objetos. Assim, o alvo nomeado é o que Enter tentará recolher.
 
 
-### Apresentação inicial e espaço de cena
+### Apresentação da cena de teste
 
-
-- A tela inicial deve priorizar a cena jogável: instruções extensas ficam recolhidas por padrão, mantendo um controle acessível para expandi-las.
-- Reservar à cena a área restante da janela; o cabeçalho e os controles permanentes devem permanecer compactos, inclusive em telas móveis. Recolher texto não deve removê-lo nem torná-lo indisponível a teclado/leitor de tela.
+- Na fase atual, a cena 3D deve ocupar a tela inteira, sem cabeçalho ou moldura com aparência de página de site.
+- Não exibir instruções, lista de controles ou lembretes de teclas durante o jogo. Não há tutorial ou menu de ajuda nesta fase. Os controles continuam funcionando, mas são aprendidos/testados fora de uma sobreposição explicativa.
+- Não antecipar menu inicial, menu de pausa ou opções: entram numa etapa posterior, depois que o protótipo sair do estado básico. Esc e F1 não recebem funções de atalho agora.
