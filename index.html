@@ -903,15 +903,19 @@
       const dummy = new THREE.Object3D();
       let count = 0;
       for (let i = 0; i < 54; i++) {
-        const y = HILL_RAMP_START_Y + .3 + random() * (HILL_REAR_END_Y - HILL_RAMP_START_Y - .6);
         const side = i % 2 ? -1 : 1;
-        const x = side * (HILL_HALF_WIDTH - .1 - random() * .42);
+        const group = Math.floor(i / 9) % 3;
+        const centerY = [2.5, 4.2, 7.1][group];
+        const y = clamp(centerY + (random() - .5) * 1.8, HILL_RAMP_START_Y + .2, HILL_REAR_END_Y - .2);
+        const x = side * (HILL_HALF_WIDTH - .12 - random() * .68);
         const z = terrainHeightAt(x, y);
         if (z < .2) continue;
-        const size = .16 + random() * .20;
-        dummy.position.copy(designToThree(x, y, z - .07));
-        dummy.rotation.set(random() * .4, random() * Math.PI * 2, random() * .3);
-        dummy.scale.set(size * (1.2 + random() * .7), size * .38, size * (1.1 + random() * .6));
+        const size = .09 + random() * .15;
+        dummy.position.copy(designToThree(x, y, z - size * .16));
+        const slope = y < HILL_FRONT_CREST_Y ? HILL_TOP_Z / (HILL_FRONT_CREST_Y - HILL_RAMP_START_Y)
+          : y > HILL_PLATEAU_END_Y ? -HILL_TOP_Z / (HILL_REAR_END_Y - HILL_PLATEAU_END_Y) : 0;
+        dummy.rotation.set(-Math.atan(slope), random() * Math.PI * 2, (random() - .5) * .15);
+        dummy.scale.set(size * (1.1 + random() * .7), size * .30, size * (1.1 + random() * .5));
         dummy.updateMatrix();
         rock.setMatrixAt(count++, dummy.matrix);
       }
