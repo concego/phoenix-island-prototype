@@ -748,3 +748,8 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 ### Publicação
 
 O Pages falhou ao tentar implantar o commit `57031df` por conflito com um deployment anterior em andamento (`8c0ce6d`). Os deployments identificados como conflitantes foram marcados como `inactive` e foi solicitado retry, mas o workflow permanecia na fila sem iniciar; a versão Pages não foi confirmada atualizada. O código e os documentos estão em `main`; validar o retry e a publicação permanece pendente.
+
+
+### Resultado posterior da publicação e observação
+
+O deploy do commit `9db3a6`, que contém as mesmas alterações visuais do `57031df`, concluiu com sucesso no GitHub Pages. A página servida foi conferida e contém o céu e a folhagem novos. O console do navegador não mostrou erros. Na vista inicial e num giro para nordeste foi possível observar árvore e colina; a copa ainda parece um conjunto de volumes, os galhos seguem muito retos e algumas folhas aparecem como placas separadas. A encosta continua geometricamente reta. O lago e a margem de perto, as demais vistas, a eventual presença do círculo em pontos distantes e as mecânicas reais continuam sem avaliação. Essas observações não são aprovação de Anderson.
