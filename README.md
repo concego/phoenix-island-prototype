@@ -1,6 +1,6 @@
 # Phoenix Island — protótipo inclusivo de exploração em primeira pessoa
 
-Phoenix Island é um protótipo web em primeira pessoa, construído com Three.js e WebGL. Ele permite experimentar movimento, orientação, percepção espacial, exploração, coleta de recursos, ferramentas, inventário, escalada, natação e feedback sonoro num pequeno mapa 3D.
+Phoenix Island é um protótipo em primeira pessoa, construído com Three.js e WebGL e executado no navegador para testes. Ele permite experimentar movimento, orientação, percepção espacial, exploração, coleta de recursos, ferramentas, inventário, escalada, natação e feedback sonoro num pequeno mapa 3D. O navegador é apenas o meio de teste atual; o jogo final deverá ser compilado, e o formato/plataforma de distribuição ainda não está definido.
 
 O protótipo já inclui suporte de interação por teclado e estrutura de anúncios compatível com leitores de tela. Isso não significa, por si só, que o jogo seja plenamente acessível a todas as pessoas cegas, nem que já seja inclusivo para todas as deficiências e necessidades. **Inclusão é o objetivo do projeto; a versão atual é uma base em evolução e requer testes com pessoas com diferentes experiências e formas de jogar.**
 
@@ -9,7 +9,7 @@ Esta página descreve o que o código atual oferece, seus limites conhecidos e c
 ## Acesso e execução
 
 - [Abrir o protótipo publicado no GitHub Pages](https://concego.github.io/phoenix-island-prototype/).
-- O jogo roda no navegador e requer WebGL. A cena 3D depende do módulo Three.js 0.180.0 carregado pelo jsDelivr; portanto, o acesso ao CDN também é necessário.
+- A versão de teste roda no navegador e requer WebGL. A cena 3D depende do módulo Three.js 0.180.0 carregado pelo jsDelivr; portanto, o acesso ao CDN também é necessário. Essa configuração descreve o protótipo de teste, não o formato final de distribuição do jogo.
 - O áudio é liberado após a primeira tecla de movimento ou Espaço, conforme as políticas de reprodução automática dos navegadores.
 - As instruções do jogo ficam recolhidas inicialmente no painel “Instruções e detalhes do protótipo”. O inventário tem um botão próprio. Os controles de jogo são principalmente de teclado.
 

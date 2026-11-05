@@ -15,7 +15,7 @@ Este GDD está publicado como documento de direção do protótipo. Revisões fu
 
 ## 2. Visão e escopo
 
-Phoenix Island é um protótipo web em primeira pessoa, construído com Three.js e WebGL, para investigar movimentação, orientação, percepção do cenário, acessibilidade e uso de áudio em um ambiente tridimensional.
+Phoenix Island é um protótipo em primeira pessoa, construído com Three.js e WebGL, para investigar movimentação, orientação, percepção do cenário, acessibilidade e uso de áudio em um ambiente tridimensional. O navegador é usado como meio de teste do protótipo, não como plataforma final do jogo: a intenção é compilar o jogo posteriormente, e o formato de distribuição ainda não foi definido.
 
 O protótipo atual também testa uma fatia inicial de inventário, coleta de recursos, ferramentas, fabricação, escalada e natação. Essas mecânicas são experimentos funcionais do protótipo; sua presença não significa que já exista um jogo completo de sobrevivência ou um conjunto definitivo de regras.
 
@@ -57,6 +57,7 @@ Se o pedido ou uma decisão de design deixar margem para mais de uma interpreta�
 - Anúncios devem começar pela informação útil, sem prefixos genéricos repetidos.
 - Movimento contínuo não deve narrar cada tecla ou passo. O fluxo normal comunica mudanças de estado e resultados necessários à ação, sem excesso de instruções.
 - Controles e interações precisam ser testáveis sem exigir que o jogador interprete elementos puramente visuais.
+- As opções de acessibilidade e apresentação planejadas devem ser organizadas no menu integrado ao menu inicial. Não definir agora Esc ou F1 como atalhos para menu ou ajuda. Não presumir que TTS embutido ou outras propostas de assistência para pessoas cegas sejam eficazes; validar qualquer solução com Anderson antes de apresentá-la como útil.
 
 ### Tutorial e fluxo normal de jogo
 - Instruções explicativas pertencem ao tutorial: como executar ações, quais ferramentas ou materiais são necessários, onde eles precisam estar no inventário e o que a ação consome ou produz.
