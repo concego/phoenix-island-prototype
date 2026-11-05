@@ -26,7 +26,7 @@ Entenda a diferença entre:
 
 - O protótipo atual usa Three.js no navegador para testes; o jogo final será compilado e o formato/plataforma ainda não está definido. Não trate o navegador como destino final. O desenvolvimento vigente é na branch `main`; a migração para Godot foi descartada.
 - Não proponha TTS embutido ou outra assistência a pessoas cegas como solução garantida: Anderson relata que as alternativas sugeridas até agora e o TTS embutido não ajudam. Não prometa solução sem validação dele.
-- As opções de acessibilidade/apresentação devem ficar no menu integrado ao menu inicial. Não usar Esc nem F1 como atalhos de menu/ajuda neste momento.
+- O protótipo ainda está no estágio básico e não tem menu. A prioridade é implementar, testar, validar e aprimorar as mecânicas. Não antecipar o menu nem as opções de apresentação/acessibilidade; depois que o protótipo sair do estágio básico, integrar o menu ao início do jogo e incluir nele essas opções. Não usar Esc nem F1 como atalhos neste momento.
 - O objetivo de inclusão considera pessoas com diferentes necessidades, não apenas pessoas cegas. Não presuma que um único canal sensorial ou modo de controle sirva para todas.
 - A lore em `LORE.md` é planejada. Não converter os elementos ainda indefinidos em fatos canônicos nem inseri-los no protótipo sem solicitação.
 - A duração de combustível aprovada para a fogueira simples é 180 segundos (3 minutos). O texto do menu que diz “1 minuto” está incorreto. Corrija a descrição quando a alteração de documentação/interface estiver autorizada; não mude os 180 segundos para coincidir com o texto errado.

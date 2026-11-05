@@ -57,7 +57,7 @@ Se o pedido ou uma decisão de design deixar margem para mais de uma interpreta�
 - Anúncios devem começar pela informação útil, sem prefixos genéricos repetidos.
 - Movimento contínuo não deve narrar cada tecla ou passo. O fluxo normal comunica mudanças de estado e resultados necessários à ação, sem excesso de instruções.
 - Controles e interações precisam ser testáveis sem exigir que o jogador interprete elementos puramente visuais.
-- As opções de acessibilidade e apresentação planejadas devem ser organizadas no menu integrado ao menu inicial. Não definir agora Esc ou F1 como atalhos para menu ou ajuda. Não presumir que TTS embutido ou outras propostas de assistência para pessoas cegas sejam eficazes; validar qualquer solução com Anderson antes de apresentá-la como útil.
+- O protótipo está em estágio básico e ainda não tem menu. A prioridade atual é implementar as mecânicas previstas, testá-las, validá-las e aprimorá-las. A criação do menu integrado ao início do jogo e das opções de apresentação/acessibilidade fica para depois que o protótipo sair do estágio básico; não antecipar essa etapa. Esc e F1 não devem ser usados como atalhos neste momento. Não presumir que TTS embutido ou outras propostas de assistência para pessoas cegas sejam eficazes; validar qualquer solução com Anderson antes de apresentá-la como útil.
 
 ### Tutorial e fluxo normal de jogo
 - Instruções explicativas pertencem ao tutorial: como executar ações, quais ferramentas ou materiais são necessários, onde eles precisam estar no inventário e o que a ação consome ou produz.
