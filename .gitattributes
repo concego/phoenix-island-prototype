@@ -1,0 +1,2 @@
+# Mantém os documentos no repositório, mas os omite dos arquivos-fonte exportados para releases.
+docs/ export-ignore
