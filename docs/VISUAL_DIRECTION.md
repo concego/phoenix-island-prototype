@@ -65,6 +65,30 @@ Aplicar as seguintes prioridades no mapa de teste inteiro, no workflow Three.js 
 - Revisar árvore, colina, arbustos, galhos e rochas como conjunto, preservando todas as mecânicas.
 - Por fim, comparar várias vistas da cena e registrar quais problemas foram resolvidos e quais permanecem. Não declarar o mapa todo validado com base numa única captura.
 
+## Critérios para cada rodada de melhoria
+
+Uma rodada de arte só está pronta para ser avaliada quando:
+
+- A alteração tem um objetivo visual identificável, como remover/corrigir o disco do céu, dar variação à grama ou integrar a margem ao lago; “deixar mais bonito” sozinho não é critério verificável.
+- O mapa continua sendo o cenário de teste completo, e a mudança não cria apenas uma composição isolada para screenshot.
+- A forma visual melhora sem modificar inadvertidamente dimensões ou regras de gameplay, colisão, navegação, profundidade, seleção de alvos ou coleta. Se um ajuste exigir mudar uma dessas regras, separar e pedir aprovação.
+- Não foram adicionados objetos, estruturas, ruínas, biomas, elementos de lore, textos de HUD ou instruções não aprovados. O texto visível em jogo permanece limitado a feedback breve das ações do jogador.
+- Os elementos examinados continuam distinguíveis pela forma e pela leitura material: grama/solo, lama/água rasa/água profunda, rocha/afloramento/pedra solta, arbusto e galho caído/vivo.
+- A linguagem estilizada fica coerente entre primeiro plano e horizonte, sem os objetos próximos parecerem de um estilo e a paisagem distante de outro.
+
+Para comparar uma rodada, registrar capturas da vista inicial e de vistas que mostrem separadamente a colina pedregosa, a árvore e vegetação, o lago e a margem, além de ao menos uma vista ampla do mapa. As capturas servem para comparar aparência; o teste de mecânicas e a validação de Anderson são registros separados. Se uma área não estiver visível numa imagem, marcá-la como não avaliada, não como aprovada.
+
+## O que fazer primeiro no mapa atual
+
+1. Conferir no código o disco pálido do céu e identificar exatamente o objeto/material que o produz antes de mudar ou remover qualquer elemento.
+2. Ajustar a composição do terreno e a variação visual da grama para que o plano não pareça uma superfície vazia com pequenos tufos repetidos.
+3. Rever a superfície do lago e a faixa de lama para que não leiam como círculos concêntricos rígidos; preservar os limites de água rasa, água profunda, margem e colisão.
+4. Ajustar visualmente a silhueta da colina e a relação entre as pedras, sem mudar sua altura ou topografia caminhável sem aprovação.
+5. Dar unidade à árvore, à copa, aos galhos vivos, aos arbustos e aos galhos caídos, preservando as formas/locais necessários às interações.
+6. Reavaliar vistas amplas e próximas de todo o mapa para confirmar que a melhoria não funciona somente num único ângulo.
+
+Esta sequência é uma ordem de investigação/priorização, não uma autorização para executar todas as mudanças automaticamente. Cada solicitação de implementação continua limitada ao que Anderson pedir e às decisões registradas.
+
 ## Método de trabalho
 
 1. Manter o mapa e as mecânicas atuais enquanto estabelece a linguagem visual comum.
