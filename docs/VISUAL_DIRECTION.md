@@ -36,11 +36,30 @@ Ao avaliar uma captura, distinguir sempre os elementos da página do jogo dos el
 
 A composição dentro da própria cena deve evitar que o mapa pareça vazio ou acidentalmente cortado: verificar horizonte, proporção visível de céu e terreno, enquadramento da vegetação próxima, distribuição dos elementos no campo de visão e objetos isolados que pareçam desconectados. Não esconder elementos necessários às mecânicas só para melhorar uma captura.
 
-## Primeira leitura da captura de 5 de novembro de 2026
+## Diagnóstico visual das capturas de 5 de novembro de 2026
 
-A captura mostra a cena de teste limpa de cabeçalho e instruções do protótipo. A interface do Chrome, a janela de downloads e a barra do Windows nela visíveis são elementos externos ao jogo e não entram na avaliação da interface interna.
+As capturas mostram a cena de teste sem o antigo cabeçalho/manual. Abas, barra de endereço, janela de downloads e barra do Windows são do Chrome/Windows, não da interface do jogo, e ficam fora do diagnóstico da arte.
 
-No enquadramento mostrado, o céu ocupa grande parte da imagem; o horizonte é baixo; o terreno e a grama parecem uniformes; tufos aparecem espaçados; uma forma de vegetação está cortada no primeiro plano; e um arbusto escuro isolado aparece junto ao horizonte. Esses pontos são observações daquele enquadramento, não um diagnóstico do mapa completo. A captura não mostra o suficiente da colina, da árvore, do lago ou de toda a margem para avaliar esses elementos. A próxima revisão visual deve examinar e melhorar o mapa inteiro, não apenas reproduzir ou corrigir esse enquadramento.
+Na captura ampla de 1440 × 852, o céu ocupa cerca de metade do enquadramento e o horizonte fica baixo. O terreno verde tem aparência muito uniforme; os tufos de grama são finos, espaçados e repetidos, e os arbustos parecem pequenos pontos isolados ao longe. Há galhos caídos e rochas cortados pelas bordas do enquadramento. O lago é quase uma elipse geométrica perfeita, cercada por um anel de lama escuro, largo e muito regular; a água rasa/central aparece como faixas concêntricas e uma mancha azul-esverdeada lisa. Isso faz a margem parecer um contorno desenhado e a água um disco, em vez de componentes de um ambiente coeso.
+
+Essas são observações desse ângulo, não um diagnóstico completo do mapa. A captura não permite avaliar adequadamente a árvore nem toda a colina; elas continuam incluídas na revisão do mapa inteiro. A captura anterior também mostrava um enquadramento mais fechado, então não tratar uma única posição da câmera como representação suficiente da cena.
+
+## Prioridades de melhoria visual derivadas das capturas
+
+Aplicar as seguintes prioridades no mapa de teste inteiro, no workflow Three.js existente. São metas de aparência; não autorizam alterar regras de caminhada, profundidade, colisão, coleta ou limites do mapa.
+
+1. **Dar mais identidade ao terreno e à grama.** Reduzir a impressão de um plano verde repetitivo. Criar variação legível de tom, agrupamento, escala e silhueta nos tufos, evitando tanto pontos uniformes distribuídos mecanicamente quanto ruído miúdo por toda a superfície. Fazer grama, solo e relevos parecerem parte de uma mesma direção estilizada.
+2. **Integrar o lago ao terreno.** Quebrar visualmente a forma de “disco” causada pela elipse perfeita e pelas faixas concêntricas; dar à superfície e às transições uma leitura mais orgânica e coerente com o estilo. A borda de lama não deve parecer um anel escuro uniforme. Variar sua aparência visual e a transição para grama/água mantendo exatamente as mecânicas e limites físicos atuais. Distinguir de modo claro água rasa, água profunda e lama sem depender de texto visível.
+3. **Corrigir a composição da visão normal de jogo.** Ajustar céu/horizonte e distribuição do interesse visual para que o enquadramento não seja dominado por um grande vazio acima de um campo plano. Avaliar a vista inicial e outras orientações de jogo; não corrigir só para uma screenshot nem mudar os controles de olhar ou câmera sem solicitação.
+4. **Evitar cortes acidentais e objetos visualmente soltos.** Verificar a vista inicial e rotas normais: galhos ou rochas enormes cortados pelo primeiro plano, arbustos minúsculos ou isolados na linha do horizonte e tufos cuja escala pareça incompatível. Não é necessário manter todo objeto sempre dentro do enquadramento; o problema é quando a composição o faz parecer erro de posicionamento ou fragmento sem relação com o cenário.
+5. **Unificar a leitura do mapa todo.** Rever a colina pedregosa, rochas, árvore única, arbustos, galhos caídos, grama, lago e margem em conjunto. Formas, escala, materiais, cores, iluminação e nível de detalhe devem pertencer ao mesmo mundo estilizado. As marcas de devastação/resistência da lore não são licença para acrescentar ruínas, fogo ou novos objetos ainda não aprovados.
+
+### Ordem de execução sugerida
+
+- Primeiro, ajustar terreno/grama e a aparência da margem/água, os elementos mais dominantes na captura.
+- Depois, conferir enquadramento/horizonte e escala/distribuição dos objetos em posições normais de jogo.
+- Em seguida, revisar colina, árvore, arbustos, galhos e rochas como conjunto, preservando todas as mecânicas.
+- Por fim, comparar várias vistas da cena e registrar quais problemas foram resolvidos e quais permanecem. Não declarar o mapa todo validado com base numa única captura.
 
 ## Método de trabalho
 
