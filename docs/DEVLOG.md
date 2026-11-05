@@ -712,3 +712,18 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - Sintaxe do módulo JavaScript analisada sem erros com parser; comparação estática confirmou constantes de posição, dimensões, alcance, resistência e as rotinas centrais de movimento e coleta inalteradas. A geometria dos galhos e arbustos mudou, de modo que suas origens baseadas em malha e oclusão também precisam de teste real; não se presume comportamento idêntico.
 - A primeira versão publicada foi observada no ponto inicial e na vista voltada à árvore. Foram identificadas terminações abruptas dos galhos e aparência de elementos flutuantes: esta revisão afila os galhos e alinha os elementos visuais ao nível lógico do chão. A revisão intermediária mostrou pedras com aparência de peças empilhadas na colina; suas dimensões, agrupamentos e inclinação foram ajustados. A revisão final foi aberta no navegador e observada na posição inicial e ao virar para a árvore: colina, árvore, alguns arbustos e um trecho distante do lago ficaram visíveis. Os galhos ainda têm aparência geométrica e a colina mantém contornos regulares; a margem, os galhos caídos e o lago em proximidade não foram avaliados. O inventário foi aberto e fechado por I e o console não apresentou erros; isso não comprova as outras mecânicas nem acessibilidade. Teste manual de gameplay, acessibilidade, desempenho real e avaliação visual de Anderson permanecem pendentes. Carregar a página ou validar sintaxe não comprova o resultado nem autoriza considerá-lo final.
 - Não alteradas releases, tags ou backups.
+
+
+## 5 de novembro de 2026 — terreno e lago integrados ao mapa
+
+### Alterações
+
+- Revisado o cenário segundo as prioridades de `VISUAL_DIRECTION.md`: distribuição e tamanho de tufos em grupos variáveis, contrastes do terreno, nuvens sutis no céu procedural e material da rampa com repetição própria. Não há deslocamento de câmera, alteração de controles ou novo conteúdo de lore.
+- A aparência da margem varia em tom e transparência dentro do mesmo limite lógico de lama. Removida a sobreposição de água rasa que formava uma faixa concêntrica; gradação visual suave e reflexos discretos foram adicionados à água. O gramado é recortado no shader somente dentro da elipse lógica do lago, permitindo ver o leito sem mudar o solo lógico. A borda de água e os parâmetros de natação/profundidade permanecem inalterados.
+- A paleta das pedras decorativas da colina foi clareada; recursos interativos, locais, colisores e alvos não foram reposicionados. Sem novas ruínas, fogo, construções, biomas ou materiais externos.
+
+### Verificações e limites
+
+- Código JavaScript verificado com parser e constantes de dimensão, limites, profundidade, posição, escalada e interação comparadas com a base anterior. Isso é verificação estática; não substitui teste de gameplay.
+- A posição inicial da versão anterior foi inspecionada em captura e mostrou colina retangular, grama pontual e um lago com anéis evidentes. A avaliação da versão alterada em diferentes pontos do mapa, inclusive lago/margem e árvore de perto, e os testes de coleta, oclusão, natação, desempenho e leitor de tela permanecem pendentes até serem realizados.
+- Nenhuma release, tag ou backup alterado.

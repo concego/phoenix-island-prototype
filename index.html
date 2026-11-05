@@ -175,6 +175,12 @@
         const color = height >= 0
           ? horizon.clone().lerp(zenith, blend)
           : horizon.clone().lerp(lowerHorizon, blend);
+        // Soft painted cloud streaks at different heights, not new world objects.
+        const nx = positions.getX(i) / 90, nz = positions.getZ(i) / 90;
+        const band = Math.exp(-Math.pow((height - .24) / .105, 2));
+        const cloud = Math.max(0, .5 + .32 * Math.sin(nx * 11 + nz * 5)
+          + .26 * Math.sin(nz * 12 - nx * 7) - .57) * band;
+        color.lerp(new THREE.Color(0xe7e8d9), Math.min(.18, cloud * .45));
         colors.push(color.r, color.g, color.b);
       }
       geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
@@ -400,9 +406,29 @@
       grassTuft: new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1, side: THREE.DoubleSide, flatShading: true }),
       fruit: new THREE.MeshStandardMaterial({ color: 0xc84f3d, roughness: .78 })
     };
+    // Draw the lake bed through the visual grass surface. Only the shader is
+    // clipped; the logical lake, depth, walkability and target geometry stay intact.
+    materials.grass.onBeforeCompile = shader => {
+      shader.vertexShader = shader.vertexShader.replace('#include <common>',
+        '#include <common>\nvarying vec3 vGroundWorldPosition;');
+      shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>',
+        '#include <begin_vertex>\nvGroundWorldPosition = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+      shader.fragmentShader = shader.fragmentShader.replace('#include <common>',
+        '#include <common>\nvarying vec3 vGroundWorldPosition;');
+      shader.fragmentShader = shader.fragmentShader.replace('#include <clipping_planes_fragment>',
+        `#include <clipping_planes_fragment>
+        vec2 lakeDelta = vec2((vGroundWorldPosition.x - ${LAKE.centerX.toFixed(3)}) / ${LAKE.radiusX.toFixed(3)},
+          (vGroundWorldPosition.z + ${LAKE.centerY.toFixed(3)}) / ${LAKE.radiusY.toFixed(3)});
+        if (dot(lakeDelta, lakeDelta) < 1.0) discard;`);
+    };
+    materials.grass.customProgramCacheKey = () => 'phoenix-visual-lake-bed-cutout-v1';
     materials.hillTop = new THREE.MeshStandardMaterial({ map: materials.grass.map, roughness: 1, vertexColors: true });
-    materials.hill.map = materials.grass.map;
-    materials.hill.color.setHex(0xb2aa88);
+    // Hill UVs span 0–1, unlike the field; use separate tiling to avoid a fine dark grid.
+    const hillGrassMap = materials.grass.map.clone();
+    hillGrassMap.repeat.set(2.2, 2.2);
+    hillGrassMap.needsUpdate = true;
+    materials.hill.map = hillGrassMap;
+    materials.hill.color.setHex(0xd6c9a5);
     const hillLowTint = new THREE.Color(0xc7d2a5);
     const hillHighTint = new THREE.Color(0xffe8a0);
     function setHillAltitudeColors(geometry) {
@@ -450,8 +476,8 @@
     const greenHigh = new THREE.Color(0xf3eac5);
     for (let i = 0; i < groundPositions.count; i++) {
       const x = groundPositions.getX(i), y = groundPositions.getY(i);
-      const blend = clamp(.48 + .20 * Math.sin(x * .24 + y * .18)
-        + .13 * Math.sin(y * .43 - x * .17) + .09 * Math.cos(x * .57 + y * .39), 0, 1);
+      const blend = clamp(.48 + .28 * Math.sin(x * .24 + y * .18)
+        + .17 * Math.sin(y * .43 - x * .17) + .10 * Math.cos(x * .57 + y * .39), 0, 1);
       const tint = greenLow.clone().lerp(greenHigh, blend);
       groundColors.push(tint.r, tint.g, tint.b);
     }
@@ -604,13 +630,43 @@
     lakeBed.receiveShadow = false;
     scene.add(lakeBed);
 
-    const lakeMud = new THREE.Mesh(
-      createEllipticalAnnulusGeometry(
-        LAKE.radiusX, LAKE.radiusY,
-        LAKE.radiusX + LAKE.mudWidth, LAKE.radiusY + LAKE.mudWidth
-      ),
-      materials.mud
-    );
+    // Keep both water boundary and outer muddy-zone boundary exact; color/alpha
+    // variation within the zone breaks the apparent constant-width painted ring.
+    function createNaturalMudGeometry(segments = 128, bands = 8) {
+      const positions = [], uvs = [], colors = [], indices = [];
+      const dark = new THREE.Color(0x70604b), light = new THREE.Color(0xb3a078);
+      for (let i = 0; i <= segments; i++) {
+        const angle = i / segments * Math.PI * 2;
+        const variation = .5 + .25 * Math.sin(angle * 3 + .3) + .14 * Math.sin(angle * 7 + 1.6);
+        for (let j = 0; j <= bands; j++) {
+          const t = j / bands;
+          const x = (LAKE.radiusX + LAKE.mudWidth * t) * Math.cos(angle);
+          const y = (LAKE.radiusY + LAKE.mudWidth * t) * Math.sin(angle);
+          positions.push(x, y, 0); uvs.push(i / segments * 3, t * 2);
+          const tone = clamp(.25 + .42 * t + .22 * variation + .08 * Math.sin(angle * 11 + t * 8), 0, 1);
+          const color = dark.clone().lerp(light, tone);
+          const irregularFade = clamp((t - (.48 + .22 * Math.sin(angle * 4 + .5))) / .42, 0, 1);
+          const alpha = t < .22 ? .88 : .88 * (1 - .87 * irregularFade);
+          colors.push(color.r, color.g, color.b, alpha);
+          if (i < segments && j < bands) {
+            const a = i * (bands + 1) + j, b = a + bands + 1;
+            indices.push(a, b, a + 1, b, b + 1, a + 1);
+          }
+        }
+      }
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 4));
+      geometry.setIndex(indices); geometry.computeVertexNormals();
+      return geometry;
+    }
+    const lakeMudMaterial = new THREE.MeshStandardMaterial({
+      map: materials.mud.map, color: 0xffffff, vertexColors: true, transparent: true,
+      roughness: .98, depthWrite: false, side: THREE.DoubleSide
+    });
+    const lakeMud = new THREE.Mesh(createNaturalMudGeometry(), lakeMudMaterial);
+    lakeMud.renderOrder = 1;
     // A narrow translucent, earth-colored fringe blends mud into the field while
     // leaving the logical boundary and the dark readable mud band unchanged.
     const shoreFringeGeometry = createEllipticalAnnulusGeometry(
@@ -619,12 +675,13 @@
     );
     const shoreColors = [];
     for (let i = 0; i < shoreFringeGeometry.attributes.position.count; i++) {
-      shoreColors.push(1, 1, 1, i % 2 === 0 ? .36 : 0);
+      shoreColors.push(1, 1, 1, i % 2 === 0 ? .17 + .07 * Math.sin(i * .15) : 0);
     }
     shoreFringeGeometry.setAttribute('color', new THREE.Float32BufferAttribute(shoreColors, 4));
     const shoreFringe = new THREE.Mesh(shoreFringeGeometry, new THREE.MeshBasicMaterial({
       color: 0x8a7b5d, vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide
     }));
+    shoreFringe.renderOrder = 2;
     shoreFringe.position.copy(designToThree(LAKE.centerX, LAKE.centerY, .008));
     shoreFringe.rotation.x = -Math.PI / 2;
     scene.add(shoreFringe);
@@ -643,8 +700,13 @@
         const y = LAKE.centerY + Math.sin(angle) * LAKE.radiusY * ratio;
         const depth = lakeDepthAt(x, y);
         const depthRatio = clamp(depth / LAKE_MAX_DEPTH_METERS, 0, 1);
-        const color = shallowColor.clone().lerp(deepColor, depthRatio);
-        colors.push(color.r, color.g, color.b, .08 + depthRatio * .80);
+        const patch = (Math.sin(angle * 3 + ratio * 9) * .08
+          + Math.sin(angle * 5 - ratio * 13) * .04) * Math.sin(Math.PI * ratio);
+        // Smooth visual depth: near-shore stays visibly shallow and the center deeper.
+        const opticalDepth = clamp((1 - ratio) * 1.28 + patch, 0, 1);
+        const eased = opticalDepth * opticalDepth * (3 - 2 * opticalDepth);
+        const color = shallowColor.clone().lerp(deepColor, eased);
+        colors.push(color.r, color.g, color.b, .19 + eased * .53);
       }
       addSurfaceColor(0, 0);
       for (let ring = 1; ring <= radialRings; ring++) {
@@ -713,17 +775,28 @@
     scene.add(lakeWater);
     markLookable(lakeWater, 'A faixa rasa contorna o lago; o fundo desce para a bacia profunda no centro.', 'lake');
 
-    const shallowWater = new THREE.Mesh(
-      createEllipticalAnnulusGeometry(
-        LAKE.radiusX * LAKE_WADING_LIMIT_RATIO, LAKE.radiusY * LAKE_WADING_LIMIT_RATIO,
-        LAKE.radiusX, LAKE.radiusY
-      ),
-      new THREE.MeshBasicMaterial({ color: 0x9ad8c8, transparent: true, opacity: .06, depthWrite: false, side: THREE.DoubleSide })
-    );
-    shallowWater.position.copy(designToThree(LAKE.centerX, LAKE.centerY, LAKE.waterZ + .018));
-    shallowWater.rotation.x = -Math.PI / 2;
-    shallowWater.renderOrder = 2;
-    scene.add(shallowWater);
+    // Soft irregular streaks of reflected sky break the untextured disk while
+    // remaining inside the existing physical lake and clear of resource raycasts.
+    const glintGeometry = new THREE.PlaneGeometry(1, 1);
+    const glintMaterial = new THREE.MeshBasicMaterial({ color: 0xc6eadc, transparent: true,
+      opacity: .12, depthWrite: false, side: THREE.DoubleSide });
+    const glints = new THREE.InstancedMesh(glintGeometry, glintMaterial, 64);
+    const glintRandom = seededRandom(83071);
+    const glintDummy = new THREE.Object3D();
+    let glintCount = 0;
+    for (let attempt = 0; attempt < 160 && glintCount < 64; attempt++) {
+      const u = (glintRandom() * 2 - 1) * .84, v = (glintRandom() * 2 - 1) * .84;
+      if (u * u + v * v > .72) continue;
+      const x = LAKE.centerX + u * LAKE.radiusX, y = LAKE.centerY + v * LAKE.radiusY;
+      glintDummy.position.copy(designToThree(x, y, LAKE.waterZ + .095));
+      glintDummy.rotation.set(-Math.PI / 2, 0, (glintRandom() - .5) * .3);
+      glintDummy.scale.set(.20 + glintRandom() * .48, .014 + glintRandom() * .025, 1);
+      glintDummy.updateMatrix(); glints.setMatrixAt(glintCount++, glintDummy.matrix);
+    }
+    glints.count = glintCount; glints.instanceMatrix.needsUpdate = true;
+    glints.renderOrder = 2; scene.add(glints);
+    // Depth distinction is carried by the smooth surface gradient above; no
+    // separate concentric overlay is used. The actual depth/wading model is unchanged.
 
     const waterRipplePool = [];
     const waterRippleGeometry = new THREE.RingGeometry(.045, .07, 24);
@@ -788,11 +861,13 @@
         if (isNearLakeShore(x, y)) continue;
         if (Math.hypot(x - treeX, y - treeY) < 1.55) continue;
         if (Math.hypot(x - player.x, y - player.y) < 1.2) continue;
-        for (let blade = 0, blades = 2 + Math.floor(random() * 4); blade < blades && count < tuftInstanceCount; blade++) {
+        const density = .55 + .23 * Math.sin(x * .31 + y * .2) + .20 * Math.cos(y * .26 - x * .18);
+        if (random() > clamp(density, .18, .9)) continue;
+        for (let blade = 0, blades = 3 + Math.floor(random() * 5); blade < blades && count < tuftInstanceCount; blade++) {
           dummy.position.copy(designToThree(x + (random() - .5) * .24, y + (random() - .5) * .24, 0));
           dummy.rotation.set((random() - .5) * .24, random() * Math.PI * 2, (random() - .5) * .24);
-          const scale = .72 + random() * .5;
-          dummy.scale.set(scale, .7 + random() * .65, scale);
+          const scale = .70 + random() * .7;
+          dummy.scale.set(scale * (1.1 + random() * .35), .58 + random() * .8, scale);
           dummy.updateMatrix();
           mesh.setMatrixAt(count, dummy.matrix);
           mesh.setColorAt(count, new THREE.Color(palette[Math.floor(random() * palette.length)]));
@@ -899,7 +974,8 @@
     function addHillStrata() {
       const random = seededRandom(50213);
       const rockGeometry = new THREE.IcosahedronGeometry(1, 1);
-      const rock = new THREE.InstancedMesh(rockGeometry, materials.stoneShade, 54);
+      const hillRockMaterial = new THREE.MeshStandardMaterial({ color: 0x8a8b79, roughness: 1, flatShading: true });
+      const rock = new THREE.InstancedMesh(rockGeometry, hillRockMaterial, 54);
       const dummy = new THREE.Object3D();
       let count = 0;
       for (let i = 0; i < 54; i++) {
