@@ -727,3 +727,19 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - Código JavaScript verificado com parser e constantes de dimensão, limites, profundidade, posição, escalada e interação comparadas com a base anterior. Isso é verificação estática; não substitui teste de gameplay.
 - A posição inicial da versão anterior foi inspecionada em captura e mostrou colina retangular, grama pontual e um lago com anéis evidentes. A página com as alterações carregou; a inspeção no navegador foi limitada à vista inicial e ao giro para nordeste, onde a colina, a árvore e parte do lago eram visíveis. O console não registrou erros e o inventário abriu/fechou com I. Não foi feita observação em rota até o lago/margem, nem inspeção do lago em proximidade, galhos caídos ou das demais vistas; textura/visualização em execução não significa validação visual completa. Os testes de coleta, oclusão, natação, desempenho e leitor de tela continuam pendentes.
 - Nenhuma release, tag ou backup alterado.
+
+
+## 5 de novembro de 2026 — céu, colina e silhueta da árvore
+
+### Mudanças
+
+- Investigado o grande círculo pálido relatado em captura: o código não define sol, lua, planeta ou disco no céu. Há uma esfera de céu com raio 90 fixa no centro, enquanto a câmera tem distância máxima 100; conforme a câmera se afasta do centro, parte da esfera pode ultrapassar esse plano, gerando recorte. É uma causa possível, não confirmação causal por comparação controlada. A esfera passa a ter raio 60 e acompanhar a posição da câmera, permanecendo dentro do plano de recorte; a geometria fica oculta sob a água para permitir o fundo subaquático existente. Não foi alterado o campo de visão, a orientação nem a posição de gameplay.
+- Mantidos os perfis matemáticos e limites da colina. As rampas têm mais subdivisões no mesmo plano, permitindo variação de tonalidade; pedras decorativas foram agrupadas e dispersas de modo menos linear. As pedras interativas e seus alvos permanecem inalterados.
+- Acrescentados detalhes de folhagem e base visual à árvore para reduzir o aspecto de poucos volumes esféricos e galhos isolados. Os detalhes não são alvos, recursos ou bloqueios; os galhos de coleta e escalada mantêm sua geometria e seus identificadores.
+- Refinados o padrão de cor da água e a transparência das manchas de reflexo, mantendo geometria de superfície e limites físicos. Não foram incluídos ruínas, construções, queimadas ou outro conteúdo de lore.
+
+### Verificações e pendências
+
+- Sintaxe do módulo JavaScript verificada por parser; revisão estática comparou constantes de limites, coordenadas, alcance e altura, e as funções de seleção, movimento, terreno e profundidade, sem mudanças. A aparência em execução e o recorte do céu em posições distantes ainda precisam ser verificados.
+- A cena anterior foi observada no ponto inicial e girada até a árvore; a avaliação da nova versão em várias posições, especialmente margem e lago próximos, ainda depende de execução e capturas. Testes de gameplay, leitor de tela, desempenho e avaliação de Anderson continuam pendentes. Revisão estática não equivale a validação.
+- Nenhuma release, tag ou backup foi alterada.
