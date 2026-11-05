@@ -401,6 +401,8 @@
       fruit: new THREE.MeshStandardMaterial({ color: 0xc84f3d, roughness: .78 })
     };
     materials.hillTop = new THREE.MeshStandardMaterial({ map: materials.grass.map, roughness: 1, vertexColors: true });
+    materials.hill.map = materials.grass.map;
+    materials.hill.color.setHex(0xb2aa88);
     const hillLowTint = new THREE.Color(0xc7d2a5);
     const hillHighTint = new THREE.Color(0xffe8a0);
     function setHillAltitudeColors(geometry) {
@@ -454,7 +456,7 @@
       groundColors.push(tint.r, tint.g, tint.b);
     }
     groundGeometry.setAttribute('color', new THREE.Float32BufferAttribute(groundColors, 3));
-    const ground = addMesh(groundGeometry, materials.grass, [groundCenterX, groundCenterY, -.08], null, false);
+    const ground = addMesh(groundGeometry, materials.grass, [groundCenterX, groundCenterY, 0], null, false);
     ground.rotation.x = -Math.PI / 2;
 
     const rampGeometry = new THREE.BufferGeometry();
@@ -513,7 +515,7 @@
           const y = HILL_RAMP_START_Y + (HILL_REAR_END_Y - HILL_RAMP_START_Y) * i / samples;
           const height = terrainHeightAt(side * HILL_HALF_WIDTH, y);
           const x = side * (HILL_HALF_WIDTH - .012);
-          positions.push(...designToThree(x, y, -.075).toArray(), ...designToThree(x, y, height - .008).toArray());
+          positions.push(...designToThree(x, y, -.005).toArray(), ...designToThree(x, y, height - .008).toArray());
           const bottom = new THREE.Color(0x665d49);
           const top = new THREE.Color(i % 4 === 0 ? 0x9c9370 : 0x8d8568);
           colors.push(bottom.r, bottom.g, bottom.b, top.r, top.g, top.b);
@@ -623,7 +625,7 @@
     const shoreFringe = new THREE.Mesh(shoreFringeGeometry, new THREE.MeshBasicMaterial({
       color: 0x8a7b5d, vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide
     }));
-    shoreFringe.position.copy(designToThree(LAKE.centerX, LAKE.centerY, -.055));
+    shoreFringe.position.copy(designToThree(LAKE.centerX, LAKE.centerY, .008));
     shoreFringe.rotation.x = -Math.PI / 2;
     scene.add(shoreFringe);
     lakeMud.position.copy(designToThree(LAKE.centerX, LAKE.centerY, .006));
@@ -787,7 +789,7 @@
         if (Math.hypot(x - treeX, y - treeY) < 1.55) continue;
         if (Math.hypot(x - player.x, y - player.y) < 1.2) continue;
         for (let blade = 0, blades = 2 + Math.floor(random() * 4); blade < blades && count < tuftInstanceCount; blade++) {
-          dummy.position.copy(designToThree(x + (random() - .5) * .24, y + (random() - .5) * .24, -.08));
+          dummy.position.copy(designToThree(x + (random() - .5) * .24, y + (random() - .5) * .24, 0));
           dummy.rotation.set((random() - .5) * .24, random() * Math.PI * 2, (random() - .5) * .24);
           const scale = .72 + random() * .5;
           dummy.scale.set(scale, .7 + random() * .65, scale);
@@ -807,7 +809,7 @@
     // Árvore, com um cruzamento de galhos que serve de patamar de teste.
     const treeX = 3.8, treeY = -.2;
     const treeContactShadow = new THREE.Mesh(new THREE.CircleGeometry(1, 32), materials.contactShadow);
-    treeContactShadow.position.copy(designToThree(treeX, treeY, -.063));
+    treeContactShadow.position.copy(designToThree(treeX, treeY, .004));
     treeContactShadow.rotation.x = -Math.PI / 2;
     treeContactShadow.scale.set(1.18, .92, 1);
     treeContactShadow.renderOrder = 1;
@@ -860,14 +862,6 @@
       const mesh = new THREE.Mesh(new THREE.CylinderGeometry(.029 * scale, .060 * scale, .95 * scale, 7, 2), materials.bark);
       mesh.position.copy(designToThree(x, y, z));
       mesh.rotation.set(Math.PI / 2 + .16, .22, .31);
-      // Child twigs are decorative; interaction still targets the original branch mesh.
-      const twigMaterial = materials.bark;
-      for (const [side, offset] of [[-1, -.23], [1, .15]]) {
-        const twig = new THREE.Mesh(new THREE.CylinderGeometry(.008 * scale, .018 * scale, .24 * scale, 5), twigMaterial);
-        twig.position.set(side * .055 * scale, offset * scale, 0);
-        twig.rotation.z = side * .72;
-        mesh.add(twig);
-      }
       mesh.castShadow = true;
       mesh.receiveShadow = true;
       scene.add(mesh);
@@ -913,7 +907,8 @@
         const side = i % 2 ? -1 : 1;
         const x = side * (HILL_HALF_WIDTH - .1 - random() * .42);
         const z = terrainHeightAt(x, y);
-        const size = .11 + random() * .18;
+        if (z < .2) continue;
+        const size = .16 + random() * .20;
         dummy.position.copy(designToThree(x, y, z - .07));
         dummy.rotation.set(random() * .4, random() * Math.PI * 2, random() * .3);
         dummy.scale.set(size * (1.2 + random() * .7), size * .38, size * (1.1 + random() * .6));
@@ -942,9 +937,9 @@
       let leafSeed = (index * 7919 + 2039) >>> 0;
       const rand = () => { leafSeed = (Math.imul(leafSeed, 1664525) + 1013904223) >>> 0; return leafSeed / 4294967296; };
       const leafMaterials = [materials.leaves, materials.leavesLight, materials.leavesShade];
-      const count = 4 + Math.floor(rand() * 3);
+      const count = 7 + Math.floor(rand() * 4);
       for (let leaf = 0; leaf < count; leaf++) {
-        const radius = .18 + rand() * .13;
+        const radius = .12 + rand() * .11;
         const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(radius, 1), leafMaterials[Math.floor(rand() * leafMaterials.length)]);
         const angle = rand() * Math.PI * 2;
         const distance = rand() * .23;
@@ -1012,7 +1007,7 @@
       const angle = index * Math.PI / 3;
       const directionX = Math.sin(angle), directionY = Math.cos(angle);
       const length = .95 + (index % 2) * .16;
-      const root = addMesh(new THREE.CylinderGeometry(.035, .14, length, 6), materials.bark, [
+      const root = addMesh(new THREE.CylinderGeometry(.018, .11, length, 7, 2), materials.bark, [
         treeX + directionX * length * .42, treeY + directionY * length * .42, .1
       ], null, true);
       root.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), designToThree(directionX, directionY, 0).normalize());
@@ -1020,7 +1015,15 @@
     const treeGroundHarvestMeshes = [];
     const treeHighBranchMeshes = [];
     function addBranchArm(axisX, axisY, altitude, radius, description) {
-      const arm = addMesh(new THREE.CylinderGeometry(radius * .55, radius, TREE_BRANCH_REACH * 2, 9, 3), materials.bark, [treeX, treeY, altitude], description, true, 'tree');
+      const branchGeometry = new THREE.CylinderGeometry(radius, radius, TREE_BRANCH_REACH * 2, 9, 6);
+      const branchVertices = branchGeometry.attributes.position;
+      for (let i = 0; i < branchVertices.count; i++) {
+        const x = branchVertices.getX(i), y = branchVertices.getY(i), z = branchVertices.getZ(i);
+        const taper = .23 + .77 * (1 - Math.abs(y) / TREE_BRANCH_REACH);
+        branchVertices.setXYZ(i, x * taper, y, z * taper);
+      }
+      branchGeometry.computeVertexNormals();
+      const arm = addMesh(branchGeometry, materials.bark, [treeX, treeY, altitude], description, true, 'tree');
       arm.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), designToThree(axisX, axisY, 0).normalize());
       (altitude < TREE_BRANCH_HEIGHT ? treeGroundHarvestMeshes : treeHighBranchMeshes).push(arm);
       return arm;

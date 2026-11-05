@@ -39,7 +39,7 @@ A árvore fica perto do centro do campo. Tem tronco, seis raízes visíveis, gal
 
 Há dez posições predefinidas de galhos caídos e 30 arbustos silvestres distribuídos pelo mapa em posições pseudoaleatórias reproduzíveis. Os arbustos evitam áreas como lago, colina, árvore e ponto inicial. Os elementos visuais são organizados para não depender de colisores invisíveis como explicação das interações; a árvore e os afloramentos, porém, bloqueiam o deslocamento conforme as regras do cenário.
 
-O ambiente inclui céu em degradê, neblina, texturas procedurais de grama, solo, lama e casca, vegetação facetada, sombra de contato da árvore, iluminação direcional, pedras e água. O chão recebe variação de tons, grama agrupada e áreas mais secas; a colina possui faces laterais e pedras decorativas incorporadas, e uma faixa suave une a lama ao campo. Esses detalhes visuais não adicionam recursos nem obstáculos. O protótipo não oferece ainda controles gráficos para qualidade, brilho, contraste, paleta, campo de visão ou reduzir efeitos visuais.
+O ambiente inclui céu em degradê, neblina, texturas procedurais de grama, solo, lama e casca, vegetação facetada, sombra de contato da árvore, iluminação direcional, pedras e água. O chão recebe variação de tons e grama agrupada; a colina possui faces laterais e pedras decorativas incorporadas, e uma faixa suave une a lama ao campo. Esses detalhes visuais não adicionam recursos nem obstáculos. O protótipo não oferece ainda controles gráficos para qualidade, brilho, contraste, paleta, campo de visão ou reduzir efeitos visuais.
 
 ## Movimento, orientação e olhar
 
