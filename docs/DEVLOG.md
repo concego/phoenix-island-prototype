@@ -743,3 +743,8 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - Sintaxe do módulo JavaScript verificada por parser; revisão estática comparou constantes de limites, coordenadas, alcance e altura, e as funções de seleção, movimento, terreno e profundidade, sem mudanças. A aparência em execução e o recorte do céu em posições distantes ainda precisam ser verificados.
 - A cena anterior foi observada no ponto inicial e girada até a árvore; a avaliação da nova versão em várias posições, especialmente margem e lago próximos, ainda depende de execução e capturas. Testes de gameplay, leitor de tela, desempenho e avaliação de Anderson continuam pendentes. Revisão estática não equivale a validação.
 - Nenhuma release, tag ou backup foi alterada.
+
+
+### Publicação
+
+O Pages falhou ao tentar implantar o commit `57031df` por conflito com um deployment anterior em andamento (`8c0ce6d`). Os deployments identificados como conflitantes foram marcados como `inactive` e foi solicitado retry, mas o workflow permanecia na fila sem iniciar; a versão Pages não foi confirmada atualizada. O código e os documentos estão em `main`; validar o retry e a publicação permanece pendente.
