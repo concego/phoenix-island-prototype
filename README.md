@@ -179,3 +179,7 @@ Possíveis linhas de evolução incluem: opções de acessibilidade configuráve
 Este README descreve o código em `main` e a página publicada consultados em 5 de novembro de 2026. Valores e opções podem mudar. Quando o comportamento divergir da descrição, verificar primeiro `index.html` e os arquivos carregados pela página, e registrar a discrepância antes de afirmar alinhamento.
 
 O protótipo não depende de uma ferramenta de build para a página atual: `index.html` carrega Three.js como módulo ES pelo jsDelivr e os efeitos sonoros estão em `assets/`. Para regenerar a coleção existente de sons sintetizados, o repositório contém `tools/generate_sounds.py`; a geração não implica que os novos arquivos tenham sido avaliados ou aprovados auditivamente.
+
+## Documentação do projeto
+
+Os documentos de design, histórico e orientação para desenvolvimento ficam na pasta [`docs/`](docs/): [GDD](docs/GDD.md), [diário de desenvolvimento](docs/DEVLOG.md), [lore planejada](docs/LORE.md) e [orientações para agentes de IA](docs/AGENTS.md) / [guia de desenvolvimento com IA](docs/AI_DEVELOPMENT_GUIDE.md).

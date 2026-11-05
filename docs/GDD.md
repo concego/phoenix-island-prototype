@@ -237,7 +237,9 @@ Uma mudança implementada só deve ser considerada concluída quando:
 
 ## 11. Decisões ainda não aprovadas
 
-Este GDD não decide a história final, objetivo de campanha, combate, fome, sede, saúde, morte, salvamento, persistência, respawn de recursos, construção, durabilidade de ferramentas, receitas futuras ou progressão. Essas lacunas não são autorização para inventar uma solução. Quando forem necessárias para uma implementação, apresentar a decisão no chat antes de codificar.
+A premissa narrativa planejada está em [`LORE.md`](LORE.md): um conselho de magos, com base na suspeita de um mal antigo, tenta destruir a ilha e sacrifica seus habitantes; a ilha é devastada, mas não desaparece, e a personagem do jogador, jovem e inexperiente, começa tentando sobreviver antes de buscar compreender o ocorrido. A premissa é direção narrativa planejada, não conteúdo implementado no protótipo.
+
+Este GDD não define a história completa, a estrutura da campanha, nomes, detalhes do mundo ou personagens além da premissa geral, combate, fome, sede, saúde, morte, salvamento, persistência, respawn de recursos, construção, durabilidade de ferramentas, receitas futuras ou progressão. As lacunas listadas em `LORE.md` também permanecem sem decisão. Essas lacunas não são autorização para inventar uma solução. Quando forem necessárias para uma implementação, apresentar a decisão no chat antes de codificar.
 
 
 ### Seleção de objetos
