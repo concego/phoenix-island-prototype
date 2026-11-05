@@ -25,7 +25,7 @@ Melhorias futuras podem incluir opções configuráveis para necessidades visuai
 
 O mapa é um campo explorável de 48 × 54 m, com colina, árvore, lago, margem lamacenta, pedras, arbustos e galhos caídos. A câmera é em primeira pessoa. Não há ainda campanha, objetivos narrativos, combate, necessidades de sobrevivência, construção de parque, progressão de personagem, salvamento de jogo ou mundo persistente. O inventário e as ações situacionais são sistemas de teste; não formam ainda uma economia ou ciclo completo de jogo.
 
-A cena é construída proceduralmente no navegador. Não há modelos ou imagens de arte externos no cenário atual. A direção visual usa formas facetadas, cores, texturas procedurais, luzes, sombras, água e céu gerados por código; é uma apresentação de protótipo, não arte final.
+A cena é construída proceduralmente no navegador. Não há modelos ou imagens de arte externos no cenário atual. A direção visual em exploração busca fantasia 3D estilizada, com influência de animê e referências amplas a jogos de aventura 3D, sem copiar uma obra específica. A primeira passada trabalha variação de cores e densidade no gramado, copa e madeira, faces e formações de pedra da colina, e transição entre lama, água e terreno. A arte continua provisória e precisa de avaliação nas diferentes áreas do mapa; não é arte final.
 
 ## Mapa e ambiente
 
@@ -39,7 +39,7 @@ A árvore fica perto do centro do campo. Tem tronco, seis raízes visíveis, gal
 
 Há dez posições predefinidas de galhos caídos e 30 arbustos silvestres distribuídos pelo mapa em posições pseudoaleatórias reproduzíveis. Os arbustos evitam áreas como lago, colina, árvore e ponto inicial. Os elementos visuais são organizados para não depender de colisores invisíveis como explicação das interações; a árvore e os afloramentos, porém, bloqueiam o deslocamento conforme as regras do cenário.
 
-O ambiente inclui céu em degradê, neblina, texturas procedurais de grama, solo, lama e casca, tufos de grama, folhagem facetada, sombra de contato da árvore, iluminação direcional, pedras e água. O protótipo não oferece ainda controles gráficos para qualidade, brilho, contraste, paleta, campo de visão ou reduzir efeitos visuais.
+O ambiente inclui céu em degradê, neblina, texturas procedurais de grama, solo, lama e casca, vegetação facetada, sombra de contato da árvore, iluminação direcional, pedras e água. O chão recebe variação de tons, grama agrupada e áreas mais secas; a colina possui faces laterais e pedras decorativas incorporadas, e uma faixa suave une a lama ao campo. Esses detalhes visuais não adicionam recursos nem obstáculos. O protótipo não oferece ainda controles gráficos para qualidade, brilho, contraste, paleta, campo de visão ou reduzir efeitos visuais.
 
 ## Movimento, orientação e olhar
 

@@ -696,3 +696,19 @@ A revisão confirmou que o commit anterior não havia publicado o código do sis
 - Recolhidas por padrão as instruções extensas, com controle acessível para expandi-las sem remover conteúdo.
 - Ajustado o layout para manter título e inventário compactos e reservar à cena tridimensional a área restante da janela em desktop e mobile.
 - Publicação verificada por build; teste responsivo manual ainda necessário.
+
+
+## 5 de novembro de 2026 — primeira passada visual no mapa de teste
+
+### Mudanças
+
+- Atualizados iluminação, tons do terreno e sua textura procedural para reduzir a aparência uniforme, com manchas suaves e variação de cor no campo. A grama agora tem lâminas de silhueta mais orgânica, mais agrupamentos, escala e paleta variadas, sem criar fontes coletáveis ou colisores.
+- A colina recebeu faces laterais alinhadas ao perfil matemático de altura existente e pedras decorativas embutidas, sem registrar alvos ou bloqueios adicionais. As pedras de mineração e coletáveis existentes mantêm suas posições e funcionamento.
+- Madeira recebeu textura mais moderada e galhos caídos passaram a ter pequenas ramificações visuais vinculadas ao objeto; a copa recebeu uma malha facetada com contorno mais irregular e a vegetação uma paleta de verdes mais variada. Uma faixa semitransparente suaviza a transição da margem lamacenta para o terreno, e foram ajustados os tons da água. A intenção é aproximar todos os elementos da direção de fantasia 3D estilizada em exploração, com sinais de vitalidade e desgaste, sem criar ruínas, biomas, construções ou conteúdo narrativo.
+- Mantidos Three.js, mapa, posições, dimensões, regras de movimento, coleta, escalada, natação, inventário, áudio, anúncios e interface. As alterações são visuais e não representam aprovação de arte final.
+
+### Verificações e pendências
+
+- Sintaxe do módulo JavaScript analisada sem erros com parser; comparação estática confirmou constantes de posição, dimensões, alcance, resistência e as rotinas centrais de movimento e coleta inalteradas.
+- A árvore e o ponto inicial foram observados antes da mudança. A versão alterada foi preparada para publicação de teste; a avaliação por capturas em diferentes posições da colina, árvore, arbustos, galhos, lago e margem ainda precisa ser feita. Teste manual de gameplay, acessibilidade, desempenho real e avaliação visual de Anderson permanecem pendentes. Carregar a página ou validar sintaxe não comprova o resultado nem autoriza considerá-lo final.
+- Não alteradas releases, tags ou backups.
