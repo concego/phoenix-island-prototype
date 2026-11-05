@@ -4,7 +4,7 @@ Este documento orienta o trabalho de agentes de IA neste repositório. Não subs
 
 ## Antes de começar
 
-Leia `AGENTS.md`, `GDD.md`, `LORE.md`, o `README.md` da raiz e as partes relevantes de `DEVLOG.md`. Inspecione o código relacionado ao pedido antes de propor ou fazer mudanças. O ponto de entrada principal do protótipo é `index.html`; a página usa Three.js como módulo ES e os efeitos sonoros ficam em `assets/`.
+Leia `AGENTS.md`, `GDD.md`, `LORE.md`, `VISUAL_DIRECTION.md`, o `README.md` da raiz e as partes relevantes de `DEVLOG.md`. Inspecione o código relacionado ao pedido antes de propor ou fazer mudanças. O ponto de entrada principal do protótipo é `index.html`; a página usa Three.js como módulo ES e os efeitos sonoros ficam em `assets/`.
 
 Entenda a diferença entre:
 
@@ -32,6 +32,10 @@ Entenda a diferença entre:
 - A lore em `LORE.md` é planejada. Não converter os elementos ainda indefinidos em fatos canônicos nem inseri-los no protótipo sem solicitação.
 - A duração de combustível aprovada para a fogueira simples é 180 segundos (3 minutos). O texto do menu que diz “1 minuto” está incorreto. Corrija a descrição quando a alteração de documentação/interface estiver autorizada; não mude os 180 segundos para coincidir com o texto errado.
 - Não altere releases, tags, backups ou versão oficial sem autorização explícita.
+
+## Direção visual
+
+Siga `VISUAL_DIRECTION.md` ao propor ou implementar melhorias visuais. Ela cobre o mapa de teste inteiro e a direção anime/fantasia estilizada em exploração, mantendo o workflow atual. Não trate as bordas, abas, barra de endereço ou janela de downloads do navegador como parte da interface do jogo. Não infira a aparência do mapa completo a partir de um único enquadramento.
 
 ## Implementação e validação
 

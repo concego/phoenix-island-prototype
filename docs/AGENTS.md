@@ -1,6 +1,6 @@
 # Instruções para agentes de IA — Phoenix Island
 
-Leia `AI_DEVELOPMENT_GUIDE.md`, `GDD.md`, `LORE.md`, o `README.md` da raiz e as partes relevantes de `DEVLOG.md` antes de trabalhar. O ponto de entrada principal do protótipo é `index.html`; a página usa Three.js como módulo ES e os sons ficam em `assets/`.
+Leia `AI_DEVELOPMENT_GUIDE.md`, `GDD.md`, `LORE.md`, `VISUAL_DIRECTION.md`, o `README.md` da raiz e as partes relevantes de `DEVLOG.md` antes de trabalhar. O ponto de entrada principal do protótipo é `index.html`; a página usa Three.js como módulo ES e os sons ficam em `assets/`.
 
 O código atual é a referência para o que está implementado. O GDD e `LORE.md` registram decisões aprovadas; o README descreve comportamento, controles e execução; o DEVLOG é histórico, não autorização para reintroduzir regras antigas. Se houver conflito entre código e documentos, investigue e relate a divergência; não escolha silenciosamente qual lado mudar.
 
@@ -9,6 +9,8 @@ Implemente apenas o escopo solicitado. Não invente mecânicas, história, perso
 Preserve as mecânicas existentes que não fazem parte da mudança. O protótipo atual usa Three.js e é executado no navegador para testes; isso não define o destino de distribuição. O jogo final deverá ser compilado, mas o formato/plataforma ainda não foi definido. O desenvolvimento vigente é na branch `main`; Godot foi descartado. Não migre o projeto para Godot nem substitua a implementação Three.js. Não altere tags, releases, backups ou a versão oficial sem autorização explícita.
 
 O protótipo ainda está no estágio básico e não tem menu. A prioridade é fazer as mecânicas funcionarem, testá-las, validá-las e aprimorá-las; não antecipar a construção do menu nem das opções de apresentação/acessibilidade. Depois que o protótipo sair do estágio básico, o menu será integrado ao menu inicial e incluirá essas opções. Não use Esc ou F1 como atalhos neste momento. Não exiba controles, listas de teclas, instruções ou lembretes na interface de jogo. Tutorial e menu de ajuda não serão usados nesta fase; controles só poderão ser exibidos futuramente se forem explicitamente requeridos como conteúdo de tutorial ou ajuda aprovada. A cena deve ocupar a tela sem cabeçalho ou moldura de site. O único texto visível no jogo atual pode ser feedback breve das ações do jogador; não mostrar títulos, controles, instruções, lembretes, descrições persistentes ou texto decorativo. Não introduza TTS embutido ou outras formas de assistência a pessoas cegas como solução presumidamente útil: Anderson relata que as alternativas sugeridas até agora e o TTS embutido não ajudam; valide qualquer proposta com ele antes de tratá-la como solução.
+
+Para alterações visuais, siga `VISUAL_DIRECTION.md`: o escopo é o mapa de teste inteiro no workflow atual; não confunda UI do Chrome/Windows com UI do jogo, não dependa de artistas ou assets externos e não apresente observações de uma única captura como avaliação do mapa completo.
 
 A duração aprovada do combustível da fogueira simples é 180 segundos (3 minutos). Se o texto do menu disser “1 minuto”, corrija a descrição quando autorizado; não mude a duração correta de 180 segundos.
 

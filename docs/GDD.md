@@ -19,6 +19,8 @@ Phoenix Island é um protótipo em primeira pessoa, construído com Three.js e W
 
 O protótipo atual também testa uma fatia inicial de inventário, coleta de recursos, ferramentas, fabricação, escalada e natação. Essas mecânicas são experimentos funcionais do protótipo; sua presença não significa que já exista um jogo completo de sobrevivência ou um conjunto definitivo de regras.
 
+A direção visual de trabalho está registrada em [`VISUAL_DIRECTION.md`](VISUAL_DIRECTION.md). Ela propõe uma fantasia 3D estilizada, com influências ainda exploratórias, e orienta a revisão do mapa de teste inteiro no workflow atual; não afirma que essa arte já esteja implementada nem que seja final.
+
 ### Objetivos atuais
 
 - Testar exploração tridimensional com controle independente do olhar e da orientação corporal.
