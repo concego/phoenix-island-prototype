@@ -4,21 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Protótipo 3D acessível de Phoenix Island com colina, árvore, margem lamacenta, lago, caminhada na água rasa e natação testável.">
-  <title>Phoenix Island — Teste de caminhada e natação 3D</title>
+  <title>Phoenix Island</title>
   <link rel="icon" href="data:,">
   <style>
-    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #111820; color: #f3f6f8; }
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #07100d; color: #f3f0e3; }
     * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; }
-    main { min-height: 100vh; height: 100vh; display: grid; grid-template-rows: auto auto minmax(0, 1fr); }
-    header { padding: .55rem 1rem; background: #18232c; border-bottom: 1px solid #40515b; }
-    h1 { margin: 0 0 .4rem; font-size: 1.35rem; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body { min-height: 100vh; min-height: 100dvh; }
+    main { position: relative; width: 100%; height: 100vh; height: 100dvh; overflow: hidden; }
     p { margin: .35rem 0; line-height: 1.45; }
-    #instructions { max-width: 80rem; max-height: min(55vh, 34rem); overflow: auto; font-size: .96rem; }
-    #instructions strong { color: #b8e2ff; }
-    #instructions summary { width: fit-content; padding: .35rem .65rem; border: 1px solid #637783; border-radius: .3rem; cursor: pointer; }
-    #inventory-open, #recover-drops { justify-self: start; margin: .25rem .75rem; }
-    #stage { min-height: 0; height: 100%; }
+    #stage { position: absolute; inset: 0; min-height: 0; width: 100%; height: 100%; overflow: hidden; background: #87b7c8; }
+    #visual-feedback { position: fixed; z-index: 900; left: 50%; bottom: clamp(1rem, 4vh, 2.5rem); transform: translate(-50%, .5rem); width: max-content; max-width: min(42rem, calc(100vw - 2rem)); padding: .7rem 1rem; border: 1px solid rgb(210 192 137 / 72%); border-radius: .35rem; background: rgb(12 18 15 / 92%); color: #f4edda; box-shadow: 0 .7rem 2rem rgb(0 0 0 / 48%), inset 0 1px rgb(255 255 255 / 7%); font-size: 1rem; line-height: 1.4; text-align: center; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; opacity: 0; visibility: hidden; transition: opacity .16s ease, transform .16s ease, visibility .16s; pointer-events: none; }
+    #visual-feedback.is-visible { transform: translate(-50%, 0); opacity: 1; visibility: visible; }
     body.inventory-open::before { content: ''; position: fixed; inset: 0; z-index: 1000; background: rgb(5 9 8 / 78%); backdrop-filter: blur(3px); }
     #inventory-panel { position: fixed; z-index: 1001; inset: 50% auto auto 50%; transform: translate(-50%, -50%); width: min(64rem, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); overflow: auto; padding: 1.25rem; color: #ece8d9; background: linear-gradient(145deg, #26352e, #131c18 72%); border: 2px solid #9a8454; border-radius: .6rem; box-shadow: 0 1.2rem 4rem rgb(0 0 0 / 75%), inset 0 0 0 1px rgb(237 215 157 / 14%); }
     #inventory-panel[hidden], #recover-drops[hidden], #inventory-actions[hidden], #inventory-move-area[hidden], #inventory-shortcut-area[hidden] { display: none; }
@@ -67,13 +64,10 @@
     #readout strong { color: #b8e2ff; }
     #webgl-warning { padding: 1rem; background: #472b16; color: #ffe4c4; }
     .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    #inventory-open.visually-hidden:focus, #recover-drops.visually-hidden:focus { position: fixed; z-index: 1200; left: .75rem; top: .75rem; width: auto; height: auto; margin: 0; padding: .6rem .85rem; overflow: visible; clip: auto; white-space: normal; color: #f3f0e3; background: #17231d; border: 1px solid #c7ab62; border-radius: .35rem; outline: 3px solid #ecd27e; outline-offset: 3px; }
     @media (max-width: 700px) {
-      header { padding: .75rem; }
-      header { padding: .45rem .65rem; }
-      h1 { font-size: 1.12rem; }
       #stage { height: 100%; min-height: 0; }
-      #readout { left: .5rem; right: .5rem; bottom: .5rem; }
-      #inventory-open, #recover-drops { margin: .2rem .55rem; }
+      #visual-feedback { bottom: max(1rem, env(safe-area-inset-bottom)); max-width: calc(100vw - 1.5rem); }
       #inventory-panel { padding: .75rem; }
       #inventory-layout { grid-template-columns: 1fr; }
       #inventory-command-panel { order: -1; }
@@ -85,22 +79,7 @@
 </head>
 <body>
   <main>
-    <header>
-      <h1>Phoenix Island — teste de caminhada e natação em 3D</h1>
-      <details id="instructions">
-        <summary>Instruções e detalhes do protótipo</summary>
-        <div>
-        <p><strong>Inventário:</strong> pressione I ou use o botão Inventário. O inventário inicial tem dez espaços para tipos diferentes de item, em duas fileiras de cinco; itens iguais acumulam no mesmo espaço. Selecione um item e use Examinar, Mover, Usar, Largar ou Atribuir atalho. Os atalhos de 1 a 0 equipam o item atribuído; Espaço usa o item que estiver equipado nas mãos. Com um item nas mãos, pressione Alt+C para ver ações situacionais compatíveis. O peso é registrado quando definido, mas ainda não há limite de carga.</p>
-        <p><strong>Mapa:</strong> área de 48 × 54 m, com X entre −24 m e +24 m e Y entre −18 m e +36 m. A colina e a árvore ficam na região central; o topo da colina chega a 1,8 m, com as encostas clareando gradualmente por altitude. Há terreno plano e caminhável em volta da colina e espaço para seguir ao norte dela. O lago fica ao norte e a leste, centrado em X=5,0 m e Y=13,2 m, com cerca de 12 × 6,4 m de água. Uma margem lamacenta texturizada de 1,2 m contorna o lago. A faixa rasa ao redor permite caminhar sobre um fundo de até 0,55 m; depois, o fundo desce até 2,7 m na bacia central. A água fica mais translúcida e suave na borda, escurecendo e ganhando densidade no fundo; ondulações leves e círculos aparecem com o movimento. A região profunda bloqueia a passagem a pé. A natação está implementada para o lago de teste; ainda não há passagens subaquáticas.</p>
-        <p><strong>Movimento:</strong> W avança na direção do corpo (norte na orientação inicial); S recua (sul na orientação inicial). A/D deslocam lateralmente à esquerda/direita sem girar o corpo. Mantenha a tecla para caminhar e solte para parar. Segure Shift direito: W corre para frente a 3,6 m/s, A/D correm lateralmente a 3,2 m/s e S corre para trás a 2,4 m/s. Também pode pressionar Shift direito depois de iniciar o movimento; ao soltá-lo, a velocidade volta a 2,4 m/s. A corrida não se aplica à escalada nem à caminhada pelos galhos. Shift esquerdo+A/D giram o corpo 45° para a esquerda/direita; Shift esquerdo+W gira 180°; Shift esquerdo+S faz um recuo rápido de alguns passos. Depois de uma rotação, W/S continuam relativos à direção do corpo. Cada rotação do corpo anuncia para qual direção ele ficou voltado: norte, nordeste, leste, sudeste, sul, sudoeste, oeste ou noroeste.</p>
-        <p><strong>Olhar:</strong> setas esquerda/direita desviam o olhar 15° por toque, até 45° para cada lado em relação ao corpo. No limite lateral, o olhar para; use Shift esquerdo+A/D ou Shift esquerdo+W para virar o corpo. Setas cima/baixo inclinam o olhar 15° por toque, até 30°. Durante a natação, a inclinação controla a trajetória de W/S enquanto a tecla é mantida: olhar para baixo faz avançar e descer; para cima, avançar e subir; olhar no horizonte mantém a profundidade. Mudar o olhar sem manter W/S não movimenta o personagem. A/D deslocam lateralmente. O rumo do olhar é informado separadamente do rumo da caminhada; “à esquerda” e “à direita” indicam posição no campo de visão. Caminhar não gera fala a cada tecla ou passo. Pressione C para anunciar X, Y e Z.</p>
-        <p><strong>Coleta e ferramentas:</strong> mire uma pedra solta perto da colina e pressione Enter para recolhê-la; arbustos silvestres espalhados pela ilha fornecem 2 fibras vegetais cada. Galhos caídos são itens que podem ser recolhidos com Enter, mesmo com outro item equipado; não precisam ser cortados. Somente os galhos vivos baixos da copa precisam ser cortados com a faca de pedra equipada. Cada galho vivo tem resistência 6 e exige golpes sucessivos de dano entre 1 e 3. O martelo de pedra causa dano inteiro sorteado entre 2 e 4 por golpe; afloramentos têm resistência 12. Resistência e dano são valores abstratos, e a quantidade de golpes varia conforme o dano sorteado. O martelo é usado para minerar os afloramentos maiores da colina. Para transformar um galho em 2 gravetos, tenha uma faca de pedra em qualquer espaço do inventário (não precisa equipá-la), equipe o galho e selecione “Quebrar galho em gravetos” em Alt+C. Essa ação exige a faca e confirma sua presença novamente ao ser executada. Galhos, fibras vegetais e cinzas são materiais do inventário; as cinzas aparecem uma vez no local de cada fogueira apagada, podem ser recolhidas com Enter e ficam reservadas para o sistema de plantio futuro, ainda sem uso. Galhos e fibras vegetais são inflamáveis. A faca custa 2 pedras no total: equipe uma pedra e tenha mais uma no inventário; a fabricação consome ambas. O martelo custa 1 pedra, 1 graveto e 1 fibra vegetal para afixar a pedra ao cabo. Para minerar no topo, basta ter o martelo no inventário — não é preciso equipá-lo — e pressionar Espaço mirando no afloramento. Cada afloramento tem resistência 12; o martelo causa dano inteiro sorteado de 2 a 4 por golpe. A extração ocorre quando a resistência chega a zero, e o número de golpes varia. O martelo não se desgasta; ele não tem outras funções implementadas.</p>
-        <p><strong>Ação e árvore:</strong> Espaço usa o item em mãos. Com mãos vazias, na faixa rasa e voltado para águas profundas, Espaço inicia a natação. Para sair, mantenha as mãos vazias, esteja na superfície e perto da faixa rasa ou de uma saída para terra, então pressione Espaço; sair não é automático. Ao ficar muito raso, o fundo pode elevar você até a superfície, e o jogo anuncia isso. Um canal subaquático conectado manterá a natação, mas ainda não há passagens no mapa. Perto da árvore, olhar para o tronco e pressionar Espaço agarra. Sem faca nas mãos, olhar para um galho ou para a copa ao alcance extrai um graveto; com a faca de pedra equipada, olhe para cima e pressione Espaço para golpear o galho vivo; cada golpe causa dano inteiro sorteado entre 1 e 3 e reduz a resistência individual do galho, que é 6, até zero. Os galhos baixos ficam ao alcance de uma pessoa em pé junto à árvore; inventário cheio impede a coleta sem consumir o galho. A escalada continua disponível separadamente: agarre o tronco e mantenha W até o patamar alto, caminhe pelos galhos e use Espaço numa ponta para se segurar e S para descer. Em árvores com frutos, mire um fruto específico e aproxime-se ou suba até ele ficar ao alcance. Esta árvore de teste não tem frutos. Enquanto estiver agarrado ao tronco, W sobe; ao chegar aos galhos, caminhe até uma ponta, pressione Espaço para se segurar e use S para descer. W/S fazem impulsos ritmados de escalada, aproximadamente a cada 0,43 segundo enquanto a tecla estiver mantida; soltar interrompe o movimento. Espaço solta.</p>
-        <p><strong>Sons:</strong> quatro variações de passos na grama, com diferenças de impacto, contato da ponta e ruído vegetal; quatro respingos curtos diferentes ao caminhar na faixa rasa do lago; quatro passos próprios na margem lamacenta; quatro variações sintetizadas para braçadas à superfície e quatro para braçadas submersas; efeitos distintos de entrada/saída; dois bipes médios marcam águas profundas, três agudos uma possível saída e um grave longo a margem, apenas ao entrar em cada zona; timbres próprios ao caminhar pelos galhos; pistas ressonantes ascendentes ou descendentes sincronizadas a cada passo na colina. Caminhando, a cadência sonora é de cerca de 0,43 s no plano, 0,52 s subindo e 0,36 s descendo; isso não muda a velocidade da caminhada. Correndo, os intervalos são cerca de 0,30 s no plano, 0,37 s subindo e 0,27 s descendo. O recuo rápido mantém seu próprio ritmo. Há também um alerta pulsante por passo ao se aproximar do limite na direção da caminhada e dois impactos curtos ao tocá-lo. Esses avisos não tocam em intervalos independentes dos passos. Coletar um graveto produz um estalo seco seguido de um breve roçar de folhas. Na escalada, há um contato áspero ao agarrar, fricções ritmadas diferentes para subir e descer e um rangido leve ao apoiar-se no galho ou no chão. São efeitos provisórios. O áudio começa após a primeira tecla de movimento ou Espaço, conforme a política do navegador.</p>
-        </div>
-      </details>
-    </header>
-    <button id="inventory-open" type="button" aria-controls="inventory-panel" aria-expanded="false">Inventário (I)</button>
+<button id="inventory-open" class="visually-hidden" type="button" aria-controls="inventory-panel" aria-expanded="false">Inventário (I)</button>
     <section id="inventory-panel" aria-labelledby="inventory-heading" hidden>
       <div class="inventory-titlebar">
         <div><h2 id="inventory-heading" tabindex="-1">Inventário</h2><p id="inventory-count">0 de 10 tipos de item.</p></div>
@@ -129,7 +108,7 @@
       <div id="inventory-move-area" hidden><p>Mover para qual espaço? Um espaço ocupado por outro item será trocado; itens iguais serão agrupados.</p><div id="inventory-move-targets"></div></div>
       <div id="inventory-shortcut-area" hidden><p>Escolha uma tecla da fileira numérica (1 a 0). Ela equipará este item; cada tecla pode apontar para um único espaço.</p><div id="inventory-shortcut-targets"></div></div>
     </section>
-    <button id="recover-drops" type="button" hidden>Recolher itens largados</button>
+    <button id="recover-drops" class="visually-hidden" type="button" hidden>Recolher itens largados</button>
     <section id="item-action-menu" role="dialog" aria-modal="true" aria-labelledby="item-action-heading" aria-describedby="item-action-help" hidden>
       <h2 id="item-action-heading" tabindex="-1">Ações do item</h2>
       <p id="item-action-help">Ações compatíveis com o item em mãos e a situação atual.</p>
@@ -138,8 +117,9 @@
     </section>
     <section id="stage" aria-label="Cena tridimensional do protótipo">
       <div id="webgl-warning" hidden>Este navegador ou dispositivo não disponibilizou WebGL para a cena 3D.</div>
-      <div id="readout" aria-hidden="true">Posição inicial ao sul do lago em Phoenix Island. A margem lamacenta tem passos próprios; a faixa rasa permite caminhar. Não há passagem subaquática construída neste mapa.</div>
+      <div id="readout" class="visually-hidden" aria-hidden="true"></div>
     </section>
+    <div id="visual-feedback" aria-hidden="true"></div>
     <div id="live-announcer" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
   </main>
 
@@ -148,6 +128,8 @@
 
     const stage = document.querySelector('#stage');
     const readout = document.querySelector('#readout');
+    const visualFeedback = document.querySelector('#visual-feedback');
+    let visualFeedbackTimer = 0;
     const warning = document.querySelector('#webgl-warning');
     const descriptionText = readout;
     const liveAnnouncer = document.querySelector('#live-announcer');
@@ -1507,7 +1489,7 @@
       const x = player.x.toFixed(2);
       const y = player.y.toFixed(2);
       const z = playerBaseAltitude().toFixed(2);
-      announce(`Coordenadas atuais: X ${x} m, Y ${y} m, Z ${z} m.`);
+      announce(`Coordenadas atuais: X ${x} m, Y ${y} m, Z ${z} m.`, { visual: false });
     }
 
     function normalizeAngle(angle) { return Math.atan2(Math.sin(angle), Math.cos(angle)); }
@@ -1554,7 +1536,7 @@
         }
       }
     }
-    function announce(text) {
+    function announce(text, { visual = true } = {}) {
       lastAnnouncement = text;
       descriptionText.textContent = text;
       window.clearTimeout(announcementTimer);
@@ -1562,6 +1544,16 @@
       announcementTimer = window.setTimeout(() => {
         liveAnnouncer.textContent = text;
       }, 75);
+      window.clearTimeout(visualFeedbackTimer);
+      if (visual && text) {
+        visualFeedback.textContent = text;
+        visualFeedback.classList.add('is-visible');
+        visualFeedbackTimer = window.setTimeout(() => {
+          visualFeedback.classList.remove('is-visible');
+        }, 2600);
+      } else {
+        visualFeedback.classList.remove('is-visible');
+      }
     }
     function inventorySummary() {
       const count = inventory.filter(Boolean).length;
@@ -1624,7 +1616,7 @@
       inventoryPanel.hidden = false; document.body.classList.add('inventory-open'); inventoryOpenButton.setAttribute('aria-expanded', 'true');
       renderInventory();
       focusSelectedInventorySlot();
-      announce(inventorySummary());
+      announce(inventorySummary(), { visual: false });
     }
     function closeInventory() {
       if (!inventoryOpen) return;
@@ -2027,7 +2019,7 @@
       currentInteractionContact = target?.item || null;
       if (!target) return;
       const names = { stone: 'pedra solta', shrub: 'arbusto silvestre', ash: 'cinzas de fogueira apagada', branch: 'galho caído' };
-      announce(names[target.kind]);
+      announce(names[target.kind], { visual: false });
     }
 
     function collectAsh(target) {
@@ -2927,7 +2919,7 @@
             player.pitch = nextPitch;
           }
         }
-        announce(limitMessage + lookDescription());
+        announce(limitMessage + lookDescription(), { visual: false });
       }
     });
     window.addEventListener('keyup', event => {

@@ -11,7 +11,7 @@ Esta página descreve o que o código atual oferece, seus limites conhecidos e c
 - [Abrir o protótipo publicado no GitHub Pages](https://concego.github.io/phoenix-island-prototype/).
 - A versão de teste roda no navegador e requer WebGL. A cena 3D depende do módulo Three.js 0.180.0 carregado pelo jsDelivr; portanto, o acesso ao CDN também é necessário. Essa configuração descreve o protótipo de teste, não o formato final de distribuição do jogo.
 - O áudio é liberado após a primeira tecla de movimento ou Espaço, conforme as políticas de reprodução automática dos navegadores.
-- As instruções do jogo ficam recolhidas inicialmente no painel “Instruções e detalhes do protótipo”. O inventário tem um botão próprio. Os controles de jogo são principalmente de teclado.
+- A página abre diretamente na cena em tela cheia, sem cabeçalho, painel de instruções ou controles permanentes. Os controles de jogo são principalmente de teclado e estão documentados neste README.
 
 ## Objetivo de inclusão
 
@@ -105,7 +105,7 @@ Ao olhar para uma fogueira, a descrição informa se está acesa ou apagada, a p
 
 ## Inventário e interface
 
-O inventário começa vazio e tem dez espaços para tipos diferentes de item, em duas fileiras de cinco. Itens do mesmo tipo se acumulam no mesmo espaço. Um novo tipo é recusado quando os dez espaços distintos estão ocupados. O inventário pausa o movimento, recebe foco e pode ser aberto por I ou pelo botão “Inventário (I)”; pode ser fechado por I, Esc ou pelo botão de fechar.
+O inventário começa vazio e tem dez espaços para tipos diferentes de item, em duas fileiras de cinco. Itens do mesmo tipo se acumulam no mesmo espaço. Um novo tipo é recusado quando os dez espaços distintos estão ocupados. O inventário pausa o movimento, recebe foco e pode ser aberto por I; pode ser fechado por I, Esc ou pelo botão de fechar. Não há botão permanente desenhado sobre a cena.
 
 Setas navegam pela grade: esquerda/direita percorrem cada fileira sem passar para a outra; cima/baixo mudam de fileira; Home/End vão ao primeiro/último espaço da fileira. O foco não anuncia o número ou o espaço selecionado ao navegar pela grade. Enter abre as ações de um item ocupado e move o foco para Examinar; o botão “Ações (Enter)” é alternativa. Na lista de ações, setas cima/baixo percorrem as opções e as extremidades se conectam; Home/End vão à primeira/última ação. Enter ou Espaço ativa a opção em foco. Esc volta à grade e, na grade, fecha o inventário. Espaço vazio não executa ação nem produz anúncio.
 
@@ -115,7 +115,7 @@ Atalhos de 1 a 0 podem ser atribuídos a tipos de item. A tecla numérica equipa
 
 Com um item equipado, Alt+C abre ações situacionais, como receitas, corte de galho, criação de fogueira e abastecimento. Opções incompatíveis podem aparecer desabilitadas com informação dos requisitos. O menu contextual também pode abrir com Alt+C enquanto o inventário está aberto; o inventário é fechado para exibi-lo.
 
-A interface da página tem instruções recolhidas, botão de inventário, painel de inventário responsivo e menu contextual. A cena e o indicador visual de estado são visíveis; anúncios textuais são enviados por uma região de estado para tecnologia assistiva. A estrutura emprega HTML semântico e foco de teclado para controles e inventário. O projeto depende do comportamento do navegador e do leitor de tela, e ainda não passou por uma certificação abrangente de acessibilidade.
+A página abre diretamente numa cena 3D que ocupa toda a janela, sem cabeçalho, moldura de site, painel de instruções, título ou controles permanentes. Mensagens visuais breves de resultado aparecem temporariamente; descrições de olhar, coordenadas e nomes de alvos próximos são mantidos fora da apresentação visual e enviados pela região de estado para tecnologia assistiva. O inventário e o menu contextual continuam disponíveis quando acionados; o inventário é controlado pelo teclado e o botão visual permanente foi removido. A estrutura emprega HTML semântico e foco de teclado; o projeto depende do comportamento do navegador e do leitor de tela, e ainda não passou por uma certificação abrangente de acessibilidade.
 
 ## Controles completos
 
