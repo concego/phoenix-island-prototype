@@ -276,5 +276,6 @@ A fala ao entrar na área de contato deve conter somente o nome do objeto, sem p
 ### Apresentação da cena de teste
 
 - Na fase atual, a cena 3D deve ocupar a tela inteira, sem cabeçalho ou moldura com aparência de página de site.
-- Não exibir instruções, lista de controles ou lembretes de teclas durante o jogo. Não há tutorial ou menu de ajuda nesta fase. Os controles continuam funcionando, mas são aprendidos/testados fora de uma sobreposição explicativa.
+- O único texto visível durante o jogo são mensagens de feedback das ações do jogador. Elas devem ser breves e contextuais, comunicando resultado ou estado da ação. Não exibir título, controles, lista de teclas, instruções, lembretes, descrições persistentes do cenário ou outros textos de interface durante o jogo.
+- Não há tutorial nem menu de ajuda nesta fase. Os controles continuam funcionando, mas não são exibidos.
 - Não antecipar menu inicial, menu de pausa ou opções: entram numa etapa posterior, depois que o protótipo sair do estado básico. Esc e F1 não recebem funções de atalho agora.
