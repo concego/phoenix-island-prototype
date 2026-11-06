@@ -95,7 +95,7 @@ As capturas devem permitir comparar a versão anterior e a nova sem exigir uma i
 
 - **Vista geral:** enquadrar o máximo possível do mapa a partir do ponto de início, em orientação aproximadamente igual à captura ampla existente. Deve mostrar a relação geral entre terreno, lago, colina e vegetação. Informar se a câmera está na posição inicial ou se foi movida.
 - **Lago e margem:** aproximar-se da borda e olhar de lado, incluindo no mesmo enquadramento grama/solo, lama e água. Se a margem for longa, fazer uma segunda vista de outro trecho. Evitar imagem tão próxima que esconda a transição entre as três superfícies.
-- **Árvore:** ficar a uma distância em que a árvore inteira caiba na imagem, incluindo base, tronco, copa e galhos principais. Fazer uma segunda captura em ângulo lateral/oblíquo para revelar profundidade e relação entre copa e galhos.
+- **Árvore:** ficar a uma distância em que a árvore inteira caiba na imagem, incluindo base, tronco, copa e galhos principais. Fazer uma segunda captura em ângulo lateral/oblíquo para revelar profundidade e relação entre copa e galhos. Separadamente, registrar a vista do jogador no patamar superior olhando para a paisagem e, se possível, outra ao longo dos galhos; não confundir perspectiva do topo com uma captura da árvore inteira.
 - **Colina:** fazer uma vista da base em diagonal que inclua a encosta e as pedras; se possível, outra de lado que mostre a silhueta e o topo. Não sacrificar a comparação da inclinação por um ângulo meramente decorativo.
 - **Detalhe do solo:** aproximar-se de grama, arbustos e galhos caídos e enquadrá-los junto ao chão, com uma pequena porção do terreno ao redor para avaliar escala, agrupamento e integração. Se não couberem bem juntos, separar detalhe de vegetação e detalhe de galhos.
 
@@ -128,3 +128,13 @@ Esta vista permite avaliar simultaneamente os três elementos que faltavam nas c
 - **Terreno e vegetação distante:** a grama continua com aparência de tufos pequenos e espalhados por um plano muito regular; arbustos distantes aparecem como pequenos volumes isolados no horizonte. Rever escala, agrupamento, variação e integração visual, mantendo as posições e funções de gameplay salvo aprovação explícita.
 
 A captura revela problemas de leitura visual neste enquadramento, não define sozinha uma solução artística. Usá-la em conjunto com vistas próximas da árvore, colina e margem e com a captura ampla; registrar separadamente o que foi inspecionado em cada imagem.
+
+### Captura do patamar superior da árvore — 5 de novembro de 2026, 22:32
+
+Anderson identificou esta imagem como a vista do topo/patamar da árvore, após concluir a escalada. Portanto, deve ser analisada como uma vista intencional da posição elevada de jogo, não como uma câmera no chão, um erro de clipping ou uma imagem de aproximação à copa.
+
+O enquadramento mostra uma visão ampla do terreno a partir de cima: o lago oval e a margem aparecem ao centro; pedras e parte da colina ocupam o primeiro plano à esquerda; há uma grande área verde relativamente plana, com tufos de grama, arbustos e galhos espalhados até o horizonte. O céu continua ocupando grande parte da imagem. O patamar/galhos não aparecem no enquadramento, embora a mensagem de estado confirme que o personagem concluiu a subida.
+
+Usar esta captura como referência específica para avaliar a composição vista de cima e se a paisagem distante mantém identidade visual a partir da árvore. A distribuição dos elementos parece esparsa e regular nesta vista; revisar agrupamento/escala de grama, arbustos e galhos e integração do lago com o terreno, sem acrescentar objetos ou alterar sua distribuição funcional por inferência. Não concluir que o topo deve ser redesenhado nem que há clipping: a imagem é da perspectiva do jogador no patamar, conforme informação de Anderson.
+
+No roteiro de captura, incluir uma vista a partir do patamar superior olhando para o lago/terreno e, se possível, outra olhando ao longo dos galhos para registrar o contexto da própria árvore. Distinguir claramente estas duas vistas: paisagem observada do alto e detalhes visuais dos galhos/plataforma.
