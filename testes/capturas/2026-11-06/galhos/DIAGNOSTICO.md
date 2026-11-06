@@ -89,3 +89,7 @@ Vista mais afastada que mostra a árvore quase inteira, enviada após a imagem d
 Em comparação à captura de proximidade, esta vista confirma que a espessura e a projeção dos galhos não são apenas um efeito de distância muito curta: os galhos continuam visualmente grossos e retos na silhueta geral. A copa tem leitura de volumes facetados claramente estilizados, mas os volumes e galhos parecem elementos sobrepostos separadamente; investigar se a integração visual entre tronco, ramificações e copa pode ser refinada. Não tratar estilo facetado por si só como erro: a questão é a coerência da forma, escala e conexão entre partes dentro da direção artística.
 
 A captura não permite avaliar a traseira da árvore, a ligação estrutural de todos os galhos, nem como a silhueta se lê na escalada. Também não prova que os galhos vivos estejam distinguíveis dos galhos caídos em close. A janela do Chrome/Windows, incluindo o pop-up de áudio e a barra de tarefas, é externa ao jogo.
+
+### `03-procurando-galho-solto.jpg` — 16:35
+
+Anderson informou: “eu vou procurar um galho solto”. A imagem documenta o contexto dessa busca: vista ampla do terreno com a árvore ao centro, colina pedregosa à esquerda, lago ao fundo e grama com tufos, arbustos e pequenos objetos espalhados. Não é uma captura próxima do galho solto e não permite identificar qual objeto ele procurava nem avaliar sua forma/material. Guardar como contexto da sequência, sem marcar como inspeção ou aprovação do galho refinado.
