@@ -1,26 +1,72 @@
 # Phoenix Island — guia de direção visual
 
-**Estado:** direção inicial de trabalho para orientar as melhorias visuais do protótipo. Não é uma declaração de que a arte final já existe nem um compromisso de copiar outro jogo.
+**Estado:** guia visual geral em evolução para todo o jogo. A direção serve como base consistente para futuras decisões e pode ser detalhada conforme o conteúdo for aprovado. Não é uma declaração de que a arte final já existe nem um compromisso de copiar outro jogo.
 
-## Objetivo
+## Objetivo e escopo deste guia
 
-Dar a Phoenix Island uma identidade visual de aventura de fantasia 3D, em vez da aparência de uma página de teste com uma cena 3D genérica. O mapa de teste inteiro deve ser tratado como uma unidade visual e melhorado no workflow que já existe no projeto. Não criar uma fatia de demonstração separada nem depender de artistas ou assets externos para estabelecer o caminho.
+Este guia define uma direção visual de longo prazo para **todo Phoenix Island**, não apenas para o mapa de teste. Deve ajudar a manter uma identidade reconhecível e coerente à medida que o jogo crescer, sem exigir que cada elemento seja decidido agora.
+
+A direção deverá orientar, quando forem projetados e autorizados, ambientes, regiões, terrenos, vegetação, água, clima, iluminação, personagens, criaturas, objetos, recursos, ferramentas, efeitos visuais, menus e demais elementos visuais. Ainda não existem decisões detalhadas para várias dessas categorias; os princípios abaixo são uma bússola, não autorização para inventar conteúdo, lore, sistemas ou assets.
+
+O mapa e os objetos atuais são **casos de aplicação e material de diagnóstico**, não limites da direção. O mapa de teste inteiro deve ser refinado no workflow existente; não criar uma fatia isolada nem depender de artistas ou assets externos para estabelecer o caminho.
 
 ## Direção de estilo
 
-Explorar uma fantasia 3D estilizada, com influência de animê e referência ampla aos Zelda 3D recentes, especialmente pela leitura clara das formas e pela sensação de aventura num mundo fantástico. São referências de direção, não instruções para copiar seus modelos, cenários, paletas, interfaces ou identidade visual.
+Explorar uma fantasia 3D estilizada, com influência de animê e referência ampla aos Zelda 3D recentes, especialmente pela leitura clara das formas e pela sensação de aventura num mundo fantástico. São referências de direção, não instruções para copiar seus modelos, cenários, paletas, interfaces ou identidade visual. A referência não significa que todo elemento futuro precise parecer com Zelda ou seguir convenções de uma franquia específica.
 
-A execução deve permanecer compatível com o protótipo Three.js e com o processo atual do projeto: geometria, materiais, iluminação, texturas procedurais e composição podem ser criados ou refinados no código e nos assets já mantidos pelo projeto. Não presumir a adoção de outro motor, equipe de arte ou pacote de assets.
+A intenção é um mundo que pareça **intencionalmente estilizado e dirigido por uma identidade visual clara**, não realista por acidente nem composto por primitives genéricas sem integração. Formas, silhuetas, escala relativa, materiais, cores, iluminação e composição devem parecer decisões do mesmo universo. A estilização deve permanecer legível tanto nos detalhes próximos quanto nas silhuetas distantes.
+
+A execução atual deve funcionar no workflow existente de Three.js: geometria, materiais, iluminação, texturas procedurais e composição podem ser criados ou refinados no código e nos assets já mantidos pelo projeto. Esta restrição descreve como trabalhamos agora; ela não reduz o alcance futuro deste guia nem autoriza trocar de motor, contratar artistas ou adotar pacotes externos.
+
+## Princípios visuais que se aplicam ao jogo inteiro
+
+- **Coerência de mundo:** elementos diferentes podem ter materiais e silhuetas próprios, mas devem compartilhar uma lógica de forma, escala, acabamento, iluminação e nível de detalhe.
+- **Silhuetas legíveis:** ambientes, personagens, criaturas, vegetação, objetos e itens importantes devem ser reconhecíveis pela forma geral antes de depender de detalhes pequenos. Elementos funcionalmente distintos não devem parecer iguais quando sua distinção importa ao jogo.
+- **Estilização intencional:** evitar tanto superfícies uniformes e primitivas repetidas quanto ruído excessivo de detalhes. Variação deve reforçar forma, material, função e identidade, não apenas preencher espaço.
+- **Hierarquia visual:** composição, contraste, escala e iluminação devem ajudar a perceber o que é central, o que pertence ao fundo e quais elementos fazem parte do ambiente. Não exigir que cada objeto chame atenção ao mesmo tempo.
+- **Materiais compreensíveis:** madeira, pedra, solo, água, vegetação, metal, tecido e outros materiais futuros devem ter leituras visuais distintas e consistentes. A estilização é livre, mas não deve embaralhar diferenças relevantes para a interação.
+- **Lore por meio do ambiente, sem inventar cânone:** a catástrofe e a resistência/renovação da ilha podem influenciar ambientes e materiais quando houver conteúdo aprovado. Não acrescentar ruínas, queimadas, símbolos, criaturas ou explicações sobrenaturais só para tornar a lore visualmente explícita.
+- **Variação sem arbitrariedade:** regiões futuras podem ter identidades próprias, mas suas diferenças devem decorrer de lore e decisões de design aprovadas e continuar reconhecíveis como partes do mesmo jogo.
+- **Acessibilidade visual não é o único canal de acessibilidade:** uma imagem pode comunicar visualmente forma e atmosfera, mas estados e interações essenciais precisam continuar respeitando as decisões de acessibilidade do projeto. Não remover mensagens ou apoios aprovados em nome da imersão.
+- **Sem texto visual durante o jogo nesta fase:** no protótipo atual, os únicos textos visíveis em jogo são feedbacks breves das ações do jogador. Menus, HUD, tutorial e opções pertencem a etapas futuras e não devem ser projetados ou implementados agora.
+
+## Aplicação por categoria conforme o jogo crescer
+
+Estas perguntas ajudam a aplicar os princípios quando cada categoria entrar no escopo; não são especificações de conteúdo já aprovado.
+
+- **Ambientes e regiões:** qual é a silhueta geral do lugar? Que materiais e condições o distinguem? Como se conecta visualmente à ilha e à sua história? Como muda a leitura em vistas próximas, distantes e de alturas diferentes?
+- **Terreno, água e clima:** como relevo, superfícies, margens, profundidade, luz e atmosfera se relacionam sem parecer camadas independentes? As transições são visualmente intencionais e coerentes com a navegação real?
+- **Vegetação e vida natural:** escala, agrupamento, silhueta e variação devem parecer parte de um ecossistema, sem que a distribuição procedural pareça ruído ou cópia repetida.
+- **Personagens e criaturas:** estabelecer silhueta, proporções, materiais, expressão e nível de detalhe que pertençam à mesma fantasia estilizada. Aparência, espécies e identidades narrativas dependem de design/lore aprovados.
+- **Objetos, recursos e ferramentas:** comunicar categoria, material, escala e diferença funcional. Um recurso coletável deve ser visualmente distinguível de uma fonte de extração quando isso fizer parte do design, sem mudar regras de interação para resolver só uma questão de arte.
+- **Efeitos visuais e iluminação:** reforçar ação, clima e leitura espacial sem encobrir a cena ou criar dependência visual para informações essenciais. Efeitos devem compartilhar a mesma linguagem de acabamento.
+- **Interface futura:** quando a etapa de menus chegar, a interface deve pertencer à identidade do jogo e não parecer uma página de site; suas decisões, conteúdo e opções serão especificados no momento apropriado, não antecipados agora.
+
+### Como ampliar esta direção para conteúdo futuro
+
+Quando Anderson aprovar novas regiões, personagens, criaturas, construções, interiores, itens ou outros conteúdos, acrescentar ao guia uma ficha curta para cada categoria pertinente:
+
+- função e relação com lore/cenário aprovado;
+- impressão que deve transmitir e papel na identidade do jogo;
+- silhueta, proporções e escala relativa;
+- materiais e acabamento estilizado;
+- relação de cor e contraste com o ambiente;
+- como se lê de perto, à distância e em diferentes condições de luz;
+- requisitos visuais ligados a gameplay e acessibilidade;
+- limitações do workflow atual e forma de testar no jogo.
+
+Registrar separadamente o que é princípio geral, o que é decisão aprovada para uma categoria e o que é apenas proposta. O mapa de teste não deve ser usado como molde obrigatório para todos os ambientes; novos lugares podem ter identidade própria sem perder coerência com a linguagem visual comum.
+
 
 ## Ideia visual ligada à lore
 
-A ilha sofreu uma catástrofe, mas não desapareceu e parece resistir, como uma fênix. O ambiente deve comunicar a coexistência de dano e vida, não ser apenas uma ilha intacta e idílica nem um terreno totalmente morto. A fênix é uma referência temática; não exige desenhar uma fênix literal, chamas por toda parte ou explicar visualmente uma causa sobrenatural ainda não definida.
+A ilha sofreu uma catástrofe, mas não desapareceu e parece resistir, como uma fênix. Essa premissa pode fundamentar a identidade visual de todo o jogo: ambientes, materiais, mudanças de região e elementos narrativos aprovados podem explorar a coexistência de dano e vida, perda e persistência. O jogo não deve ser reduzido a uma ilha intacta e idílica nem a um mundo inteiramente morto. A fênix é uma referência temática; não exige desenhar uma fênix literal, cobrir tudo de chamas ou explicar visualmente uma causa sobrenatural ainda não definida.
 
-Essa intenção deve ser traduzida nos elementos que já existem. Não inventar ruínas, construções, destroços, queimadas, novos biomas ou acontecimentos para “provar” a lore sem uma decisão específica de design.
+Aplicar essa ideia somente quando fizer sentido ao lugar ou elemento projetado e houver conteúdo aprovado. A premissa não determina a aparência de todas as regiões, personagens ou criaturas futuras. Não inventar ruínas, construções, destroços, queimadas, novos biomas, culturas, criaturas ou acontecimentos para “provar” a lore sem decisão específica de design.
 
-## Escopo visual atual: o mapa inteiro
+## Caso de aplicação atual: o mapa de teste inteiro
 
-A revisão abrange todos os elementos do mapa de teste existente: uma árvore, vários arbustos, galhos caídos, grama, uma colina pedregosa, o lago e sua margem lamacenta. Dar a esses elementos uma linguagem comum de formas, escala, materiais, cores, iluminação e nível de detalhe, preservando sua identidade funcional.
+Esta seção trata apenas do primeiro cenário existente; não limita o alcance geral do guia. A revisão abrange todos os elementos do mapa de teste: uma árvore, vários arbustos, galhos caídos, grama, uma colina pedregosa, o lago e sua margem lamacenta. Dar a esses elementos uma linguagem comum de formas, escala, materiais, cores, iluminação e nível de detalhe, preservando sua identidade funcional.
 
 - **Grama e terreno:** evitar um plano visualmente uniforme ou uma distribuição que pareça espalhada sem intenção. Variar a leitura de densidade e escala de forma coerente; manter terreno e vegetação legíveis à distância e em primeiro plano.
 - **Colina pedregosa:** reforçar a leitura de relevo e de agrupamentos de pedras como parte da mesma ilha; evitar que pareça uma coleção de objetos desconectados ou apenas uma superfície plana com pedras soltas.
@@ -28,15 +74,15 @@ A revisão abrange todos os elementos do mapa de teste existente: uma árvore, v
 - **Galhos caídos:** fazê-los pertencer visualmente ao terreno e serem reconhecíveis como madeira, preservando a distinção entre galho caído e galho vivo da árvore.
 - **Lago e margem lamacenta:** fazer a água, o contorno de lama e o terreno adjacente parecerem uma transição deliberada do mesmo ambiente; manter a margem identificável, sem confundi-la com água ou grama.
 
-## Composição e apresentação da cena
+## Apresentação do protótipo atual
 
-A cena de jogo deve ocupar a janela de teste sem cabeçalho, moldura ou conteúdo editorial que dê aparência de site. Os únicos textos visíveis dentro do jogo atual são mensagens breves de feedback das ações do jogador. Não acrescentar título, lista de controles, instruções, descrição persistente do cenário, rótulos decorativos ou elementos de HUD por razões estéticas. Tutorial, ajuda, menu inicial e opções continuam fora da fase atual.
+Esta seção é específica ao estágio atual do protótipo. A cena de jogo deve ocupar a janela de teste sem cabeçalho, moldura ou conteúdo editorial que dê aparência de site. Os únicos textos visíveis dentro do jogo atual são mensagens breves de feedback das ações do jogador. Não acrescentar título, lista de controles, instruções, descrição persistente do cenário, rótulos decorativos ou elementos de HUD por razões estéticas. Tutorial, ajuda, menu inicial e opções continuam fora da fase atual.
 
 Ao avaliar uma captura, distinguir sempre os elementos da página do jogo dos elementos do navegador e do sistema operacional. Abas, barra de endereço, janela de downloads e barra de tarefas são moldura externa do Chrome/Windows, não arte ou UI do jogo. Se a captura incluir essa moldura, ela não é evidência de que esses elementos estejam implementados no jogo. Capturar em modo de tela cheia do navegador pode ocultá-la, mas essa escolha de captura não altera o produto.
 
 A composição dentro da própria cena deve evitar que o mapa pareça vazio ou acidentalmente cortado: verificar horizonte, proporção visível de céu e terreno, enquadramento da vegetação próxima, distribuição dos elementos no campo de visão e objetos isolados que pareçam desconectados. Não esconder elementos necessários às mecânicas só para melhorar uma captura.
 
-## Diagnóstico visual das capturas de 5 de novembro de 2026
+## Caso de aplicação: diagnóstico visual do mapa de teste (capturas de 5 de novembro de 2026)
 
 As capturas mostram a cena de teste sem o antigo cabeçalho/manual. Abas, barra de endereço, janela de downloads e barra do Windows são do Chrome/Windows, não da interface do jogo, e ficam fora do diagnóstico da arte.
 
@@ -46,9 +92,9 @@ A nova captura mostra a árvore: seu tronco é fino, a copa parece formada por p
 
 Essas são observações de capturas e enquadramentos específicos, não um diagnóstico de todo ângulo ou detalhe do mapa. A nova captura permite avaliar a silhueta da árvore e da colina, mas não os detalhes próximos do lago e da margem; esses itens continuam precisando de vistas dedicadas durante a revisão do mapa inteiro. A captura anterior mostrava outro enquadramento, então nenhuma imagem isolada representa toda a cena.
 
-## Prioridades de melhoria visual derivadas das capturas
+## Prioridades para a próxima revisão do protótipo atual
 
-Aplicar as seguintes prioridades no mapa de teste inteiro, no workflow Three.js existente. São metas de aparência; não autorizam alterar regras de caminhada, profundidade, colisão, coleta ou limites do mapa.
+Aplicar estas prioridades ao mapa de teste atual, dentro do workflow Three.js existente. Elas são exemplos concretos de como aplicar a direção geral ao cenário existente; não definem a aparência de todas as regiões futuras e não autorizam alterar regras de caminhada, profundidade, colisão, coleta ou limites do mapa.
 
 1. **Investigar o grande círculo pálido no céu.** Conferir a geometria, o material, o posicionamento e a orientação do elemento que aparece como um disco enorme atrás da ilha. Determinar se a forma é parte intencional do céu; se não for, corrigir/remover o artefato. Não presumir que seja lua, sol, planeta ou outro elemento de lore sem verificar e sem aprovação.
 2. **Dar mais identidade ao terreno e à grama.** Reduzir a impressão de um plano verde repetitivo. Criar variação legível de tom, agrupamento, escala e silhueta nos tufos, evitando tanto pontos uniformes distribuídos mecanicamente quanto ruído miúdo por toda a superfície. Fazer grama, solo e relevos parecerem parte de uma mesma direção estilizada.
@@ -78,7 +124,7 @@ Uma rodada de arte só está pronta para ser avaliada quando:
 
 Para comparar uma rodada, registrar capturas da vista inicial e de vistas que mostrem separadamente a colina pedregosa, a árvore e vegetação, o lago e a margem, além de ao menos uma vista ampla do mapa. As capturas servem para comparar aparência; o teste de mecânicas e a validação de Anderson são registros separados. Se uma área não estiver visível numa imagem, marcá-la como não avaliada, não como aprovada.
 
-## O que fazer primeiro no mapa atual
+## Ordem sugerida de investigação do mapa atual
 
 1. Conferir no código o disco pálido do céu e identificar exatamente o objeto/material que o produz antes de mudar ou remover qualquer elemento.
 2. Ajustar a composição do terreno e a variação visual da grama para que o plano não pareça uma superfície vazia com pequenos tufos repetidos.
@@ -89,7 +135,7 @@ Para comparar uma rodada, registrar capturas da vista inicial e de vistas que mo
 
 Esta sequência é uma ordem de investigação/priorização, não uma autorização para executar todas as mudanças automaticamente. Cada solicitação de implementação continua limitada ao que Anderson pedir e às decisões registradas.
 
-## Roteiro de capturas para a próxima rodada de refinamento
+## Roteiro de capturas para avaliar o protótipo atual
 
 As capturas devem permitir comparar a versão anterior e a nova sem exigir uma inspeção de todo o mapa numa única imagem. Repetir, quando possível, os mesmos pontos e ângulos entre as rodadas. A captura ampla já fornecida funciona como referência geral; as próximas podem priorizar os detalhes abaixo.
 
@@ -133,7 +179,7 @@ Não interpretar a presença do galho no canto como defeito de composição: o j
 4. Distinguir observação por captura, revisão de código, execução e avaliação de Anderson. Não declarar o resultado visual validado só porque a página carrega ou o código está correto.
 5. Registrar no DEVLOG o que mudou, quais áreas do mapa foram observadas e quais avaliações ainda faltam.
 
-## Linguagem honesta para apresentar o projeto
+## Como descrever a direção geral sem prometer arte ainda não implementada
 
 Enquanto esta direção estiver sendo explorada, pode-se dizer: “Estamos desenvolvendo uma direção de fantasia 3D estilizada, com influência de animê e referências amplas aos Zelda 3D recentes. A identidade do cenário parte da lore de uma ilha devastada que resiste e parece renascer. Estamos aplicando essa direção ao mapa de teste inteiro no workflow atual.”
 
