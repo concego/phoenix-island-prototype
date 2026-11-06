@@ -33,9 +33,13 @@ Entenda a diferença entre:
 - A duração de combustível aprovada para a fogueira simples é 180 segundos (3 minutos). O texto do menu que diz “1 minuto” está incorreto. Corrija a descrição quando a alteração de documentação/interface estiver autorizada; não mude os 180 segundos para coincidir com o texto errado.
 - Não altere releases, tags, backups ou versão oficial sem autorização explícita.
 
-## Direção visual
+## Direção visual e diagnósticos
 
-Siga `VISUAL_DIRECTION.md` ao propor ou implementar melhorias visuais. Ela cobre o mapa de teste inteiro e a direção anime/fantasia estilizada em exploração, mantendo o workflow atual. Não trate as bordas, abas, barra de endereço ou janela de downloads do navegador como parte da interface do jogo. Não infira a aparência do mapa completo a partir de um único enquadramento.
+Siga `VISUAL_DIRECTION.md` como direção de longo prazo para o jogo inteiro; o mapa de teste atual é apenas seu primeiro caso de aplicação. Para capturas e observações específicas, consulte os registros datados em `testes/capturas/`. Não trate as bordas, abas, barra de endereço, notificações do sistema ou janelas de downloads como parte da interface do jogo. Não infira a aparência de uma área inteira a partir de um único enquadramento.
+
+Quando Anderson enviar prints, acrescente os arquivos à pasta de captura correspondente e anote contexto, ponto de vista fornecido por ele, observações visuais, incertezas e áreas não visíveis. Não atribua causa técnica sem verificar. Um diagnóstico não é autorização para implementar; em tarefas só de documentação/análise, não altere código.
+
+Nesta fase, não exibir controles ou instruções visíveis; o único texto visível permitido no jogo é feedback breve das ações do jogador. Se uma tela existente violar essa regra, documente a divergência e deixe a mudança de código para a conversa de desenvolvimento/autorização explícita.
 
 ## Implementação e validação
 

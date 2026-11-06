@@ -64,6 +64,20 @@ A ilha sofreu uma catástrofe, mas não desapareceu e parece resistir, como uma 
 
 Aplicar essa ideia somente quando fizer sentido ao lugar ou elemento projetado e houver conteúdo aprovado. A premissa não determina a aparência de todas as regiões, personagens ou criaturas futuras. Não inventar ruínas, construções, destroços, queimadas, novos biomas, culturas, criaturas ou acontecimentos para “provar” a lore sem decisão específica de design.
 
+
+## Diagnóstico visual da sessão de capturas de 6 de novembro de 2026
+
+O registro completo da sessão automatizada, suas limitações e as seis imagens correspondentes está em [`../testes/capturas/2026-11-06/sessao-zapia-1650/DIAGNOSTICO.md`](../testes/capturas/2026-11-06/sessao-zapia-1650/DIAGNOSTICO.md). Essa sessão observou principalmente a vista inicial, a árvore de frente/em inclinações diferentes, a colina e o inventário. Não conseguiu deslocar o personagem de forma controlada até o lago; margem próxima, fundo, escalada e galho caído não foram avaliados nela. O registro separa essas lacunas de avaliações anteriores e não substitui testes de Anderson.
+
+Observações novas dessa rodada:
+
+- A árvore ainda parece montada por volumes separados: copa de massas facetadas grandes, galhos retos/radiais grossos e pontudos, raízes com silhueta semelhante aos galhos. Priorizar coerência das junções e das silhuetas; manter o estilo facetado como opção estética, sem tratá-lo automaticamente como problema.
+- A colina lê como rampa trapezoidal de bordas rígidas, com superfície relativamente uniforme e pedras que parecem chapadas sobre a encosta. Melhorar a integração visual do relevo e das pedras sem alterar topografia, colisões ou mineração sem aprovação.
+- A grama tem tufos triangulares esparsos e repetidos, pouco integrados à superfície. Rever escala, variação e agrupamento, sem mudar a distribuição funcional dos recursos por inferência.
+- No inventário, continuam visíveis instruções (“Use as setas para percorrer as duas fileiras da grade”) e o rótulo “Ações (Enter)”. Isso conflita com a regra vigente para esta fase: não exibir controles/instruções, e permitir apenas texto de feedback das ações do jogador. A captura é evidência diagnóstica; qualquer alteração de código deve seguir a conversa de desenvolvimento, não ser presumida a partir do registro.
+
+Estas observações pertencem ao protótipo atual. Use-as como primeiro exercício da direção visual geral, não como decisões de como toda árvore, colina, grama ou interface futura precisa parecer.
+
 ## Caso de aplicação atual: o mapa de teste inteiro
 
 Esta seção trata apenas do primeiro cenário existente; não limita o alcance geral do guia. A revisão abrange todos os elementos do mapa de teste: uma árvore, vários arbustos, galhos caídos, grama, uma colina pedregosa, o lago e sua margem lamacenta. Dar a esses elementos uma linguagem comum de formas, escala, materiais, cores, iluminação e nível de detalhe, preservando sua identidade funcional.
