@@ -753,3 +753,18 @@ O Pages falhou ao tentar implantar o commit `57031df` por conflito com um deploy
 ### Resultado posterior da publicação e observação
 
 O deploy do commit `9db3a6`, que contém as mesmas alterações visuais do `57031df`, concluiu com sucesso no GitHub Pages. A página servida foi conferida e contém o céu e a folhagem novos. O console do navegador não mostrou erros. Na vista inicial e num giro para nordeste foi possível observar árvore e colina; a copa ainda parece um conjunto de volumes, os galhos seguem muito retos e algumas folhas aparecem como placas separadas. A encosta continua geometricamente reta. O lago e a margem de perto, as demais vistas, a eventual presença do círculo em pontos distantes e as mecânicas reais continuam sem avaliação. Essas observações não são aprovação de Anderson.
+
+
+## 5 de novembro de 2026 — refinamento da copa e encosta
+
+### Mudanças
+
+- A última captura de referência mostrou a árvore com massas arredondadas e simétricas, folhas soltas e galhos retos, além de encosta escura e pedras em fileiras. A vista inicial e o giro para nordeste da versão anterior também foram conferidos no navegador antes da rodada; não representam a análise do mapa inteiro.
+- Removidas as placas de folhas que pareciam soltas e adicionados volumes irregulares de folhagem para aproximar os grupos da copa, com assimetria discreta. Esses volumes são decorativos e não compõem listas de alvos ou bloqueios; tronco, galhos usados para coleta e escalada e malhas acessíveis da copa mantêm a geometria anterior. A silhueta dos galhos retos permanece uma limitação a avaliar, pois deformá-los mudaria sua geometria de interação.
+- Na colina, clareada a leitura da rampa com emissão discreta no próprio material, incorporados tufos esparsos seguindo a altura lógica e dispersas/reduzidas as pedras decorativas. Pedras mineráveis, seus alvos e posições permanecem intactos. Rampa e perfil, altura, limites, câmera, navegação, natação e colisões não foram alterados; o contorno matematicamente reto não foi escondido por uma falsa geometria além do terreno.
+- A rodada não alterou lago, lama, arbustos ou galhos caídos; estes não devem ser dados como aprovados. Não foram acrescentados elementos narrativos, objetos funcionais ou instruções à interface.
+
+### Verificações e pendências
+
+- Sintaxe do módulo validada por parser; comparação estática das constantes de posição/dimensão e das funções de movimento, seleção, terreno, profundidade, árvore e arbustos sem alterações. Verificações estáticas não comprovam interação nem desempenho. A avaliação da nova versão, incluindo árvore inteira e oblíqua, colina de frente e de lado, gameplay, oclusão, áudio e leitor de tela, permanece pendente até execução e testes. A comparação com a vista geral também deve ser registrada separadamente. A avaliação final é de Anderson.
+- Sem mudanças em releases, tags ou backups.
