@@ -95,13 +95,35 @@ As capturas devem permitir comparar a versão anterior e a nova sem exigir uma i
 
 - **Vista geral:** enquadrar o máximo possível do mapa a partir do ponto de início, em orientação aproximadamente igual à captura ampla existente. Deve mostrar a relação geral entre terreno, lago, colina e vegetação. Informar se a câmera está na posição inicial ou se foi movida.
 - **Lago e margem:** aproximar-se da borda e olhar de lado, incluindo no mesmo enquadramento grama/solo, lama e água. Se a margem for longa, fazer uma segunda vista de outro trecho. Evitar imagem tão próxima que esconda a transição entre as três superfícies.
-- **Árvore:** ficar a uma distância em que a árvore inteira caiba na imagem, incluindo base, tronco, copa e galhos principais. Fazer uma segunda captura em ângulo lateral/oblíquo para revelar profundidade e relação entre copa e galhos. Separadamente, registrar a vista do jogador no patamar superior olhando para a paisagem e, se possível, outra ao longo dos galhos; não confundir perspectiva do topo com uma captura da árvore inteira.
+- **Árvore:** ficar a uma distância em que a árvore inteira caiba na imagem, incluindo base, tronco, copa e galhos principais. Fazer uma segunda captura em ângulo lateral/oblíquo para revelar profundidade e relação entre copa e galhos. Separadamente, registrar a vista do jogador no patamar superior olhando para a paisagem e, se possível, outra ao longo dos galhos; não confundir perspectiva do topo com uma captura da árvore inteira. Inclua também uma captura da ponta de um galho olhando para baixo, deixando visível o galho no canto inferior e a paisagem abaixo.
 - **Colina:** fazer uma vista da base em diagonal que inclua a encosta e as pedras; se possível, outra de lado que mostre a silhueta e o topo. Não sacrificar a comparação da inclinação por um ângulo meramente decorativo.
 - **Detalhe do solo:** aproximar-se de grama, arbustos e galhos caídos e enquadrá-los junto ao chão, com uma pequena porção do terreno ao redor para avaliar escala, agrupamento e integração. Se não couberem bem juntos, separar detalhe de vegetação e detalhe de galhos.
 
 Ao enviar cada captura, indicar em poucas palavras o ponto de referência ou as coordenadas anunciadas pelo jogo e a direção aproximada do olhar, se souber. Não é necessário criar legendas dentro da imagem. Se não souber a posição ou direção, basta dizer qual elemento pretendia mostrar. F11 pode ocultar temporariamente a moldura do Chrome para a captura; abas, barra do navegador e barra do sistema não são parte do jogo e não precisam orientar o refinamento.
 
 Não é obrigatório produzir todas as vistas em cada rodada. Escolher as que correspondem às áreas alteradas e, no mínimo, incluir uma vista geral mais uma vista próxima de cada área refinada. Uma captura mostra somente o que está enquadrado: registrar como “não avaliado” qualquer elemento oculto ou pequeno demais para examinar.
+
+### Captura adicional — vista conjunta do lago, árvore e colina (5 de novembro de 2026, 22:08)
+
+Esta vista permite avaliar simultaneamente os três elementos que faltavam nas capturas anteriores, além de uma faixa do terreno. A moldura superior é do Chrome e não pertence ao jogo.
+
+- **Composição:** o céu continua dominando grande parte da janela; a linha do horizonte e os principais elementos do mapa ficam concentrados numa faixa baixa e estreita. A árvore e a colina estão visíveis, mas ainda parecem pequenas em relação ao espaço vazio acima delas. Rever enquadramento/composição da vista de jogo sem alterar câmera ou controles por inferência.
+- **Árvore:** a silhueta é estreita e muito simétrica: tronco fino, poucos volumes arredondados de copa, folhas pequenas soltas no contorno e vários galhos retos que atravessam a copa horizontalmente. No conjunto, a árvore lembra um objeto montado por peças separadas ou um topiário, não uma árvore integrada ao cenário. Rever silhueta, distribuição/escala da copa e integração dos galhos no estilo estilizado. Preservar os pontos e geometrias necessários para coleta e escalada; mudanças nesses elementos exigem verificar as mecânicas dependentes.
+- **Colina:** aparece como um bloco/rampa trapezoidal muito regular, com uma face escura extensa e bordas retas; as pedras parecem pequenos objetos pousados em fileiras ou faixas sobre a superfície e junto à crista. Rever a integração visual entre relevo e pedras para reduzir a aparência de rampa artificial e pedras alinhadas decorativamente. Não alterar altura, limites, perfil caminhável ou colisões sem decisão de gameplay aprovada.
+- **Lago e margem:** a borda visível forma um arco limpo e estreito entre a água e a grama; água e margem têm superfícies visualmente lisas e uma transição bastante uniforme. Essa vista confirma que água, lama e terreno precisam ser considerados juntos, mas não mostra toda a forma do lago nem detalhes próximos suficientes para avaliar suas faixas de profundidade.
+- **Terreno e vegetação distante:** a grama continua com aparência de tufos pequenos e espalhados por um plano muito regular; arbustos distantes aparecem como pequenos volumes isolados no horizonte. Rever escala, agrupamento, variação e integração visual, mantendo as posições e funções de gameplay salvo aprovação explícita.
+
+A captura revela problemas de leitura visual neste enquadramento, não define sozinha uma solução artística. Usá-la em conjunto com vistas próximas da árvore, colina e margem e com a captura ampla; registrar separadamente o que foi inspecionado em cada imagem.
+
+### Captura da ponta da árvore olhando para baixo — 5 de novembro de 2026, 22:35
+
+Anderson identificou esta imagem como uma vista da ponta de um galho, olhando para baixo. É uma perspectiva intencional da escalada, não uma vista do chão nem um erro de câmera.
+
+O enquadramento mostra o lago quase inteiro, a margem lamacenta como um anel contínuo, a área de grama ao redor, arbustos e galhos caídos espalhados pelo terreno, além da colina e de suas pedras no primeiro plano. A ponta/galho em que o jogador está aparece na parte inferior esquerda, com a superfície superior do galho e a lateral escura visíveis. O céu ocupa a metade superior da imagem.
+
+Usar esta captura para avaliar a leitura do mapa a partir da altura da árvore, a integração entre colina, lago e terreno e a forma como a posição elevada expõe a distribuição dos elementos. Ela reforça os problemas já registrados: terreno e vegetação distantes parecem esparsos e regulares; o lago e a lama formam uma geometria muito limpa; a colina tem uma face rígida e as pedras parecem agrupadas em linhas. A vista também permite avaliar se o galho/patamar parece uma estrutura integrada à árvore ou uma plataforma geométrica isolada.
+
+Não interpretar a presença do galho no canto como defeito de composição: o jogador está deliberadamente na ponta e olhando para baixo. Não alterar a altura do patamar, a navegação pelos galhos, a câmera ou a geometria de colisão apenas para reproduzir uma composição diferente. Qualquer ajuste visual deve preservar escalada, apoio na ponta e retorno ao chão.
 
 ## Método de trabalho
 
@@ -117,17 +139,6 @@ Enquanto esta direção estiver sendo explorada, pode-se dizer: “Estamos desen
 
 Não chamar essa proposta de arte final, não afirmar que a aparência atual já a representa e não sugerir que o jogo copia Zelda.
 
-### Captura adicional — vista conjunta do lago, árvore e colina (5 de novembro de 2026, 22:08)
-
-Esta vista permite avaliar simultaneamente os três elementos que faltavam nas capturas anteriores, além de uma faixa do terreno. A moldura superior é do Chrome e não pertence ao jogo.
-
-- **Composição:** o céu continua dominando grande parte da janela; a linha do horizonte e os principais elementos do mapa ficam concentrados numa faixa baixa e estreita. A árvore e a colina estão visíveis, mas ainda parecem pequenas em relação ao espaço vazio acima delas. Rever enquadramento/composição da vista de jogo sem alterar câmera ou controles por inferência.
-- **Árvore:** a silhueta é estreita e muito simétrica: tronco fino, poucos volumes arredondados de copa, folhas pequenas soltas no contorno e vários galhos retos que atravessam a copa horizontalmente. No conjunto, a árvore lembra um objeto montado por peças separadas ou um topiário, não uma árvore integrada ao cenário. Rever silhueta, distribuição/escala da copa e integração dos galhos no estilo estilizado. Preservar os pontos e geometrias necessários para coleta e escalada; mudanças nesses elementos exigem verificar as mecânicas dependentes.
-- **Colina:** aparece como um bloco/rampa trapezoidal muito regular, com uma face escura extensa e bordas retas; as pedras parecem pequenos objetos pousados em fileiras ou faixas sobre a superfície e junto à crista. Rever a integração visual entre relevo e pedras para reduzir a aparência de rampa artificial e pedras alinhadas decorativamente. Não alterar altura, limites, perfil caminhável ou colisões sem decisão de gameplay aprovada.
-- **Lago e margem:** a borda visível forma um arco limpo e estreito entre a água e a grama; água e margem têm superfícies visualmente lisas e uma transição bastante uniforme. Essa vista confirma que água, lama e terreno precisam ser considerados juntos, mas não mostra toda a forma do lago nem detalhes próximos suficientes para avaliar suas faixas de profundidade.
-- **Terreno e vegetação distante:** a grama continua com aparência de tufos pequenos e espalhados por um plano muito regular; arbustos distantes aparecem como pequenos volumes isolados no horizonte. Rever escala, agrupamento, variação e integração visual, mantendo as posições e funções de gameplay salvo aprovação explícita.
-
-A captura revela problemas de leitura visual neste enquadramento, não define sozinha uma solução artística. Usá-la em conjunto com vistas próximas da árvore, colina e margem e com a captura ampla; registrar separadamente o que foi inspecionado em cada imagem.
 
 ### Captura do patamar superior da árvore — 5 de novembro de 2026, 22:32
 
