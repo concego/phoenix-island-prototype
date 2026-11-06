@@ -773,3 +773,17 @@ O deploy do commit `9db3a6`, que contém as mesmas alterações visuais do `5703
 
 - O Pages concluiu o deploy do commit `36ccf1f`. Na vista inicial frontal, a rampa está mais iluminada e tem mais tufos, mas continua com formato trapezoidal e pedras com leitura de peças pousadas. Na vista girada para a árvore, as placas claras de folhas separadas desapareceram; a copa continua com volumes facetados sobrepostos e galhos escuros retos projetando-se para os lados. Esses problemas não foram considerados resolvidos. A árvore não foi examinada por trás, a colina não foi vista de lado, nem a margem de perto. A água aparece distante, sem detalhes suficientes para avaliação.
 - O console não apresentou erros; o carregamento não comprova gameplay, oclusão, áudio ou leitor de tela. Testes e avaliação de Anderson continuam pendentes.
+
+
+## 6 de novembro de 2026 — leitura dos galhos caídos
+
+### Mudanças
+
+- O guia documenta uma captura em que um galho caído próximo se confunde com tufos de grama e outra captura em que uma pedra solta precisa manter contraste próprio. Nesta rodada tratei apenas a legibilidade da madeira recolhível: galhos recebem uma tonalidade de casca mais quente, usando a mesma textura procedural, e dois pequenos ramos curtos formam uma bifurcação discreta. O tronco principal segue sendo a malha-alvo de coleta; os ramos decorativos são filhos visuais, não entram em listas de alvos, colisores ou bloqueios.
+- Não foram alterados posição/distribuição, orientação base da malha principal, escala da fonte, ponto/reach de coleta, seletor, inventário, movimentação ou as malhas de árvore/colina. Lago e margem, árvore, encosta, pedras e outros itens não foram alterados nesta rodada.
+
+### Verificações e pendências
+
+- Sintaxe do módulo verificada com parser. Comparação estática manteve as constantes lógicas de mapa, relevo, lago, escalada e pontos de galho, e as funções de coleta, movimento, terreno, profundidade e seleção da árvore sem mudanças. Isso não é um teste de coleta nem prova visual em tempo de execução.
+- A página atual foi carregada previamente como referência, mas a imagem de detalhe do galho do mapa-base não estava disponível entre os arquivos versionados consultados; por isso a nova silhueta ainda precisa ser inspecionada em primeiro plano e entre tufos após o deploy. Confirmar também que o alvo continua selecionável por mira/Enter e que os ramos decorativos não causam interferência/oclusão. Não há aprovação visual do Anderson nesta etapa.
+- Sem mudanças em releases, tags ou backups.

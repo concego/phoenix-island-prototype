@@ -426,6 +426,8 @@
         if (dot(lakeDelta, lakeDelta) < 1.0) discard;`);
     };
     materials.grass.customProgramCacheKey = () => 'phoenix-visual-lake-bed-cutout-v1';
+    materials.fallenBranch = materials.bark.clone();
+    materials.fallenBranch.color.setHex(0xb8996b);
     materials.hillTop = new THREE.MeshStandardMaterial({ map: materials.grass.map, roughness: 1, vertexColors: true });
     // Hill UVs span 0–1, unlike the field; use separate tiling to avoid a fine dark grid.
     const hillGrassMap = materials.grass.map.clone();
@@ -961,10 +963,21 @@
       { x: -9.2, y: 12.2 }, { x: 14.8, y: 16.4 }, { x: -16.5, y: 20.3 }, { x: 3.0, y: 24.5 },
       { x: -19.2, y: -10.5 }, { x: 19.4, y: -11.2 }
     ];
+    const fallenBranchTwigGeometry = new THREE.CylinderGeometry(.006, .014, .18, 5, 1);
     function createBranchMesh(x, y, z, scale = 1) {
-      const mesh = new THREE.Mesh(new THREE.CylinderGeometry(.029 * scale, .060 * scale, .95 * scale, 7, 2), materials.bark);
+      const mesh = new THREE.Mesh(new THREE.CylinderGeometry(.029 * scale, .060 * scale, .95 * scale, 7, 2), materials.fallenBranch);
       mesh.position.copy(designToThree(x, y, z));
       mesh.rotation.set(Math.PI / 2 + .16, .22, .31);
+      // Short fork stubs sit close to the collectible trunk, improving the
+      // fallen-wood silhouette without changing the target geometry/raycast.
+      for (const side of [-1, 1]) {
+        const twig = new THREE.Mesh(fallenBranchTwigGeometry, materials.fallenBranch);
+        twig.position.set(side * .032 * scale, .055 * scale, .008 * scale);
+        twig.rotation.set(side * .10, 0, -side * .92);
+        twig.scale.setScalar(scale);
+        twig.castShadow = true; twig.receiveShadow = true;
+        mesh.add(twig);
+      }
       mesh.castShadow = true;
       mesh.receiveShadow = true;
       scene.add(mesh);
