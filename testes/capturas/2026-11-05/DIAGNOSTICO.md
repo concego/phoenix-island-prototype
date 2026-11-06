@@ -69,3 +69,13 @@ Anderson identificou como pedra solta recolhível, diferente dos afloramentos. A
 - Distinguir observação visual de hipótese técnica. Quando a imagem não determinar a causa, marcar para investigar no código, sem inventá-la.
 - Para comparar refinamentos, registrar capturas em pontos e ângulos semelhantes; indicar o que mudou e quais vistas ainda faltam.
 - Remover imagens somente quando já não forem necessárias para comparação/diagnóstico, conforme autorização de Anderson; manter a nota histórica se ainda for útil, ou removê-la junto da imagem se ele pedir limpeza completa.
+
+## Atualização da outra conversa — refinamento subaquático (6 de novembro de 2026)
+
+Anderson compartilhou o relato da outra conversa sobre a rodada no commit `0a93b6bedf242f95cc9c1fdd97c1e07b78507ced`: foram introduzidas variações de cor no leito entre as áreas rasa e profunda e uma transição gradual de névoa. Segundo o relato, a geometria do fundo e as regras de profundidade e natação foram preservadas no código. O DEVLOG registra a mudança.
+
+O relato informa que a página carregou sem erros no console, mas que a vista no fundo ainda não foi comparada. Portanto, **não há confirmação de que a faixa diagonal da captura 11 desapareceu ou de que a leitura visual melhorou**. Também permanecem pendentes os testes de natação, saída e leitor de tela. A ausência de erro no console não substitui esses testes.
+
+A versão informada para teste é https://concego.github.io/phoenix-island-prototype/?v=0a93b6b. A página abriu nesta conversa; a captura do fundo e a validação dos comportamentos ainda não foram realizadas aqui. O parâmetro de URL serve para atualização de cache e, por si só, não fixa uma versão histórica quando `main` avançar; para confirmar o código testado, conferir também o commit e o conteúdo publicado.
+
+A captura `11-fundo-lago.jpg` é referência anterior para comparação, não comprovação do estado atual. Não foram alterados releases nem backups segundo o relato. Esta entrada é documentação da informação recebida, não validação do resultado.

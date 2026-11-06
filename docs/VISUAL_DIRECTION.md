@@ -232,6 +232,12 @@ Registrar como prioridade de investigação visual da natação: verificar como 
 
 Incluir no roteiro de capturas uma vista subaquática no fundo do lago apenas quando a rodada mexer na água, natação, iluminação subaquática ou materiais do fundo. Registrar também uma vista rasa/na superfície para comparar a transição; não usar apenas a captura do fundo para avaliar a aparência completa do lago.
 
+#### Rodada subaquática posterior — 6 de novembro de 2026
+
+Anderson compartilhou o relato da outra conversa referente ao commit `0a93b6bedf242f95cc9c1fdd97c1e07b78507ced`: variações de cor foram adicionadas ao leito raso/profundo e a névoa passou a ter transição gradual. Segundo o relato, a geometria do fundo e as regras de profundidade e natação foram preservadas, e a página carregou sem erros no console. O DEVLOG registra a mudança.
+
+**Estado de validação:** a vista no fundo ainda não foi comparada; portanto, não há confirmação de que a diagonal desapareceu ou de que a leitura melhorou. Também faltam testes de natação, saída e leitor de tela. A imagem de 5 de novembro continua sendo referência anterior para comparar, não prova do estado atual. A página indicada para teste é [o protótipo publicado](https://concego.github.io/phoenix-island-prototype/?v=0a93b6b); o parâmetro ajuda a contornar cache, mas não fixa uma versão histórica.
+
 ### Captura de galho caído com olhar para baixo — 5 de novembro de 2026, 22:43
 
 Anderson identificou a imagem como uma vista de um galho caído no chão com o olhar inclinado para baixo. A captura foi feita no campo aberto, com grama ocupando quase todo o primeiro plano; a colina, a árvore e uma parte do lago aparecem longe, junto ao horizonte. A grama forma tufos angulares verdes e amarelados, pequenos e espaçados, distribuídos sobre uma textura de solo verde bastante uniforme.
