@@ -768,3 +768,8 @@ O deploy do commit `9db3a6`, que contém as mesmas alterações visuais do `5703
 
 - Sintaxe do módulo validada por parser; comparação estática das constantes de posição/dimensão e das funções de movimento, seleção, terreno, profundidade, árvore e arbustos sem alterações. Verificações estáticas não comprovam interação nem desempenho. A avaliação da nova versão, incluindo árvore inteira e oblíqua, colina de frente e de lado, gameplay, oclusão, áudio e leitor de tela, permanece pendente até execução e testes. A comparação com a vista geral também deve ser registrada separadamente. A avaliação final é de Anderson.
 - Sem mudanças em releases, tags ou backups.
+
+### Observação após publicação
+
+- O Pages concluiu o deploy do commit `36ccf1f`. Na vista inicial frontal, a rampa está mais iluminada e tem mais tufos, mas continua com formato trapezoidal e pedras com leitura de peças pousadas. Na vista girada para a árvore, as placas claras de folhas separadas desapareceram; a copa continua com volumes facetados sobrepostos e galhos escuros retos projetando-se para os lados. Esses problemas não foram considerados resolvidos. A árvore não foi examinada por trás, a colina não foi vista de lado, nem a margem de perto. A água aparece distante, sem detalhes suficientes para avaliação.
+- O console não apresentou erros; o carregamento não comprova gameplay, oclusão, áudio ou leitor de tela. Testes e avaliação de Anderson continuam pendentes.
