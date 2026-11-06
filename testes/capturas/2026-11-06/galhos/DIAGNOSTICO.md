@@ -93,3 +93,9 @@ A captura não permite avaliar a traseira da árvore, a ligação estrutural de 
 ### `03-procurando-galho-solto.jpg` — 16:35
 
 Anderson informou: “eu vou procurar um galho solto”. A imagem documenta o contexto dessa busca: vista ampla do terreno com a árvore ao centro, colina pedregosa à esquerda, lago ao fundo e grama com tufos, arbustos e pequenos objetos espalhados. Não é uma captura próxima do galho solto e não permite identificar qual objeto ele procurava nem avaliar sua forma/material. Guardar como contexto da sequência, sem marcar como inspeção ou aprovação do galho refinado.
+
+### `04-galho-de-longe.jpg` — 16:36
+
+Anderson identificou esta imagem como o galho solto visto de longe. O objeto aparece no campo aberto, à esquerda da colina e distante do ponto de vista, muito pequeno e de baixo contraste entre grama/arbustos e outros objetos do terreno. Pela escala na captura, não é possível avaliar com confiança sua silhueta ou material. A imagem serve para registrar a legibilidade à distância, não como captura de detalhe.
+
+A observação a comparar é se um recurso que pode ser procurado e coletado continua encontrável no terreno sem parecer um marcador artificial ou ficar confundido com tufos e outros objetos. Não concluir que ele é invisível em todos os ângulos; a captura mostra uma distância e posição específicas. Uma próxima vista de detalhe deve incluir o galho inteiro com grama ao redor, e outra a uma distância intermediária pode ajudar a avaliar a transição de legibilidade. Preservar escala e regras de coleta salvo decisão explícita.
