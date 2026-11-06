@@ -105,9 +105,9 @@ Ao olhar para uma fogueira, a descrição informa se está acesa ou apagada, a p
 
 ## Inventário e interface
 
-O inventário começa vazio e tem dez espaços para tipos diferentes de item, em duas fileiras de cinco. Itens do mesmo tipo se acumulam no mesmo espaço. Um novo tipo é recusado quando os dez espaços distintos estão ocupados. O inventário pausa o movimento, recebe foco e pode ser aberto por I ou pelo botão “Inventário (I)”; pode ser fechado por I, Esc ou pelo botão de fechar.
+O inventário começa vazio e tem dez espaços para tipos diferentes de item, em duas fileiras de cinco. Itens do mesmo tipo se acumulam no mesmo espaço. Um novo tipo é recusado quando os dez espaços distintos estão ocupados. O inventário pausa o movimento, recebe foco e pode ser aberto por I ou pelo botão “Inventário (I)”; pode ser fechado por I, Esc ou pelo botão “Fechar”; o rótulo do botão não anuncia atalhos.
 
-Setas navegam pela grade: esquerda/direita percorrem cada fileira sem passar para a outra; cima/baixo mudam de fileira; Home/End vão ao primeiro/último espaço da fileira. O foco não anuncia o número ou o espaço selecionado ao navegar pela grade. Enter abre as ações de um item ocupado e move o foco para Examinar; o botão “Ações (Enter)” é alternativa. Na lista de ações, setas cima/baixo percorrem as opções e as extremidades se conectam; Home/End vão à primeira/última ação. Enter ou Espaço ativa a opção em foco. Esc volta à grade e, na grade, fecha o inventário. Espaço vazio não executa ação nem produz anúncio.
+Setas navegam pela grade: esquerda/direita percorrem cada fileira sem passar para a outra; cima/baixo mudam de fileira; Home/End vão ao primeiro/último espaço da fileira. O foco não anuncia o número ou o espaço selecionado ao navegar pela grade. Enter abre as ações de um item ocupado e move o foco para Examinar; o botão “Ações (Enter)” é alternativa. Na lista de ações, setas cima/baixo percorrem as opções e as extremidades se conectam; Home/End vão à primeira/última ação. Enter ou Espaço ativa a opção em foco. Esc volta à grade e, na grade, fecha o inventário; a tecla não é anunciada no rótulo visível dos botões. Espaço vazio não executa ação nem produz anúncio.
 
 As ações disponíveis são Examinar, Mover, Usar, Largar e Atribuir atalho. Mover transfere para um espaço vazio, agrupa itens iguais ou troca itens diferentes. Usar equipa ou guarda o item nas mãos; não consome o item. Largar coloca o item numa lista acessível de itens largados, e o botão “Recolher itens largados” recupera o que couber. Esse coletor é global: itens largados não viram objetos 3D no chão.
 
@@ -134,7 +134,7 @@ A interface da página tem instruções recolhidas, botão de inventário, paine
 - **Espaço:** usar o item equipado ou realizar ação situacional. Com as mãos vazias, pode iniciar/sair da natação onde as condições permitem, agarrar/soltar a árvore, coletar graveto baixo ou cortar galho vivo com faca equipada. Espaço não recolhe itens comuns do chão.
 - **Alt+C:** abrir o menu contextual do item equipado.
 - **1 a 0:** equipar/guardar o tipo associado ao atalho.
-- **Esc:** fechar ou voltar de painéis de inventário e ações.
+- **Esc:** fechar ou voltar de painéis de inventário e ações. A interface não exibe uma mensagem para pressionar Esc.
 
 Durante a natação, W/S seguem o ângulo vertical do olhar e A/D continuam o movimento lateral. Durante a escalada, W/S fazem impulsos de subida e descida. Soltar a tecla ativa interrompe o movimento. O protótipo não oferece remapeamento de teclas, gamepad, controle por toque para movimentação nem controles alternativos de uma mão.
 

@@ -279,5 +279,5 @@ A fala ao entrar na área de contato deve conter somente o nome do objeto, sem p
 
 - Na fase atual, a cena 3D deve ocupar a tela inteira, sem cabeçalho ou moldura com aparência de página de site.
 - O único texto visível durante o jogo são mensagens de feedback das ações do jogador. Elas devem ser breves e contextuais, comunicando resultado ou estado da ação. Não exibir título, controles, lista de teclas, instruções, lembretes, descrições persistentes do cenário ou outros textos de interface durante o jogo.
-- Não há tutorial nem menu de ajuda nesta fase. Os controles continuam funcionando, mas não são exibidos.
-- Não antecipar menu inicial, menu de pausa ou opções: entram numa etapa posterior, depois que o protótipo sair do estado básico. Esc pode fechar ou voltar dos painéis existentes de inventário e ações contextuais; não abre menu de pausa nem recebe outra função nesta fase. F1 permanece sem função.
+- Não há tutorial nem menu de ajuda nesta fase. Os controles continuam funcionando, mas não são exibidos nem anunciados em rótulos ou mensagens. Esc pode fechar ou voltar dos painéis existentes de inventário e ações contextuais, sem aviso visível.
+- Não antecipar menu inicial, menu de pausa ou opções: entram numa etapa posterior, depois que o protótipo sair do estado básico. Esc pode fechar ou voltar dos painéis existentes de inventário e ações contextuais, mas a interface não deve instruir o jogador a pressioná-lo nem incluir “Esc” nos rótulos dos botões. A tecla não abre menu de pausa nem recebe outra função nesta fase. F1 permanece sem função.
