@@ -158,7 +158,9 @@
     const horizonColor = new THREE.Color(0xbcd4c8);
     const underwaterColor = new THREE.Color(0x0d4658);
     const surfaceFog = new THREE.Fog(horizonColor, 22, 48);
-    const underwaterFog = new THREE.Fog(underwaterColor, .6, 12);
+    // A broader fade avoids a hard-looking split between the near lakebed and
+    // distant submerged scene while retaining a visible underwater atmosphere.
+    const underwaterFog = new THREE.FogExp2(underwaterColor, .15);
     scene.background = horizonColor;
     scene.fog = surfaceFog;
 
@@ -398,7 +400,8 @@
       hill: new THREE.MeshStandardMaterial({ map: makeSoilTexture(), roughness: 1, side: THREE.DoubleSide, vertexColors: true }),
       mud: new THREE.MeshStandardMaterial({ map: makeMudTexture(), roughness: .98, side: THREE.DoubleSide }),
       contactShadow: new THREE.MeshBasicMaterial({ map: makeContactShadowTexture(), transparent: true, opacity: .55, depthWrite: false, side: THREE.DoubleSide, toneMapped: false }),
-      lakeBed: new THREE.MeshStandardMaterial({ color: 0x3d5045, roughness: .96, side: THREE.DoubleSide }),
+      lakeBed: new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .96, side: THREE.DoubleSide, vertexColors: true,
+        emissive: 0x10231f, emissiveIntensity: .14 }),
       bark: new THREE.MeshStandardMaterial({ map: makeBarkTexture(), roughness: 1 }),
       stone: new THREE.MeshStandardMaterial({ color: 0x777a76, roughness: .96, flatShading: true }),
       ash: new THREE.MeshStandardMaterial({ color: 0x555650, roughness: 1, flatShading: true }),
@@ -641,6 +644,28 @@
       geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
       geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
       geometry.setIndex(indices);
+      // Shallow shelves read as silty olive stone, deep areas as muted blue-green
+      // sediment. Broad overlapping patches avoid a new set of concentric bands.
+      const colors = [];
+      const shallowBed = new THREE.Color(0x827e5d);
+      const deepBed = new THREE.Color(0x526f69);
+      const abyssBed = new THREE.Color(0x405d60);
+      for (let index = 0; index < positions.length; index += 3) {
+        const x = positions[index], y = positions[index + 2];
+        const dx = (x - LAKE.centerX) / LAKE.radiusX;
+        const dy = (-y - LAKE.centerY) / LAKE.radiusY;
+        const radial = Math.min(1, Math.hypot(dx, dy));
+        const depth = lakeDepthAt(x, -y);
+        const depthRatio = clamp(depth / LAKE_MAX_DEPTH_METERS, 0, 1);
+        const patch = .035 * Math.sin(x * 1.7 + y * .63)
+          + .025 * Math.cos(y * 1.3 - x * .91)
+          + .018 * Math.sin(x * 3.2 - y * 2.1) * Math.cos(y * 2.7 + x * .55);
+        const shelfMix = clamp((.78 - radial) / .34, 0, 1);
+        const base = shallowBed.clone().lerp(deepBed, shelfMix).lerp(abyssBed, Math.max(0, depthRatio - .62) * .55);
+        const color = base.clone().multiplyScalar(1 + patch);
+        colors.push(color.r, color.g, color.b);
+      }
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
       geometry.computeVertexNormals();
       return geometry;
     }

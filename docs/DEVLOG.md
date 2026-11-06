@@ -787,3 +787,18 @@ O deploy do commit `9db3a6`, que contém as mesmas alterações visuais do `5703
 - Sintaxe do módulo verificada com parser. Comparação estática manteve as constantes lógicas de mapa, relevo, lago, escalada e pontos de galho, e as funções de coleta, movimento, terreno, profundidade e seleção da árvore sem mudanças. Isso não é um teste de coleta nem prova visual em tempo de execução.
 - A página atual foi carregada previamente como referência, mas a imagem de detalhe do galho do mapa-base não estava disponível entre os arquivos versionados consultados; por isso a nova silhueta ainda precisa ser inspecionada em primeiro plano e entre tufos após o deploy. Confirmar também que o alvo continua selecionável por mira/Enter e que os ramos decorativos não causam interferência/oclusão. Não há aprovação visual do Anderson nesta etapa.
 - Sem mudanças em releases, tags ou backups.
+
+
+## 6 de novembro de 2026 — distinção visual do leito subaquático
+
+### Mudanças
+
+- Seguindo a captura de teste registrada no guia, investigada a combinação do fundo do lago e da névoa quando o jogador chega ao fundo. O código mostra fundo de lago com material de cor única e névoa linear subaquática que se aproxima do fim abruptamente; a captura não prova que isso explique a faixa diagonal, então a causa específica da linha permanece em aberto.
+- O leito ganhou uma paleta procedural por vértice, com tons discretamente distintos para prateleira rasa e bacia profunda, além de variações largas e suaves para evitar anéis rígidos. O material recebeu iluminação emissiva baixa para reduzir o desaparecimento total do fundo em profundidade. A névoa subaquática foi trocada por atenuação exponencial contínua, sem um limite linear visível.
+- A geometria e posição do fundo permanecem amostradas pelas mesmas funções e coordenadas. Não foram alterados limites do lago, profundidade máxima, modelo de profundidade, superfície, altura de superfície, natação, movimento, entrada/saída, colisões ou anúncios acessíveis. A esfera celeste continua oculta quando submerso.
+
+### Verificações e pendências
+
+- Sintaxe do módulo JavaScript confirmada por parser. Constantes do mapa, lago, profundidade e natação foram comparadas e preservadas; as funções de profundidade, entrada/saída de natação, seleção e câmera também foram comparadas sem mudanças. Isso não equivale a teste na água.
+- Falta recapturar o fundo do lago e a água rasa/superfície para verificar cor, visibilidade do leito e se a divisão diagonal permanece. Também precisam ser testadas natação, saída, orientação e leitor de tela; nenhuma conclusão visual é considerada aprovada até a avaliação do Anderson.
+- Sem mudanças em releases, tags ou backups.
