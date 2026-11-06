@@ -81,3 +81,11 @@ Captura aproximada junto à árvore, com o jogador aparentemente sob a copa. Um 
 O enquadramento deixa um grande espaço de céu entre o galho próximo e a paisagem baixa ao fundo; a colina aparece cortada à esquerda, e o lago está ao centro ao fundo. A imagem é útil para examinar a superfície e a relação visual do galho com o jogador, mas não mostra a árvore inteira nem permite comparar adequadamente galhos próximos e distantes. Os elementos do Chrome/Windows são externos ao jogo.
 
 Questões para comparar nas próximas imagens da rodada: se a textura listrada parece madeira ou um padrão repetido; se a espessura e as pontas ficam coerentes quando vistos de distância normal; se os galhos se integram ao tronco/copa e se a mudança visual mantém claramente os galhos vivos separados dos galhos caídos. Não é possível declarar aprovação ou reprovação do refinamento com esta única vista extrema.
+
+### `02-arvore-distancia.jpg` — 16:32
+
+Vista mais afastada que mostra a árvore quase inteira, enviada após a imagem de galho muito próximo. A copa é composta por vários volumes facetados grandes e sobrepostos, de contornos arredondados e níveis verde-escuros variados. Galhos grossos, escuros e retos sobressaem horizontalmente e em diagonais, alguns terminando em pontas arredondadas/cilíndricas. O tronco é estreito em relação à copa. A árvore aparece isolada no terreno, com colina pedregosa à esquerda e lago baixo ao fundo.
+
+Em comparação à captura de proximidade, esta vista confirma que a espessura e a projeção dos galhos não são apenas um efeito de distância muito curta: os galhos continuam visualmente grossos e retos na silhueta geral. A copa tem leitura de volumes facetados claramente estilizados, mas os volumes e galhos parecem elementos sobrepostos separadamente; investigar se a integração visual entre tronco, ramificações e copa pode ser refinada. Não tratar estilo facetado por si só como erro: a questão é a coerência da forma, escala e conexão entre partes dentro da direção artística.
+
+A captura não permite avaliar a traseira da árvore, a ligação estrutural de todos os galhos, nem como a silhueta se lê na escalada. Também não prova que os galhos vivos estejam distinguíveis dos galhos caídos em close. A janela do Chrome/Windows, incluindo o pop-up de áudio e a barra de tarefas, é externa ao jogo.
