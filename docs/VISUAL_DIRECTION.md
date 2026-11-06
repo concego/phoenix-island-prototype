@@ -102,3 +102,15 @@ Esta sequência é uma ordem de investigação/priorização, não uma autoriza�
 Enquanto esta direção estiver sendo explorada, pode-se dizer: “Estamos desenvolvendo uma direção de fantasia 3D estilizada, com influência de animê e referências amplas aos Zelda 3D recentes. A identidade do cenário parte da lore de uma ilha devastada que resiste e parece renascer. Estamos aplicando essa direção ao mapa de teste inteiro no workflow atual.”
 
 Não chamar essa proposta de arte final, não afirmar que a aparência atual já a representa e não sugerir que o jogo copia Zelda.
+
+### Captura adicional — vista conjunta do lago, árvore e colina (5 de novembro de 2026, 22:08)
+
+Esta vista permite avaliar simultaneamente os três elementos que faltavam nas capturas anteriores, além de uma faixa do terreno. A moldura superior é do Chrome e não pertence ao jogo.
+
+- **Composição:** o céu continua dominando grande parte da janela; a linha do horizonte e os principais elementos do mapa ficam concentrados numa faixa baixa e estreita. A árvore e a colina estão visíveis, mas ainda parecem pequenas em relação ao espaço vazio acima delas. Rever enquadramento/composição da vista de jogo sem alterar câmera ou controles por inferência.
+- **Árvore:** a silhueta é estreita e muito simétrica: tronco fino, poucos volumes arredondados de copa, folhas pequenas soltas no contorno e vários galhos retos que atravessam a copa horizontalmente. No conjunto, a árvore lembra um objeto montado por peças separadas ou um topiário, não uma árvore integrada ao cenário. Rever silhueta, distribuição/escala da copa e integração dos galhos no estilo estilizado. Preservar os pontos e geometrias necessários para coleta e escalada; mudanças nesses elementos exigem verificar as mecânicas dependentes.
+- **Colina:** aparece como um bloco/rampa trapezoidal muito regular, com uma face escura extensa e bordas retas; as pedras parecem pequenos objetos pousados em fileiras ou faixas sobre a superfície e junto à crista. Rever a integração visual entre relevo e pedras para reduzir a aparência de rampa artificial e pedras alinhadas decorativamente. Não alterar altura, limites, perfil caminhável ou colisões sem decisão de gameplay aprovada.
+- **Lago e margem:** a borda visível forma um arco limpo e estreito entre a água e a grama; água e margem têm superfícies visualmente lisas e uma transição bastante uniforme. Essa vista confirma que água, lama e terreno precisam ser considerados juntos, mas não mostra toda a forma do lago nem detalhes próximos suficientes para avaliar suas faixas de profundidade.
+- **Terreno e vegetação distante:** a grama continua com aparência de tufos pequenos e espalhados por um plano muito regular; arbustos distantes aparecem como pequenos volumes isolados no horizonte. Rever escala, agrupamento, variação e integração visual, mantendo as posições e funções de gameplay salvo aprovação explícita.
+
+A captura revela problemas de leitura visual neste enquadramento, não define sozinha uma solução artística. Usá-la em conjunto com vistas próximas da árvore, colina e margem e com a captura ampla; registrar separadamente o que foi inspecionado em cada imagem.
