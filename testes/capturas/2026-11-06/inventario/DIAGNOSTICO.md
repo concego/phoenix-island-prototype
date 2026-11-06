@@ -6,4 +6,4 @@ A janela do inventário aparece centralizada sobre a cena escurecida. Mostra o t
 
 A captura é adequada para examinar layout, hierarquia visual, seleção/foco, contagem e relação entre mochila e comandos. Não mostra a lista de ações aberta; não permite avaliar como os nomes dos itens ou ações se comportam em outros estados, nem validar acessibilidade, navegação por teclado ou leitura por leitor de tela apenas pela imagem.
 
-O Chrome, a barra de tarefas do Windows e a sobreposição do gravador/microfone são elementos externos ao jogo. O texto do botão de fechar contém Esc; esta nota registra o que aparece na captura e não altera a decisão vigente de não usar Esc como atalho nesta fase. Se houver solicitação futura para remover ou mudar esse botão/atalho, conferir o código e a regra atual antes de agir.
+O Chrome, a barra de tarefas do Windows e a sobreposição do gravador/microfone são elementos externos ao jogo. Anderson confirmou em 6 de novembro de 2026 que Esc deve ser usado para fechar/voltar dos painéis existentes de inventário e ações contextuais. Isso não autoriza criar menu de pausa nem atribuir outra função a Esc; F1 permanece sem função nesta fase.
