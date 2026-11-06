@@ -89,6 +89,20 @@ Para comparar uma rodada, registrar capturas da vista inicial e de vistas que mo
 
 Esta sequência é uma ordem de investigação/priorização, não uma autorização para executar todas as mudanças automaticamente. Cada solicitação de implementação continua limitada ao que Anderson pedir e às decisões registradas.
 
+## Roteiro de capturas para a próxima rodada de refinamento
+
+As capturas devem permitir comparar a versão anterior e a nova sem exigir uma inspeção de todo o mapa numa única imagem. Repetir, quando possível, os mesmos pontos e ângulos entre as rodadas. A captura ampla já fornecida funciona como referência geral; as próximas podem priorizar os detalhes abaixo.
+
+- **Vista geral:** enquadrar o máximo possível do mapa a partir do ponto de início, em orientação aproximadamente igual à captura ampla existente. Deve mostrar a relação geral entre terreno, lago, colina e vegetação. Informar se a câmera está na posição inicial ou se foi movida.
+- **Lago e margem:** aproximar-se da borda e olhar de lado, incluindo no mesmo enquadramento grama/solo, lama e água. Se a margem for longa, fazer uma segunda vista de outro trecho. Evitar imagem tão próxima que esconda a transição entre as três superfícies.
+- **Árvore:** ficar a uma distância em que a árvore inteira caiba na imagem, incluindo base, tronco, copa e galhos principais. Fazer uma segunda captura em ângulo lateral/oblíquo para revelar profundidade e relação entre copa e galhos.
+- **Colina:** fazer uma vista da base em diagonal que inclua a encosta e as pedras; se possível, outra de lado que mostre a silhueta e o topo. Não sacrificar a comparação da inclinação por um ângulo meramente decorativo.
+- **Detalhe do solo:** aproximar-se de grama, arbustos e galhos caídos e enquadrá-los junto ao chão, com uma pequena porção do terreno ao redor para avaliar escala, agrupamento e integração. Se não couberem bem juntos, separar detalhe de vegetação e detalhe de galhos.
+
+Ao enviar cada captura, indicar em poucas palavras o ponto de referência ou as coordenadas anunciadas pelo jogo e a direção aproximada do olhar, se souber. Não é necessário criar legendas dentro da imagem. Se não souber a posição ou direção, basta dizer qual elemento pretendia mostrar. F11 pode ocultar temporariamente a moldura do Chrome para a captura; abas, barra do navegador e barra do sistema não são parte do jogo e não precisam orientar o refinamento.
+
+Não é obrigatório produzir todas as vistas em cada rodada. Escolher as que correspondem às áreas alteradas e, no mínimo, incluir uma vista geral mais uma vista próxima de cada área refinada. Uma captura mostra somente o que está enquadrado: registrar como “não avaliado” qualquer elemento oculto ou pequeno demais para examinar.
+
 ## Método de trabalho
 
 1. Manter o mapa e as mecânicas atuais enquanto estabelece a linguagem visual comum.
