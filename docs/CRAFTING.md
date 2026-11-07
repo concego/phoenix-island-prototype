@@ -4,7 +4,15 @@
 
 O protótipo testa uma pequena fatia de coleta, fabricação e uso de ferramentas. Estas regras não definem um sistema completo de sobrevivência nem devem ser extrapoladas para o jogo futuro. Para decisões gerais e limites do projeto, consulte [`GDD.md`](GDD.md). O GDD é a referência para as regras vigentes; o [`DEVLOG.md`](DEVLOG.md) registra o histórico de implementação e testes. Se um registro histórico divergir da regra aprovada mais recente, prevalece o GDD e este documento atualizado.
 
-## Receita: faca de pedra
+## Organização por tier
+
+Para a etapa inicial de implementação, antes de alterar o mapa, as ferramentas rústicas aprovadas ficam no **Tier 1**. Neste momento, Tier 1 inclui a faca de pedra e o martelo de pedra. A fogueira é uma fabricação/ação, não uma ferramenta, e portanto não recebe tier neste registro.
+
+A classificação descreve o escopo inicial atual; não afirma que todas as ferramentas futuras já foram definidas, nem estabelece conteúdo, materiais, receitas ou regras para tiers posteriores. Tiers futuros permanecem sem especificação até decisão explícita.
+
+## Tier 1 — ferramentas rústicas iniciais
+
+### Faca de pedra
 
 **Ingredientes:** duas pedras no total: uma pedra equipada e outra disponível no inventário.
 
@@ -16,7 +24,7 @@ O protótipo testa uma pequena fatia de coleta, fabricação e uso de ferramenta
 
 **Limites:** a faca não é ferramenta de impacto. Não atribuir a ela outras funções ou efeitos sem decisão explícita.
 
-## Receita: martelo de pedra
+### Martelo de pedra
 
 **Ingredientes:** uma pedra, um graveto e uma fibra vegetal. A fibra serve para afixar a pedra ao cabo.
 
@@ -30,7 +38,7 @@ O protótipo testa uma pequena fatia de coleta, fabricação e uso de ferramenta
 
 **Limites:** o martelo não corta nem quebra galhos, não converte galho em gravetos e não tem função de construção. Não adicionar outras funções sem decisão explícita.
 
-## Receita/ação: criar uma fogueira simples
+## Fabricação/ação: criar uma fogueira simples
 
 **Ingredientes:** dez gravetos na pilha equipada.
 
