@@ -216,6 +216,7 @@
     const LAKE_WADING_DEPTH_METERS = .55;
     const LAKE_MAX_DEPTH_METERS = 2.7;
     const SWIM_SPEED = 1.5;
+    const SWIM_BACKSTROKE_MAX_DEPTH_METERS = LAKE_WADING_DEPTH_METERS;
     const SWIM_STROKE_INTERVAL_MS = 580;
     const SWIM_ENTRY_LOOKAHEAD_METERS = 1.0;
     const SWIM_SHORE_MARKER_RATIO = .92;
@@ -1502,6 +1503,7 @@
     let swimShoreMarkerContact = false;
     let swimBottomContact = false;
     let swimSurfaceContact = false;
+    let swimBackstrokeDepthContact = false;
     let nextSwimStrokeAt = 0;
     let heldItem = null;
     let inventoryReturnFocus = null;
@@ -3156,6 +3158,18 @@
         nextClimbStrokeAt = 0;
         return;
       }
+      if (climbMode === 'swimming' && code === 'KeyS') {
+        const depth = LAKE.waterZ - player.swimEyeAltitude;
+        if (depth > SWIM_BACKSTROKE_MAX_DEPTH_METERS + 1e-5) {
+          if (!swimBackstrokeDepthContact) announce('Em maior profundidade, não dá para nadar para trás.');
+          swimBackstrokeDepthContact = true;
+          stopMovement();
+          return;
+        }
+        swimBackstrokeDepthContact = false;
+      } else if (climbMode === 'swimming') {
+        swimBackstrokeDepthContact = false;
+      }
       activeDirection = movementVector(code);
       if (!activeDirection) return;
       activeMoveMode = 'walk';
@@ -3345,6 +3359,7 @@
         return;
       }
       const movementCode = movementCodeFromEvent(event);
+      if (movementCode === 'KeyS' && climbMode === 'swimming') swimBackstrokeDepthContact = false;
       if (!movementCode || activeCode !== movementCode) return;
       stopMovement();
     });
@@ -3413,6 +3428,12 @@
           const stepDistance = distance / steps;
           let moved = false, blockedAtShore = false;
           for (let i = 0; i < steps; i++) {
+            if (activeCode === 'KeyS' && LAKE.waterZ - player.swimEyeAltitude > SWIM_BACKSTROKE_MAX_DEPTH_METERS + 1e-5) {
+              if (!swimBackstrokeDepthContact) announce('Em maior profundidade, não dá para nadar para trás.');
+              swimBackstrokeDepthContact = true;
+              stopMovement();
+              break;
+            }
             const tx = player.x + movement.x * stepDistance;
             const ty = player.y + movement.y * stepDistance;
             if (!isInLakeWater(tx, ty) || !isInsideMap(tx, ty)) {
@@ -3427,7 +3448,10 @@
             const bottom = LAKE.waterZ - depth + SWIM_EYE_SURFACE_OFFSET_METERS + SWIM_BOTTOM_CLEARANCE_METERS;
             const minimumEyeAltitude = Math.min(surface, bottom);
             const unclamped = player.swimEyeAltitude + movement.z * stepDistance;
-            const nextEyeAltitude = clamp(unclamped, minimumEyeAltitude, surface);
+            let nextEyeAltitude = clamp(unclamped, minimumEyeAltitude, surface);
+            if (activeCode === 'KeyS') {
+              nextEyeAltitude = Math.max(nextEyeAltitude, LAKE.waterZ - SWIM_BACKSTROKE_MAX_DEPTH_METERS);
+            }
             const hitBottom = movement.z < 0 && unclamped < minimumEyeAltitude - 1e-5;
             const reachedSurface = !swimSurfaceContact && nextEyeAltitude >= surface - SWIM_SURFACE_TOLERANCE_METERS;
             player.x = tx;

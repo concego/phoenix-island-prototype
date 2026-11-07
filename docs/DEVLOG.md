@@ -929,3 +929,10 @@ Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStone
 ### Limites
 
 Estas decisões são fundamentos de design, não sistemas implementados. Permanecem pendentes a quantidade de pontos de atributo por nível, curvas e limites, cálculos adicionais ligados a cada atributo, catálogo e ritmo de evolução das habilidades, limiares e penalidades exatas de sobrecarga e números de estamina/mana. Não foram adotadas integralmente fórmulas de D&D, CoffeeMUD ou MUDs.
+
+
+## 7 de novembro de 2026 — nado para trás limitado à superfície
+
+- Por solicitação de Anderson, o nado para trás (S) só fica disponível quando a profundidade é de até 0,55 m, adotando o limite já usado para a faixa rasa. Em profundidade maior, a tentativa é bloqueada com anúncio; o personagem pode subir usando a combinação existente de W/S com inclinação do olhar e tentar recuar ao chegar ao limite.
+- Durante o recuo, a altitude é limitada para que S não leve o personagem abaixo de 0,55 m de profundidade. Os demais movimentos e a velocidade de natação não mudam.
+- README e GDD atualizados. Publicação em `main` e teste em execução serão conferidos; avaliação manual de Anderson continua pendente. Nenhuma pré-release ou tag será alterada.
