@@ -907,9 +907,9 @@ Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStone
 - Sintaxe e diff verificados; nenhum código de mecânica ou coleta foi alterado. Publicação e teste de anúncio no navegador serão registrados separadamente. Sem alterações em releases, tags ou backups.
 
 
-## 7 de novembro de 2026 — atualizar documentação e pré-release da descrição de arbustos
+## 7 de novembro de 2026 — consolidar pré-releases de desenvolvimento
 
-- Documentado no README e no GDD que arbustos são identificados ao olhar somente como “um arbusto silvestre”, sem números e sem revelar rendimento. A coleta continua fornecendo duas fibras vegetais, e o resultado permanece anunciado depois de recolher.
-- O teste automatizado no navegador recebeu “um arbusto silvestre está no centro do campo de visão, a 20.6 metros” — sem ordinal e sem informação de fibra. A página respondeu HTTP 200 e sem erros de console nas verificações realizadas.
-- Mantido o foco desta alteração na identificação durante a observação; nomes de fontes nos beeps de proximidade, falas de resultado de coleta, números de pedras/fogueiras e identificadores contextuais de outros tipos não fazem parte desta mudança. Nenhuma mecânica de coleta foi alterada.
-- Será criada uma nova pré-release de desenvolvimento para registrar o estado corrente no commit resultante, sem mover ou sobrescrever a tag/release anterior nem os backups históricos.
+- A pedido de Anderson, o projeto passa a manter três pré-releases de desenvolvimento, todas apontando para o commit atual alinhado, em vez de acumular múltiplos snapshots históricos idênticos ou defasados. Os três registros são marcadores de foco/histórico de validação, não builds diferentes; seus corpos devem declarar o mesmo commit-alvo e lembrar que o protótipo inteiro segue em desenvolvimento.
+- Mantidas as três referências: `dev-2026-11-07-stone-crafting` (Anderson confirmou cadeia completa, falta de ingredientes e menu; inventário cheio não foi testado), `dev-2026-11-07-shrub-description` (identificação de arbusto sem número/rendimento; anúncio verificado no navegador) e `backup-pre-estrutural-2026-11-02` (antes descrita como snapshot de rollback testado, agora reclassificada como pré-release de desenvolvimento alinhada; não representa mais o conteúdo histórico do backup de 2/11).
+- Removidas as releases/tag redundantes `backup-2026-10-27`, `backup-2026-10-08` e `backup-2026-10-04`, todas referências ao mesmo commit histórico. Não há mais garantia de rollback por esses três identificadores; o trabalho atual continua no histórico normal de commits do Git.
+- As três tags mantidas serão alinhadas ao commit documental corrente. A tag retida `backup-pre-estrutural-2026-11-02` deixa de ser um backup imutável e não deve mais ser citada como snapshot do estado pré-estrutural. Nenhuma delas é uma release estável/oficial; todas são pré-releases de desenvolvimento com níveis de validação diferentes.
