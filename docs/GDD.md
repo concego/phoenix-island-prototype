@@ -157,12 +157,15 @@ O registro consolidado de ingredientes, consumo, resultados esperados e condiç�
 - A mineração exige vários golpes, anuncia progresso e só entrega as pedras no golpe final.
 - O martelo não corta nem quebra galhos, não divide galho em gravetos e ainda não tem função de construção. Não inventar outras funções sem decisão explícita.
 
-### Pedras, arbustos e fibra vegetal
+### Materiais e coleta
 
 - Pedras soltas, arbustos, galhos caídos e cinzas são coletados com Enter quando elegíveis, inclusive com outro item nas mãos. Espaço usa o item equipado; não recolhe esses itens do chão.
 - Afloramentos exigem martelo no inventário e são minerados com Espaço em golpes sucessivos.
 - Arbustos são coletados e fornecem duas fibras vegetais cada no protótipo atual.
-- Fibra vegetal é inflamável e é requisito da receita do martelo.
+- Gravetos são menores e mais frágeis que galhos; ambos são inflamáveis. Gravetos servem de combustível e de partes para ferramentas e estruturas; no protótipo são combustível da fogueira simples e compõem o cabo do martelo de pedra. Receitas concretas de estruturas ou outras ferramentas ainda não estão definidas. Galhos são maiores e mais resistentes que gravetos; podem servir de combustível e ser convertidos em dois gravetos com faca no inventário. Ainda não há receita especificada que use galhos como componente de ferramenta ou estrutura; lança, picareta e estruturas são possibilidades de design futuras, sem receitas aprovadas.
+- Fibras vegetais vêm dos arbustos, são inflamáveis e servem para improvisar amarrações que conectam componentes; a fibra da receita do martelo prende a pedra ao cabo. Outras receitas de amarração ou de estrutura ainda não estão especificadas.
+- Pedras são o mineral mais básico atualmente listado, resistente e não inflamável. Podem ser moldadas com limitações e não são tão flexíveis quanto metais; servem para ferramentas e estruturas. No protótipo são usadas na faca e no martelo de pedra. Processo de moldagem, técnicas e receitas estruturais concretas ainda não estão definidos.
+- Usos possíveis para ferramentas ou estruturas não são automaticamente receitas aprovadas nem autorização de implementação. O catálogo consolidado de propriedades e usos está em [`CRAFTING.md`](CRAFTING.md).
 - Coletas devem respeitar mira, alcance e espaço no inventário e não consumir o objeto se a recompensa não puder ser guardada.
 
 ### Fogueira simples

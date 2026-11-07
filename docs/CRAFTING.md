@@ -10,6 +10,38 @@ Para a etapa inicial de implementação, antes de alterar o mapa, as ferramentas
 
 A classificação descreve o escopo inicial atual; não afirma que todas as ferramentas futuras já foram definidas, nem estabelece conteúdo, materiais, receitas ou regras para tiers posteriores. Tiers futuros permanecem sem especificação até decisão explícita.
 
+## Materiais: propriedades e usos
+
+Esta lista separa o que já está definido ou presente no protótipo das possibilidades de uso indicadas para o design futuro. Uma possibilidade não é uma receita aprovada nem significa que o objeto ou sistema já esteja implementado.
+
+### Gravetos
+
+- **Propriedades:** peças pequenas em comparação com galhos; menores e mais frágeis que eles. São inflamáveis.
+- **Papel definido no design:** combustível e partes para ferramentas e estruturas. São adequados a cabos e outras peças menores, mas não têm a resistência de galhos.
+- **Uso concreto no protótipo:** combustível da fogueira simples; ingrediente da receita do martelo de pedra, cujo cabo é feito com um graveto. Dez gravetos são consumidos para criar a fogueira simples.
+- **Ainda não especificado:** receitas de estruturas ou de outras ferramentas com gravetos.
+
+### Galhos
+
+- **Propriedades:** hastes maiores e mais resistentes que gravetos; são inflamáveis.
+- **Uso atual no protótipo:** são inflamáveis e podem ser consumidos como combustível. Um galho pode ser convertido em dois gravetos quando o jogador possui uma faca de pedra no inventário.
+- **Uso em ferramentas/estruturas:** ainda não há receita especificada que use galhos como componente. Por serem maiores e mais resistentes que gravetos, poderão servir de base para ferramentas como lança e picareta e para estruturas. São possibilidades de design, não receitas aprovadas ou autorização de implementação.
+
+### Fibras vegetais
+
+- **Origem atual:** encontradas em arbustos; cada arbusto fornece duas fibras vegetais no protótipo atual.
+- **Papel definido no design:** material inflamável para improvisar amarrações e conectar componentes.
+- **Uso concreto no protótipo:** uma fibra é ingrediente do martelo de pedra e prende a pedra ao cabo.
+- **Ainda não especificado:** outras receitas de amarração ou componentes de estruturas; nenhuma foi aprovada.
+
+### Pedras
+
+- **Propriedades:** forma mais básica de mineral presente no projeto; são resistentes e não inflamáveis. Podem ser moldadas, mas com limitações: não têm a flexibilidade de metais.
+- **Papel definido no design:** matéria-prima resistente para ferramentas e estruturas, moldável dentro de limites; não tem a flexibilidade dos metais.
+- **Uso concreto no protótipo:** ingrediente da faca e do martelo de pedra; pedras são recolhidas soltas ou obtidas de afloramentos.
+- **Ainda não especificado:** processo e limites práticos de moldagem, receitas adicionais e funções estruturais concretas. Não assumir técnicas ou propriedades além das descritas.
+
+
 ## Tier 1 — ferramentas rústicas iniciais
 
 ### Ferramentas carregáveis
