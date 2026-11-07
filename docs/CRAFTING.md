@@ -100,7 +100,7 @@ A fogueira simples é uma ferramenta fixa, não carregável, e a estação de tr
 
 **Condições:** estar no chão seco, fora de água e lama. A ação não é permitida durante escalada ou natação.
 
-**Consumo e colocação no código atual:** consome exatamente dez gravetos e cria a fogueira na posição atual do jogador, desde que esteja no chão e fora de água e lama. A implementação consultada não verifica proximidade de fogueiras já existentes; portanto, a regra de impedir outra fogueira dentro de 2,4 m não está implementada. Reacender uma fogueira apagada também não está disponível.
+**Consumo e colocação:** consome exatamente dez gravetos e cria a fogueira na posição atual do jogador, desde que esteja no chão e fora de água e lama. Não há restrição de proximidade: o jogador pode criar outra fogueira perto de uma fogueira acesa ou apagada. Reacender uma fogueira apagada ainda não está disponível.
 
 **Resultado no código atual:** fogueira simples acesa, com 180 segundos (3 minutos) de combustível inicial. O valor aprovado e implementado é 180 segundos; qualquer indicação de um minuto está incorreta. O texto do menu contextual ainda contém essa indicação incorreta.
 
