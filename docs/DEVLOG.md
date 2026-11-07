@@ -963,3 +963,14 @@ Estas decisões são fundamentos de design, não sistemas implementados. Permane
 ### Correção de contexto registrada em 7 de novembro de 2026
 
 Em conversa posterior, Anderson esclareceu que centralizar o olhar em um objeto não era o problema: a dificuldade era localizar/centralizar os beeps espaciais associados aos objetos. Não inferir que a percepção visual do objeto e a localização auditiva do beep sejam tarefas equivalentes. Anderson também confirmou que planejou e chegou a jogar uma build com passos de olhar de 15°; essa configuração foi restaurada para as setas, com limites de ±45° na horizontal e ±30° na vertical.
+
+
+## 7 de novembro de 2026 — reduzir somente a amplitude do olhar
+
+- Conforme esclarecimento de Anderson, o tamanho do passo não deveria ter sido alterado: permanece em 15° por toque, como previsto e presente numa build que ele jogou. A mudança deste ajuste afeta apenas a amplitude máxima do olhar.
+- Limites horizontais reduzidos de ±45° para ±30° em relação ao corpo, e limites verticais de ±30° para ±15°. Assim são dois passos completos em cada sentido. Atualizados README e GDD.
+- Nenhuma alteração à mira, aos beeps, ao movimento do personagem, à natação, ao tamanho do passo ou às releases/tags. Publicar em `main` para teste; a impressão de naturalidade depende da avaliação de Anderson.
+
+### Esclarecimento sobre centralização
+
+Anderson esclareceu que a dificuldade era localizar/centralizar os beeps espaciais emitidos pelos objetos; não era mirar visualmente o objeto. O passo de 15° é mantido por ser o controle previsto e familiar, enquanto a alteração atual restringe somente o ângulo total que o personagem pode olhar.

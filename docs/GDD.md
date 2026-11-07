@@ -117,7 +117,7 @@ A distribuição, quantidades e dimensões são parâmetros do protótipo e pode
 - W/S: avançar/recuar em relação ao corpo; A/D: deslocamento lateral.
 - Shift direito combinado ao movimento: corrida, com velocidades conforme o controle atual do README.
 - Shift esquerdo+A/D: girar o corpo em 45°; Shift esquerdo+W: girar 180°; Shift esquerdo+S: recuo rápido.
-- Setas: olhar em passos de 5°, com limites laterais e verticais descritos no README.
+- Setas: olhar em passos de 15°, com limites de ±30° na horizontal e ±15° na vertical.
 - C: anunciar coordenadas.
 - Espaço: interagir, usar o item em mãos ou iniciar/confirmar saída da natação conforme a situação.
 - Enter: recolher pedra solta ou fibra de arbusto quando o alvo e a interação forem elegíveis; não substitui a mineração de afloramentos.
@@ -196,7 +196,7 @@ O registro consolidado de ingredientes, consumo, resultados esperados e condiç�
 
 - Entrada: mãos vazias, faixa rasa e corpo voltado para água profunda; Espaço inicia.
 - W/S seguem a inclinação do olhar; no horizonte mantêm profundidade. A/D deslocam lateralmente. O nado para trás (S) só é permitido até 0,55 m de profundidade. Em águas mais profundas, S é completamente bloqueado e não move o personagem em qualquer direção, independentemente da inclinação do olhar. É necessário usar W com o olhar inclinado para cima, de acordo com a regra geral de natação, e alcançar a zona rasa antes de recuar. Ao recuar na faixa permitida, a profundidade não pode ultrapassar 0,55 m.
-- Na natação, o anúncio do olhar corresponde ao sinal real da inclinação desde o primeiro passo de 5°; só o ângulo horizontal é descrito como horizontal.
+- Na natação, o anúncio do olhar corresponde ao sinal real da inclinação desde o primeiro passo de 15°; só o ângulo horizontal é descrito como horizontal.
 - Saída: mãos vazias, superfície e proximidade da faixa rasa ou saída elegível, seguida de Espaço. Não sair automaticamente ao tocar a margem.
 - Não existem passagens subaquáticas no mapa atual.
 
