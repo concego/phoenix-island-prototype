@@ -57,6 +57,12 @@ No código, estão implementadas estas ações de criação/conversão relaciona
 
 As três etapas de processamento de pedra e fabricação da faca exigem que o jogador esteja no chão e sejam feitas no menu contextual do item indicado. Antes de consumir componentes, cada receita verifica se há espaço para o resultado; se não houver, informa falta de espaço e preserva os ingredientes. Itens intermediários são empilháveis no inventário como outros tipos de item. As ferramentas permanecem no inventário, enquanto a fogueira é criada no cenário. Abastecer fogueira é uma ação de uso de combustível, não uma receita de fabricação.
 
+### Validação registrada na pré-release de desenvolvimento
+
+Na rodada associada à [pré-release de desenvolvimento de 7 de novembro de 2026](https://github.com/concego/phoenix-island-prototype/releases/tag/dev-2026-11-07-stone-crafting), Anderson confirmou que o menu de ações, a cadeia completa de fabricação e o tratamento da falta de ingredientes funcionaram no teste manual. A página abriu sem erros no console, e o inventário abriu e fechou com I.
+
+**Ainda não validado:** inventário completamente cheio, pois não havia itens suficientes para ocupar todos os espaços; empilhamento do resultado; uso da faca na copa. Esses resultados pontuais não representam validação geral de gameplay ou acessibilidade. A pré-release é explicitamente de desenvolvimento, não uma versão final ou estável. As notas informam que os backups históricos permaneceram intactos.
+
 ## Tier 1 — ferramentas rústicas iniciais
 
 ### Ferramentas carregáveis
