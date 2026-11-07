@@ -887,16 +887,16 @@ Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStone
 - Em teste após a correção anterior, um anúncio com pedra revelou discordância no masculino (“pedra ... está alinhado”). O texto central foi alterado para “está no centro do campo de visão”, neutro e mais direto.
 
 
-## 7 de novembro de 2026 — ajuste fino do olhar para centralizar objetos
+## 7 de novembro de 2026 — ajuste fino do olhar e localização de beeps
 
-- Anderson relatou dificuldade para centralizar pedras soltas. A descrição mais precisa já distingue centro/lados, mas o olhar ainda avançava em passos de 15°; a zona central anunciada é menor, então alvos pequenos podiam ficar entre dois ângulos selecionáveis.
-- Reduzidos para 5° os passos horizontais e verticais das setas. Os limites continuam ±45° laterais e ±30° verticais. Não foram alterados posição/velocidade do personagem, mira ou seleção de interação, limites de alcance, prioridade de recursos, anúncio de distância, FOV ou posição central reconhecida.
-- README e GDD atualizados para documentar passos de 5°.
+- Correção de contexto informada por Anderson em 18:29: a dificuldade que motivou a preocupação era centralizar/localizar os beeps espaciais emitidos pelos objetos, não mirar ou centralizar visualmente os objetos.
+- Nesta alteração foram reduzidos de 15° para 5° os passos horizontais e verticais das setas. O histórico anterior atribuiu a mudança à centralização de alvos pequenos; essa justificativa estava errada. A relação entre os passos angulares e a localização auditiva precisa ser descrita como ajuste de orientação para ajudar a centralizar os beeps, sem presumir que olhar para um objeto e localizar seu beep sejam a mesma tarefa.
+- Os limites ficaram em ±45° laterais e ±30° verticais. Não foram alterados posição/velocidade do personagem, mira ou seleção de interação, limites de alcance, prioridade de recursos, anúncio de distância ou FOV.
+- A versão de 5° foi depois substituída a pedido de Anderson por passos de 15°, que ele recorda como os valores planejados e presentes numa build que chegou a jogar. A alteração de 15° está em `478283fe72dbda0dee5904fe9555390bd945eac6`.
 
 ### Verificações e pendências
 
-- Sintaxe JavaScript verificada por parser. Diff conferido: somente os dois incrementos de olhar e suas descrições no README/GDD, mais este registro; constantes de movimento, coleta, mira, árvore, pedras e centro do anúncio não mudaram.
-- Página publicada e teste de teclado confirmarão o novo passo. A comparação por Anderson, em especial o esforço necessário para centralizar pedras soltas e outros objetos pequenos, permanece necessária; não presumir que o ajuste resolveu o caso.
+- O histórico registra verificação de código/navegador e mudanças de teclado, mas a adequação dos passos para centralizar beeps espaciais depende da avaliação auditiva de Anderson. Não afirmar que o ajuste para centralização visual de objetos era o propósito ou que ele solucionou a localização do áudio.
 - Sem alteração de releases, tags ou backups.
 
 
@@ -960,8 +960,6 @@ Estas decisões são fundamentos de design, não sistemas implementados. Permane
 - Publicado em `main` para teste, sem atualizar releases/tags. A confirmação funcional segue dependendo do teste manual de Anderson.
 
 
-## 7 de novembro de 2026 — restaurar os passos de olhar de 15°
+### Correção de contexto registrada em 7 de novembro de 2026
 
-- Anderson recordou que os controles previstos e já testados em uma build usavam alterações de olhar de 15°; o histórico confirma que a redução a 5° foi uma mudança posterior, feita para melhorar a centralização de alvos pequenos. Para devolver o comportamento que ele reconhece e considera planejado, os passos horizontais e verticais das setas foram restaurados a 15°.
-- Os limites continuam ±45° laterais e ±30° verticais: três passos máximos para cada lado, três para cima ou para baixo. Controles, câmera e interpretação do olhar contínuo não foram alterados neste ajuste.
-- README e GDD atualizados. Publicar em `main` para teste; o teste da build deve verificar tanto os passos quanto os limites efetivos. Releases e tags não foram alteradas.
+Em conversa posterior, Anderson esclareceu que centralizar o olhar em um objeto não era o problema: a dificuldade era localizar/centralizar os beeps espaciais associados aos objetos. Não inferir que a percepção visual do objeto e a localização auditiva do beep sejam tarefas equivalentes. Anderson também confirmou que planejou e chegou a jogar uma build com passos de olhar de 15°; essa configuração foi restaurada para as setas, com limites de ±45° na horizontal e ±30° na vertical.
