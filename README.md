@@ -49,8 +49,7 @@ O movimento é feito mantendo uma tecla e parando ao soltá-la. No chão, W/S mo
 - Corrida com Shift direito: W a 3,6 m/s, A/D a 3,2 m/s e S a 2,4 m/s. Shift direito pode ser pressionado depois de começar a caminhar; ao soltá-lo, a velocidade volta à caminhada. Corrida não se aplica à escalada nem à caminhada nos galhos.
 - Shift esquerdo+A/D gira o corpo 45°; Shift esquerdo+W gira 180°. A direção final é anunciada em um dos oito rumos principais.
 - Shift esquerdo+S faz um recuo rápido de cerca de 1,35 m.
-- Setas esquerda/direita desviam o olhar em passos de 5°, até 45° para cada lado em relação ao corpo. Ao chegar ao limite, o olhar para; é preciso girar o corpo para continuar naquela direção.
-- Setas cima/baixo inclinam o olhar em passos de 5°, até 30°.
+- As setas mudam o olhar continuamente enquanto permanecem pressionadas, num movimento suave de aproximadamente 75° por segundo. Um toque curto produz um pequeno ajuste; mantenha pressionada para girar mais, e solte para parar. Os limites são ±45° para os lados e ±30° para cima/baixo; ao alcançá-los, o jogo anuncia o limite. O olhar continua independente da orientação do corpo.
 - C anuncia coordenadas X/Y no plano e Z como altitude-base, em metros com duas casas decimais.
 
 A câmera e o perfil de percepção humano usam altura ocular de 1,60 m e campo vertical de 68°. Os anúncios de distância ao olhar usam metros e, nos objetos, medem a distância espacial entre a câmera e o ponto de referência do alvo, não necessariamente a distância horizontal até sua borda. A descrição de posição usa a projeção do ponto de referência no campo de visão: “no centro do campo de visão” só é dito quando ele está na zona central horizontal e vertical; fora dela, a posição informa esquerda/direita e acima/abaixo do centro, ou qual dos eixos está centralizado. Quando o olhar aponta para baixo, coletáveis visíveis recebem prioridade descritiva. O rumo do olhar é informado separadamente do rumo de caminhada. Essa descrição de posição não altera a seleção de alvo nem garante que a interação esteja ao alcance.
@@ -87,7 +86,7 @@ Os galhos baixos para coleta ficam entre cerca de 2,05 e 2,35 m. Sem faca nas m�
 
 ### Natação
 
-Com as mãos vazias, na faixa rasa e voltado para águas profundas, Espaço inicia a natação na superfície. W/S avançam ou recuam na direção do corpo e acompanham a inclinação do olhar: olhar para baixo direciona para baixo, para cima direciona para cima, e olhar horizontal mantém a profundidade. A/D deslocam lateralmente sem alterar altitude. A velocidade é 1,5 m/s. S só permite nadar para trás até 0,55 m de profundidade. Em profundidade maior, S não tem efeito algum: não desloca para trás nem para cima ou para baixo. É necessário usar W com o olhar inclinado para subir e chegar à zona rasa antes de poder nadar para trás. O movimento respeita a superfície, o fundo e uma distância mínima do fundo. A margem do lago bloqueia o deslocamento para fora da água.
+Com as mãos vazias, na faixa rasa e voltado para águas profundas, Espaço inicia a natação na superfície. W/S avançam ou recuam na direção do corpo e acompanham a inclinação do olhar: olhar para baixo direciona para baixo, para cima direciona para cima, e olhar horizontal mantém a profundidade. A/D deslocam lateralmente sem alterar altitude. A velocidade é 1,5 m/s. S só permite nadar para trás até 0,55 m de profundidade. Mais fundo, S não produz deslocamento horizontal para trás; com o olhar para baixo, permite apenas subir verticalmente, sem mudar de posição horizontal, até a zona rasa. O limite de 0,55 m impede que o recuo leve a uma profundidade maior. O movimento respeita a superfície, o fundo e uma distância mínima do fundo. A margem do lago bloqueia o deslocamento para fora da água.
 
 Para sair, é preciso estar com as mãos vazias, na superfície e perto da faixa rasa de saída; pressione Espaço. A natação não termina automaticamente ao tocar a margem. Em água muito rasa, o fundo pode elevar o personagem até a superfície, e a saída ainda exige Espaço. O mapa não tem túneis, conectores ou passagens subaquáticas; o código tem suporte futuro a marcadores de saída para terra e conexões de água, mas a lista atual está vazia.
 
@@ -126,8 +125,8 @@ A interface da página tem instruções recolhidas, botão de inventário, paine
 - **Shift esquerdo + A/D:** girar o corpo 45° para a esquerda/direita, sem caminhar.
 - **Shift esquerdo + W:** girar o corpo 180°.
 - **Shift esquerdo + S:** recuo rápido de cerca de 1,35 m.
-- **Setas esquerda/direita:** desviar o olhar em passos de 5°, até ±45° em relação ao corpo.
-- **Setas cima/baixo:** inclinar o olhar em passos de 5°, até ±30°.
+- **Setas esquerda/direita:** girar o olhar continuamente enquanto pressionadas, a cerca de 75°/s, até ±45° em relação ao corpo.
+- **Setas cima/baixo:** inclinar o olhar continuamente enquanto pressionadas, a cerca de 75°/s, até ±30°.
 - **C:** anunciar coordenadas X, Y e Z.
 - **I:** abrir/fechar o inventário.
 - **Enter:** recolher pedra solta, fibra de arbusto, galho caído ou cinzas no alcance, se alinhados com a mira. Não minera afloramentos.

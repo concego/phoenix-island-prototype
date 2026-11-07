@@ -228,9 +228,8 @@
     // Passagens que continuam submersas não geram beep nem encerram a natação.
     const SWIM_PASSAGE_MARKERS = Object.freeze([]);
     const player = { x: 0, y: -2.5, perceptionProfile: humanPerceptionProfile, yaw: 0, headYawOffset: 0, pitch: 0, climbHeight: 0, swimEyeAltitude: null };
-    const HORIZONTAL_LOOK_STEP = Math.PI / 36;
     const HORIZONTAL_LOOK_LIMIT = Math.PI / 4;
-    const VERTICAL_LOOK_STEP = Math.PI / 36;
+    const LOOK_ROTATION_SPEED = Math.PI * .75;
     const VERTICAL_LOOK_LIMIT = Math.PI / 6;
     const WALK_SPEED = 2.4;
     const RUN_SPEED = 3.6;
@@ -1483,6 +1482,8 @@
     }
 
     const movementKeys = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD']);
+    const heldLookKeys = new Set();
+    const lookLimitContacts = new Set();
     let activeDirection = null;
     let activeCode = null;
     let activeClimbDirection = 0;
@@ -3164,8 +3165,8 @@
       }
       if (climbMode === 'swimming' && code === 'KeyS') {
         const depth = LAKE.waterZ - player.swimEyeAltitude;
-        if (depth > SWIM_BACKSTROKE_MAX_DEPTH_METERS + 1e-5) {
-          if (!swimBackstrokeDepthContact) announce('Em profundidade maior que 0,55 m, não é possível nadar para trás.');
+        if (depth > SWIM_BACKSTROKE_MAX_DEPTH_METERS + 1e-5 && Math.sin(player.pitch) >= -1e-5) {
+          if (!swimBackstrokeDepthContact) announce('Em maior profundidade, S só permite subir; aproxime-se da superfície para nadar para trás.');
           swimBackstrokeDepthContact = true;
           stopMovement();
           return;
@@ -3326,32 +3327,20 @@
       }
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(code)) {
         event.preventDefault();
-        if (event.repeat) return;
-        let limitMessage = '';
-        if (code === 'ArrowLeft' || code === 'ArrowRight') {
-          const turn = code === 'ArrowLeft' ? -HORIZONTAL_LOOK_STEP : HORIZONTAL_LOOK_STEP;
-          const nextOffset = clamp(player.headYawOffset + turn, -HORIZONTAL_LOOK_LIMIT, HORIZONTAL_LOOK_LIMIT);
-          if (nextOffset === player.headYawOffset) {
-            limitMessage = 'Limite lateral do olhar; use Shift esquerdo+A, Shift esquerdo+D ou Shift esquerdo+W para virar o corpo. ';
-          } else {
-            player.headYawOffset = nextOffset;
-          }
+        if (!event.repeat) {
+          heldLookKeys.add(code);
+          lookLimitContacts.delete(code);
         }
-        if (code === 'ArrowUp' || code === 'ArrowDown') {
-          const turn = code === 'ArrowUp' ? VERTICAL_LOOK_STEP : -VERTICAL_LOOK_STEP;
-          const nextPitch = clamp(player.pitch + turn, -VERTICAL_LOOK_LIMIT, VERTICAL_LOOK_LIMIT);
-          if (nextPitch === player.pitch) {
-            limitMessage = code === 'ArrowUp'
-              ? 'O olhar chegou ao limite superior; mude de posição para observar mais acima. '
-              : 'O olhar chegou ao limite inferior; mude de posição para observar mais abaixo. ';
-          } else {
-            player.pitch = nextPitch;
-          }
-        }
-        announce(limitMessage + lookDescription(), { visual: false });
       }
     });
     window.addEventListener('keyup', event => {
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.code)) {
+        event.preventDefault();
+        heldLookKeys.delete(event.code);
+        lookLimitContacts.delete(event.code);
+        announce(lookDescription(), { visual: false });
+        return;
+      }
       if (isRightShiftEvent(event)) {
         event.preventDefault();
         rightShiftHeld = false;
@@ -3370,12 +3359,38 @@
     window.addEventListener('blur', () => {
       rightShiftHeld = false;
       leftShiftHeld = false;
+      heldLookKeys.clear();
+      lookLimitContacts.clear();
       stopMovement();
     });
 
     renderInventory();
     const clock = new THREE.Clock();
     function update(delta) {
+      const horizontalLook = (heldLookKeys.has('ArrowRight') ? 1 : 0) - (heldLookKeys.has('ArrowLeft') ? 1 : 0);
+      const verticalLook = (heldLookKeys.has('ArrowUp') ? 1 : 0) - (heldLookKeys.has('ArrowDown') ? 1 : 0);
+      if (horizontalLook) {
+        const next = clamp(player.headYawOffset + horizontalLook * LOOK_ROTATION_SPEED * delta, -HORIZONTAL_LOOK_LIMIT, HORIZONTAL_LOOK_LIMIT);
+        if (next === player.headYawOffset) {
+          const key = horizontalLook > 0 ? 'ArrowRight' : 'ArrowLeft';
+          if (!lookLimitContacts.has(key)) announce('Limite lateral do olhar; use Shift esquerdo+A, Shift esquerdo+D ou Shift esquerdo+W para virar o corpo.');
+          lookLimitContacts.add(key);
+        } else {
+          player.headYawOffset = next;
+          for (const key of ['ArrowLeft', 'ArrowRight']) lookLimitContacts.delete(key);
+        }
+      }
+      if (verticalLook) {
+        const next = clamp(player.pitch + verticalLook * LOOK_ROTATION_SPEED * delta, -VERTICAL_LOOK_LIMIT, VERTICAL_LOOK_LIMIT);
+        if (next === player.pitch) {
+          const key = verticalLook > 0 ? 'ArrowUp' : 'ArrowDown';
+          if (!lookLimitContacts.has(key)) announce(key === 'ArrowUp' ? 'O olhar chegou ao limite superior; mude de posição para observar mais acima.' : 'O olhar chegou ao limite inferior; mude de posição para observar mais abaixo.');
+          lookLimitContacts.add(key);
+        } else {
+          player.pitch = next;
+          for (const key of ['ArrowUp', 'ArrowDown']) lookLimitContacts.delete(key);
+        }
+      }
       updateWaterRipples(delta);
       updateCampfires(delta);
       updateResourceProximityCues();
@@ -3428,11 +3443,15 @@
           let movement = movementVector(activeCode);
           if (movement) activeDirection = movement;
           if (activeCode === 'KeyS' && LAKE.waterZ - player.swimEyeAltitude > SWIM_BACKSTROKE_MAX_DEPTH_METERS + 1e-5) {
-            if (!swimBackstrokeDepthContact) announce('Em profundidade maior que 0,55 m, não é possível nadar para trás.');
-            swimBackstrokeDepthContact = true;
-            stopMovement();
-            setCamera();
-            return;
+            if (movement?.z > 1e-5) {
+              movement = { ...movement, x: 0, y: 0 };
+            } else {
+              if (!swimBackstrokeDepthContact) announce('Em maior profundidade, S só permite subir; aproxime-se da superfície para nadar para trás.');
+              swimBackstrokeDepthContact = true;
+              stopMovement();
+              setCamera();
+              return;
+            }
           }
           if (movement && activeCode === 'KeyS' && LAKE.waterZ - player.swimEyeAltitude <= SWIM_BACKSTROKE_MAX_DEPTH_METERS + 1e-5) {
             swimBackstrokeDepthContact = false;
