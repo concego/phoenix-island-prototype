@@ -958,3 +958,10 @@ Estas decisões são fundamentos de design, não sistemas implementados. Permane
 - Correção conforme esclarecimento de Anderson: acima de 0,55 m de profundidade, S fica totalmente sem efeito. Não recua, não sobe e não desce, seja qual for a inclinação do olhar. O personagem deve usar W com o olhar para cima para chegar à zona rasa antes de nadar para trás.
 - Retirada a exceção anterior que tentava converter S em subida vertical; ajustados README e GDD para registrar precisamente o bloqueio completo.
 - Publicado em `main` para teste, sem atualizar releases/tags. A confirmação funcional segue dependendo do teste manual de Anderson.
+
+
+## 7 de novembro de 2026 — restaurar os passos de olhar de 15°
+
+- Anderson recordou que os controles previstos e já testados em uma build usavam alterações de olhar de 15°; o histórico confirma que a redução a 5° foi uma mudança posterior, feita para melhorar a centralização de alvos pequenos. Para devolver o comportamento que ele reconhece e considera planejado, os passos horizontais e verticais das setas foram restaurados a 15°.
+- Os limites continuam ±45° laterais e ±30° verticais: três passos máximos para cada lado, três para cima ou para baixo. Controles, câmera e interpretação do olhar contínuo não foram alterados neste ajuste.
+- README e GDD atualizados. Publicar em `main` para teste; o teste da build deve verificar tanto os passos quanto os limites efetivos. Releases e tags não foram alteradas.
