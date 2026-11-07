@@ -951,3 +951,10 @@ Estas decisões são fundamentos de design, não sistemas implementados. Permane
 - O ângulo vertical é novamente limitado dentro de `setCamera()` em cada atualização, além do clamp de entrada das setas, com limite de ±30°. Isso reforça a garantia de que o ângulo usado para renderização não exceda os limites.
 - A função de passos agora retorna imediatamente se o modo atual é natação; a entrada em natação reinicia o agendamento de passos e braçadas. Braçadas continuam a cada intervalo próprio.
 - Alterações em código e documentação publicadas em `main` para nova rodada de teste. Revisão estática não comprova todos os casos; teste manual real de braçadas, profundidade e limites do olhar por Anderson ainda pendente. Nenhuma release/tag alterada.
+
+
+## 7 de novembro de 2026 — bloquear S completamente em profundidade
+
+- Correção conforme esclarecimento de Anderson: acima de 0,55 m de profundidade, S fica totalmente sem efeito. Não recua, não sobe e não desce, seja qual for a inclinação do olhar. O personagem deve usar W com o olhar para cima para chegar à zona rasa antes de nadar para trás.
+- Retirada a exceção anterior que tentava converter S em subida vertical; ajustados README e GDD para registrar precisamente o bloqueio completo.
+- Publicado em `main` para teste, sem atualizar releases/tags. A confirmação funcional segue dependendo do teste manual de Anderson.
