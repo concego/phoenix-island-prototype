@@ -837,7 +837,6 @@ Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStone
 
 - Sintaxe JavaScript analisada por parser. Comparadas constantes de mapa, lago, árvore, fogueira e recursos; funções existentes de inventário, martelo, coleta, movimento, profundidade/natação e fogueira não foram alteradas. Revisão estática confirmou presença das três receitas, definições de novos itens e condições de espaço/requisitos.
 - README, GDD e CRAFTING atualizados para refletir a cadeia funcional. Nenhuma etapa é mais descrita como futura/não implementada.
-- Execução manual da cadeia completa, testes de inventário cheio, falta de ingredientes, saída de produto empilhada e uso da faca na copa continuam pendentes; revisão estática não demonstra gameplay nem acessibilidade em runtime. Nenhuma aprovação de playtest é alegada.
-- Sem alteração de releases, tags ou backups.
-
-- Após a publicação de teste, a página abriu sem erros no console e o inventário abriu e fechou com I; a sequência de crafting não foi executada no navegador.
+- Anderson confirmou que a cadeia completa de fabricação, o tratamento da falta de ingredientes e o menu de ações funcionaram bem no teste manual. Como ainda não existem itens suficientes para preencher todos os espaços, o cenário de inventário cheio não pôde ser testado. Resultado empilhado e uso da faca na copa também continuam sem relato de teste nesta rodada.
+- A página de teste abriu com HTTP 200 e sem erros no console; o inventário abriu e fechou com I. A revisão estática e esses testes delimitados não equivalem a validação geral de gameplay/acessibilidade.
+- Pré-release de desenvolvimento criada depois da confirmação do teste, apontando para o commit desta mudança; backups históricos foram preservados sem alteração.
