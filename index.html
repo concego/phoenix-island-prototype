@@ -3052,7 +3052,7 @@
       function targetPositionDescription(target) {
         const centeredHorizontally = Math.abs(target.screen.x) <= LOOK_ALIGNMENT_CENTER_TOLERANCE;
         const centeredVertically = Math.abs(target.screen.y) <= LOOK_ALIGNMENT_CENTER_TOLERANCE;
-        if (centeredHorizontally && centeredVertically) return 'alinhado no centro do campo de visão';
+        if (centeredHorizontally && centeredVertically) return 'no centro do campo de visão';
         const horizontal = centeredHorizontally ? 'centralizado horizontalmente'
           : target.screen.x < 0 ? 'à esquerda' : 'à direita';
         const vertical = centeredVertically ? 'na altura'

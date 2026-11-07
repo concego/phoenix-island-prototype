@@ -873,7 +873,7 @@ Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStone
 
 ## 7 de novembro de 2026 — tornar a posição anunciada dos objetos mais precisa
 
-- Padronizada `lookDescription` para descrever a posição projetada de todos os objetos visíveis pelo mesmo helper. Se o ponto de referência estiver dentro da zona central horizontal e vertical (`±0,12` em coordenadas normalizadas de tela), o anúncio diz “alinhado no centro do campo de visão”. Fora dela, indica “à esquerda”/“à direita” e “acima”/“abaixo” em relação ao centro; quando só um eixo estiver centralizado, informa isso explicitamente. A mesma regra é aplicada a coletáveis, fogueira, cinzas, tronco/copa, colina, rochas e lago, em vistas horizontais e inclinadas.
+- Padronizada `lookDescription` para descrever a posição projetada de todos os objetos visíveis pelo mesmo helper. Se o ponto de referência estiver dentro da zona central horizontal e vertical (`±0,12` em coordenadas normalizadas de tela), o anúncio diz “no centro do campo de visão”. Fora dela, indica “à esquerda”/“à direita” e “acima”/“abaixo” em relação ao centro; quando só um eixo estiver centralizado, informa isso explicitamente. A mesma regra é aplicada a coletáveis, fogueira, cinzas, tronco/copa, colina, rochas e lago, em vistas horizontais e inclinadas.
 - A precisão descreve o centro do ponto de referência do alvo em tela; não significa que toda a malha caiba na zona, que o objeto seja selecionável para interação ou que alcance/regras de coleta tenham mudado. Não foram alterados movimento, câmera, campo de visão, projeção, prioridade dos candidatos, oclusão, raio de mira, alcance nem ações de coleta/interação.
 - README atualizado para explicar a diferença entre posição anunciada e seleção da interação.
 
@@ -884,3 +884,4 @@ Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStone
 - Sem alterações em releases, tags ou backups.
 
 - A primeira versão foi publicada em `8be8b82` e anunciava “na altura do centro do centro” para um objeto à direita e na altura do centro; a redação foi corrigida nesta atualização, sem mudança no cálculo.
+- Em teste após a correção anterior, um anúncio com pedra revelou discordância no masculino (“pedra ... está alinhado”). O texto central foi alterado para “está no centro do campo de visão”, neutro e mais direto.
