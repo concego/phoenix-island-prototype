@@ -914,3 +914,18 @@ Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStone
 - Removidas as releases/tag redundantes `backup-2026-10-27`, `backup-2026-10-08` e `backup-2026-10-04`, todas referências ao mesmo commit histórico. Não há mais garantia de rollback por esses três identificadores; o trabalho atual continua no histórico normal de commits do Git.
 - As três releases e tags mantidas foram alinhadas ao commit documental resultante `9d14033c706eba525e6d4a9b3604e3bc082e87d0`. A tag retida `backup-pre-estrutural-2026-11-02` deixa de ser um backup imutável e não deve mais ser citada como snapshot do estado pré-estrutural. As três são pré-releases de desenvolvimento, não releases estáveis/oficiais, e registram níveis/focos de validação diferentes.
 - Conferência posterior pela API do GitHub confirmou exatamente três releases publicadas, todas marcadas como pré-release e com o mesmo commit-alvo; as três tags correspondentes também apontam para esse commit. As três releases/tags redundantes de backup foram removidas.
+
+
+## 7 de novembro de 2026 — fundamentos da progressão de RPG
+
+### Decisões de design registradas
+
+- Phoenix Island é planejado como um RPG de sobrevivência com níveis; esta decisão existia desde o início do projeto, embora ainda não estivesse documentada.
+- O personagem usa os seis atributos clássicos do sistema d20: Força, Destreza, Constituição, Inteligência, Sabedoria e Carisma. Os atributos podem ser melhorados por pontos ao subir de nível e não aumentam pelo uso.
+- Habilidades aumentam com o uso. A progressão será própria de Phoenix Island; os sistemas de prática e treinamento das bases de MUD não serão adotados.
+- Para capacidade de carga, foi adotada provisoriamente a fórmula Força × 15 libras. A sobrecarga reduz a velocidade de movimento e aumenta o consumo de estamina; limiares e magnitudes ainda não definidos.
+- Estamina é consumida por atividades físicas e mana por todas as atividades mágicas. Valores máximos, custos, regeneração e relação numérica com atributos permanecem em aberto.
+
+### Limites
+
+Estas decisões são fundamentos de design, não sistemas implementados. Permanecem pendentes a quantidade de pontos de atributo por nível, curvas e limites, cálculos adicionais ligados a cada atributo, catálogo e ritmo de evolução das habilidades, limiares e penalidades exatas de sobrecarga e números de estamina/mana. Não foram adotadas integralmente fórmulas de D&D, CoffeeMUD ou MUDs.

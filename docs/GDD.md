@@ -31,7 +31,20 @@ A direção visual de trabalho está registrada em [`VISUAL_DIRECTION.md`](VISUA
 
 ### Fora do escopo atual
 
-O protótipo não implementa, e este GDD não aprova por inferência, sistemas completos de RPG ou sobrevivência, narrativa de campanha, combate, fome, sede, saúde, morte, progressão, salvamento, economia, construção de base ou conteúdo completo do jogo futuro. Qualquer uma dessas áreas precisa de uma decisão de design específica antes de ser tratada como requisito.
+O protótipo ainda não implementa sistemas completos de RPG ou sobrevivência, narrativa de campanha, combate, fome, sede, saúde, morte, progressão, salvamento, economia, construção de base ou conteúdo completo do jogo futuro. A ausência desses sistemas no código não significa que o RPG de sobrevivência planejado os exclua. As decisões de design já tomadas estão registradas neste GDD; o que ainda não foi decidido permanece em aberto e não deve ser completado por inferência.
+
+### Progressão, atributos e recursos — decisões de design
+
+Phoenix Island é planejado como um RPG de sobrevivência com níveis. As regras abaixo registram fundamentos já decididos, não afirmam que esses sistemas estejam implementados no protótipo.
+
+- O personagem usa os seis atributos clássicos do sistema d20: Força, Destreza, Constituição, Inteligência, Sabedoria e Carisma.
+- Atributos podem ser melhorados com pontos recebidos ao subir de nível. Atributos não aumentam automaticamente pelo uso.
+- Habilidades aumentam com o uso. A progressão será própria de Phoenix Island; não serão adotados os sistemas de prática e treinamento presentes em bases de MUD.
+- Como referência provisória para carga máxima, adota-se capacidade de carga = valor de Força × 15 libras. A pilha de cada item não tem limite numérico próprio; o peso total carregado limita a quantidade, enquanto os espaços do inventário limitam os tipos distintos de item.
+- A sobrecarga afeta a velocidade de movimento e aumenta o consumo de estamina. Os limiares e as magnitudes exatas dessas penalidades ainda não foram definidos.
+- Estamina é consumida por atividades físicas; mana é consumida por todas as atividades mágicas. Valores máximos, custos específicos, regeneração e vínculo numérico desses recursos com atributos ainda não foram definidos.
+
+Permanecem em aberto: quantidade de pontos de atributo por nível, curva e requisitos de nível, limites de atributo, quais atributos afetam quais cálculos além da capacidade de carga provisória, catálogo de habilidades e ritmo de evolução por uso, custos de estamina/mana, regeneração e níveis de sobrecarga. Essas lacunas exigem decisões próprias e não autorizam importar automaticamente fórmulas de D&D, CoffeeMUD ou outras bases.
 
 ## 3. Princípios de design
 
@@ -251,7 +264,7 @@ Uma mudança implementada só deve ser considerada concluída quando:
 
 A premissa narrativa planejada está em [`LORE.md`](LORE.md): um conselho de magos, com base na suspeita de um mal antigo, tenta destruir a ilha e sacrifica seus habitantes; a ilha é devastada, mas não desaparece, e a personagem do jogador, jovem e inexperiente, começa tentando sobreviver antes de buscar compreender o ocorrido. A premissa é direção narrativa planejada, não conteúdo implementado no protótipo.
 
-Este GDD não define a história completa, a estrutura da campanha, nomes, detalhes do mundo ou personagens além da premissa geral, combate, fome, sede, saúde, morte, salvamento, persistência, respawn de recursos, construção, durabilidade de ferramentas, receitas futuras ou progressão. As lacunas listadas em `LORE.md` também permanecem sem decisão. Essas lacunas não são autorização para inventar uma solução. Quando forem necessárias para uma implementação, apresentar a decisão no chat antes de codificar.
+Este GDD não define a história completa, a estrutura da campanha, nomes, detalhes do mundo ou personagens além da premissa geral, regras completas de combate, fome, sede, saúde, morte, salvamento, persistência, respawn de recursos, construção, durabilidade de ferramentas, receitas futuras nem os valores e fórmulas numéricas de progressão que ainda não foram aprovados. As decisões fundamentais de níveis, atributos, habilidades e recursos estão registradas na seção 2; as lacunas restantes continuam sem decisão e não são autorização para inventar uma solução. Quando forem necessárias para uma implementação, apresentar a decisão no chat antes de codificar.
 
 
 ### Seleção de objetos
