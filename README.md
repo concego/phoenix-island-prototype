@@ -63,7 +63,7 @@ Os anúncios de orientação descrevem alvos como recursos, árvore, colina, lag
 
 Enter recolhe uma pedra solta, fibra vegetal de arbusto, galho caído ou cinzas de fogueira quando o alvo está na direção do olhar e dentro do alcance. A ação não requer ferramenta e pode funcionar mesmo com outro item equipado. Pedras e cinzas têm alcance de coleta de 2,0 m; arbustos e galhos caídos, até 2,2 m. O sistema seleciona o alvo mais alinhado dentro dos critérios de mira e alcance; um alvo fora de alcance não impede que outro alvo elegível seja encontrado. A árvore tem prioridade quando o seu alvo está claramente mais alinhado.
 
-Cada arbusto fornece duas fibras vegetais e desaparece ao ser colhido. Cada pedra solta fornece uma pedra. Cada galho caído fornece um galho e não precisa ser cortado. Cada pilha de cinzas pode ser recolhida uma vez e fornece uma unidade. Se o inventário não tiver espaço para um novo tipo de item, o objeto continua no mundo e a coleta é recusada.
+Ao olhar para um arbusto, a descrição o identifica apenas como “um arbusto silvestre”, sem número ou especificação do que fornece. A ação de coleta continua fornecendo duas fibras vegetais e informa o resultado depois da coleta. Cada pedra solta fornece uma pedra. Cada galho caído fornece um galho e não precisa ser cortado. Cada pilha de cinzas pode ser recolhida uma vez e fornece uma unidade. Se o inventário não tiver espaço para um novo tipo de item, o objeto continua no mundo e a coleta é recusada.
 
 O contato próximo com um coletável pode anunciar seu nome uma vez ao entrar no alcance ou trocar de alvo. A tecla Enter tenta recolher o mesmo tipo de alvo segundo as regras de alcance e inventário. A fala de proximidade e as pistas sonoras não substituem a mira da interação.
 

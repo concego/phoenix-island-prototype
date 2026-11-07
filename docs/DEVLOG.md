@@ -905,3 +905,11 @@ Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStone
 - A descrição ao olhar para arbustos agora usa apenas “um arbusto silvestre”, sem índice/número e sem informar o recurso que fornece. A descrição armazenada no alvo do arbusto foi igualmente reduzida a “Um arbusto silvestre.”
 - Mantido inalterado o comportamento de coleta e a mensagem após coletar fibras. A mudança só retira detalhes de ficha técnica da identificação durante a observação.
 - Sintaxe e diff verificados; nenhum código de mecânica ou coleta foi alterado. Publicação e teste de anúncio no navegador serão registrados separadamente. Sem alterações em releases, tags ou backups.
+
+
+## 7 de novembro de 2026 — atualizar documentação e pré-release da descrição de arbustos
+
+- Documentado no README e no GDD que arbustos são identificados ao olhar somente como “um arbusto silvestre”, sem números e sem revelar rendimento. A coleta continua fornecendo duas fibras vegetais, e o resultado permanece anunciado depois de recolher.
+- O teste automatizado no navegador recebeu “um arbusto silvestre está no centro do campo de visão, a 20.6 metros” — sem ordinal e sem informação de fibra. A página respondeu HTTP 200 e sem erros de console nas verificações realizadas.
+- Mantido o foco desta alteração na identificação durante a observação; nomes de fontes nos beeps de proximidade, falas de resultado de coleta, números de pedras/fogueiras e identificadores contextuais de outros tipos não fazem parte desta mudança. Nenhuma mecânica de coleta foi alterada.
+- Será criada uma nova pré-release de desenvolvimento para registrar o estado corrente no commit resultante, sem mover ou sobrescrever a tag/release anterior nem os backups históricos.
