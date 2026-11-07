@@ -869,3 +869,16 @@ Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStone
 - Em uma execução automatizada específica, na posição inicial com corpo ao norte, uma pressão breve de D alterou X de 0,00 para 0,12 m, sem alterar Y; esse resultado de uma única simulação de teclado não representa o tempo real de uma tecla física, não reproduz o relato e não comprova ausência de problema.
 - Foi constatada uma possível fonte adicional de confusão: para coletáveis visíveis no olhar horizontal, a descrição escolhe esquerda ou direita pelo sinal da posição projetada, sem zona central; outros caminhos de descrição usam margem central. Ao olhar para baixo existe zona central para coletáveis. O alvo de coleta, por sua vez, escolhe candidato por alinhamento e alcance, podendo também ser preterido em favor da árvore. Essas diferenças são verificações do código, não prova de que explicam o caso relatado; nenhuma regra de alvo, velocidade, tecla ou anúncio direcional foi alterada nesta investigação.
 - O caso específico ainda requer reprodução em jogo com objeto, ângulo e distância conhecidos para distinguir deslocamento, anúncio e seleção. Sintaxe e escopo da mudança de texto verificados separadamente; sem mudanças em releases, tags ou backups.
+
+
+## 7 de novembro de 2026 — tornar a posição anunciada dos objetos mais precisa
+
+- Padronizada `lookDescription` para descrever a posição projetada de todos os objetos visíveis pelo mesmo helper. Se o ponto de referência estiver dentro da zona central horizontal e vertical (`±0,12` em coordenadas normalizadas de tela), o anúncio diz “alinhado no centro do campo de visão”. Fora dela, indica “à esquerda”/“à direita” e “acima”/“abaixo” em relação ao centro; quando só um eixo estiver centralizado, informa isso explicitamente. A mesma regra é aplicada a coletáveis, fogueira, cinzas, tronco/copa, colina, rochas e lago, em vistas horizontais e inclinadas.
+- A precisão descreve o centro do ponto de referência do alvo em tela; não significa que toda a malha caiba na zona, que o objeto seja selecionável para interação ou que alcance/regras de coleta tenham mudado. Não foram alterados movimento, câmera, campo de visão, projeção, prioridade dos candidatos, oclusão, raio de mira, alcance nem ações de coleta/interação.
+- README atualizado para explicar a diferença entre posição anunciada e seleção da interação.
+
+### Verificações e pendências
+
+- Sintaxe JavaScript verificada por parser. Comparação estática confirmou que `TREE_AIM_MIN_ALIGNMENT`, `getEnterPickupTarget`, `getRockActionTarget`, `getTreeActionTarget`, coleta, movimento, limites de câmera e distâncias permanecem inalterados; a única regra de limiar nova pertence ao texto de posição no helper de descrição.
+- Casos de centro, esquerda/direita, acima/abaixo e centralização em um só eixo foram verificados em testes de lógica auxiliares sobre coordenadas projetadas. A correspondência no jogo ao mirar objetos em diferentes distâncias/alturas, o comportamento com leitor de tela e a confirmação de Anderson continuam pendentes; essas verificações não constituem playtest.
+- Sem alterações em releases, tags ou backups.

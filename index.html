@@ -962,6 +962,7 @@
     const TREE_BRANCH_HALF_WIDTH = .32;
     const TREE_GATHER_REACH = 2.3;
     const TREE_AIM_MIN_ALIGNMENT = Math.cos(65 * Math.PI / 180);
+    const LOOK_ALIGNMENT_CENTER_TOLERANCE = .12;
     const TOOL_DAMAGE = Object.freeze({ stoneKnife: { min: 1, max: 3 }, stoneHammer: { min: 2, max: 4 } });
     const RESOURCE_RESISTANCE = Object.freeze({ livingBranch: 6, rockOutcrop: 12 });
     function rollToolDamage(toolItemId) {
@@ -3048,47 +3049,45 @@
       }
       visible.sort((a, b) => a.score - b.score);
 
+      function targetPositionDescription(target) {
+        const centeredHorizontally = Math.abs(target.screen.x) <= LOOK_ALIGNMENT_CENTER_TOLERANCE;
+        const centeredVertically = Math.abs(target.screen.y) <= LOOK_ALIGNMENT_CENTER_TOLERANCE;
+        if (centeredHorizontally && centeredVertically) return 'alinhado no centro do campo de visão';
+        const horizontal = centeredHorizontally ? 'centralizado horizontalmente'
+          : target.screen.x < 0 ? 'à esquerda' : 'à direita';
+        const vertical = centeredVertically ? 'na altura do centro'
+          : target.screen.y > 0 ? 'acima' : 'abaixo';
+        return `${horizontal} e ${vertical} do centro do campo de visão`;
+      }
+
       if (player.pitch > .12) {
         const canopy = visible.find(target => target.category === 'tree' && target.name.includes('copa') && Math.abs(target.screen.x) < .55 && Math.abs(target.screen.y) < .42);
-        if (canopy) return `Olhar para cima: ${canopy.name} no centro ou perto do centro, a ${canopy.distance.toFixed(1)} metros. Rumo do olhar: ${heading}.`;
+        if (canopy) return `Olhar para cima: ${canopy.name} está ${targetPositionDescription(canopy)}, a ${canopy.distance.toFixed(1)} metros. Rumo do olhar: ${heading}.`;
         return `Olhar para cima: céu aberto no centro da visão, rumo ${heading}.`;
       }
       if (player.pitch < -.12) {
         const groundCollectible = visible.find(target => ['rock', 'shrub', 'ash', 'branch'].includes(target.category)
           && Math.abs(target.screen.x) < .98 && Math.abs(target.screen.y) < .99);
-        if (groundCollectible) {
-          const side = Math.abs(groundCollectible.screen.x) < .18 ? 'no centro da visão'
-            : groundCollectible.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
-          return `Olhar para baixo: ${groundCollectible.name} está ${side}, a ${groundCollectible.distance.toFixed(1)} metros. Rumo do olhar: ${heading}.`;
-        }
+        if (groundCollectible) return `Olhar para baixo: ${groundCollectible.name} está ${targetPositionDescription(groundCollectible)}, a ${groundCollectible.distance.toFixed(1)} metros. Rumo do olhar: ${heading}.`;
         const campfire = visible.find(target => target.category === 'campfire' && Math.abs(target.screen.x) < .85 && Math.abs(target.screen.y) < .9);
-        if (campfire) {
-          const fireState = campfireFuelDescription(campfire.fire);
-          return `Olhar para baixo: ${campfire.name} está no campo de visão, a ${campfire.distance.toFixed(1)} metros. Está ${fireState}`;
-        }
+        if (campfire) return `Olhar para baixo: ${campfire.name} está ${targetPositionDescription(campfire)}, a ${campfire.distance.toFixed(1)} metros. Está ${campfireFuelDescription(campfire.fire)}`;
         const ash = visible.find(target => target.category === 'ash' && Math.abs(target.screen.x) < .85 && Math.abs(target.screen.y) < .9);
-        if (ash) return `Olhar para baixo: ${ash.name} está no campo de visão, a ${ash.distance.toFixed(1)} metros.`;
+        if (ash) return `Olhar para baixo: ${ash.name} está ${targetPositionDescription(ash)}, a ${ash.distance.toFixed(1)} metros.`;
         const trunk = visible.find(target => target.category === 'tree' && target.name.includes('tronco') && Math.abs(target.screen.x) < .85 && Math.abs(target.screen.y) < .9);
-        if (trunk) return `Olhar para baixo: ${trunk.name} está no campo de visão, a ${trunk.distance.toFixed(1)} metros. Rumo do olhar: ${heading}.`;
+        if (trunk) return `Olhar para baixo: ${trunk.name} está ${targetPositionDescription(trunk)}, a ${trunk.distance.toFixed(1)} metros. Rumo do olhar: ${heading}.`;
         const lake = visible.find(target => target.category === 'lake');
-        if (lake) return `Olhar para baixo: a superfície do lago está no campo de visão, a ${lake.distance.toFixed(1)} metros. A faixa rasa contorna a margem; o fundo desce para águas profundas no centro.`;
+        if (lake) return `Olhar para baixo: a superfície do lago está ${targetPositionDescription(lake)}, a ${lake.distance.toFixed(1)} metros. A faixa rasa contorna a margem; o fundo desce para águas profundas no centro.`;
         const surface = terrainHeightAt(player.x, player.y) > .05 ? 'a encosta da colina' : 'o chão do campo';
         return `Olhar para baixo: ${surface} ocupa o centro da visão, rumo ${heading}.`;
       }
 
       const visibleGroundCollectible = visible.find(target => ['rock', 'shrub', 'ash', 'branch'].includes(target.category)
         && Math.abs(target.screen.x) < .98 && Math.abs(target.screen.y) < .99);
-      if (visibleGroundCollectible) {
-        const side = visibleGroundCollectible.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
-        return `Olhar horizontal: ${visibleGroundCollectible.name} aparece ${side}, a ${visibleGroundCollectible.distance.toFixed(1)} metros. Rumo do olhar: ${heading}.`;
-      }
+      if (visibleGroundCollectible) return `Olhar horizontal: ${visibleGroundCollectible.name} está ${targetPositionDescription(visibleGroundCollectible)}, a ${visibleGroundCollectible.distance.toFixed(1)} metros. Rumo do olhar: ${heading}.`;
       const centered = visible.find(target => target.score < .16);
       if (centered) {
-        const side = Math.abs(centered.screen.x) < .18 ? 'no centro da visão' : centered.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
-        if (centered.category === 'campfire') {
-          const fireState = campfireFuelDescription(centered.fire);
-          return `Olhar horizontal: ${centered.name} está ${side}, a ${centered.distance.toFixed(1)} metros. Está ${fireState} Rumo do olhar: ${heading}.`;
-        }
+        const position = targetPositionDescription(centered);
+        if (centered.category === 'campfire') return `Olhar horizontal: ${centered.name} está ${position}, a ${centered.distance.toFixed(1)} metros. Está ${campfireFuelDescription(centered.fire)} Rumo do olhar: ${heading}.`;
         if (centered.category === 'hill') {
           const forwardX = player.x + Math.sin(getLookYaw()) * 4;
           const forwardY = player.y + Math.cos(getLookYaw()) * 4;
@@ -3096,26 +3095,21 @@
           let slopeText = 'A lateral da colina está visível.';
           if (slopeDelta > .08) slopeText = 'A encosta sobe na direção do olhar.';
           else if (slopeDelta < -.08) slopeText = 'A encosta desce na direção do olhar.';
-          return `Olhar horizontal: a colina está ${side}, a ${centered.distance.toFixed(1)} metros. ${slopeText} Rumo do olhar: ${heading}.`;
+          return `Olhar horizontal: a colina está ${position}, a ${centered.distance.toFixed(1)} metros. ${slopeText} Rumo do olhar: ${heading}.`;
         }
-        if (centered.category === 'rock') return `Olhar horizontal: ${centered.name} está ${side}, a ${centered.distance.toFixed(1)} metros.${centered.node ? ` Resistência restante: ${centered.node.resistance}.` : ''} Rumo do olhar: ${heading}.`;
-        if (centered.category === 'branch') return `Olhar horizontal: ${centered.name} está ${side}, a ${centered.distance.toFixed(1)} metros. Rumo do olhar: ${heading}.`;
-        if (centered.category === 'branch') return `Olhar horizontal: ${centered.name} está ${side}, a ${centered.distance.toFixed(1)} metros. Rumo do olhar: ${heading}.`;
-        if (centered.category === 'lake') return `Olhar horizontal: o centro do lago está ${side}, a ${centered.distance.toFixed(1)} metros. Uma faixa rasa contorna a margem; o fundo desce para a bacia profunda. Rumo do olhar: ${heading}.`;
-        return `Olhar horizontal: ${centered.name} está ${side}, a ${centered.distance.toFixed(1)} metros. Rumo do olhar: ${heading}.`;
+        if (centered.category === 'rock') return `Olhar horizontal: ${centered.name} está ${position}, a ${centered.distance.toFixed(1)} metros.${centered.node ? ` Resistência restante: ${centered.node.resistance}.` : ''} Rumo do olhar: ${heading}.`;
+        if (centered.category === 'branch') return `Olhar horizontal: ${centered.name} está ${position}, a ${centered.distance.toFixed(1)} metros. Rumo do olhar: ${heading}.`;
+        if (centered.category === 'lake') return `Olhar horizontal: o centro do lago está ${position}, a ${centered.distance.toFixed(1)} metros. Uma faixa rasa contorna a margem; o fundo desce para a bacia profunda. Rumo do olhar: ${heading}.`;
+        return `Olhar horizontal: ${centered.name} está ${position}, a ${centered.distance.toFixed(1)} metros. Rumo do olhar: ${heading}.`;
       }
       if (visible.length) {
         const target = visible[0];
-        const side = target.screen.x < 0 ? 'à esquerda do campo de visão' : 'à direita do campo de visão';
-        if (target.category === 'campfire') {
-          const fireState = campfireFuelDescription(target.fire);
-          return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro, a ${target.distance.toFixed(1)} metros. Está ${fireState} Rumo do olhar: ${heading}.`;
-        }
-        if (target.category === 'rock') return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro, a ${target.distance.toFixed(1)} metros.${target.node ? ` Resistência restante: ${target.node.resistance}.` : ''} Rumo do olhar: ${heading}.`;
-        if (target.category === 'branch') return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro, a ${target.distance.toFixed(1)} metros. Rumo do olhar: ${heading}.`;
-        if (target.category === 'branch') return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro, a ${target.distance.toFixed(1)} metros. Rumo do olhar: ${heading}.`;
-        if (target.category === 'lake') return `Olhar horizontal: o lago aparece ${side}, fora do centro. A faixa rasa contorna a margem e o fundo desce para a região profunda. Rumo do olhar: ${heading}.`;
-        return `Olhar horizontal: ${target.name} aparece ${side}, fora do centro. Rumo do olhar: ${heading}.`;
+        const position = targetPositionDescription(target);
+        if (target.category === 'campfire') return `Olhar horizontal: ${target.name} está ${position}, a ${target.distance.toFixed(1)} metros. Está ${campfireFuelDescription(target.fire)} Rumo do olhar: ${heading}.`;
+        if (target.category === 'rock') return `Olhar horizontal: ${target.name} está ${position}, a ${target.distance.toFixed(1)} metros.${target.node ? ` Resistência restante: ${target.node.resistance}.` : ''} Rumo do olhar: ${heading}.`;
+        if (target.category === 'branch') return `Olhar horizontal: ${target.name} está ${position}, a ${target.distance.toFixed(1)} metros. Rumo do olhar: ${heading}.`;
+        if (target.category === 'lake') return `Olhar horizontal: o lago está ${position}. A faixa rasa contorna a margem e o fundo desce para a região profunda. Rumo do olhar: ${heading}.`;
+        return `Olhar horizontal: ${target.name} está ${position}. Rumo do olhar: ${heading}.`;
       }
       const lookDirection = threeToDesign(direction);
       const boundary = boundaryAhead(player.x, player.y, { x: lookDirection.x, y: lookDirection.y });
