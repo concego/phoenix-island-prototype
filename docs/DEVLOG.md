@@ -840,3 +840,18 @@ Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStone
 - Anderson confirmou que a cadeia completa de fabricação, o tratamento da falta de ingredientes e o menu de ações funcionaram bem no teste manual. Como ainda não existem itens suficientes para preencher todos os espaços, o cenário de inventário cheio não pôde ser testado. Resultado empilhado e uso da faca na copa também continuam sem relato de teste nesta rodada.
 - A página de teste abriu com HTTP 200 e sem erros no console; o inventário abriu e fechou com I. A revisão estática e esses testes delimitados não equivalem a validação geral de gameplay/acessibilidade.
 - Pré-release de desenvolvimento criada depois da confirmação do teste, apontando para o commit desta mudança; backups históricos foram preservados sem alteração.
+
+
+## 7 de novembro de 2026 — leitura da grama e integração visual da colina
+
+### Mudanças
+
+- Uma nova rodada de refinamento visual experimental altera as lâminas decorativas de grama em todo o campo e na colina: mais estreitas, curvadas e com paleta menos clara, para reduzir a repetição de pontas triangulares. Distribuição e quantidades de instâncias permanecem iguais; não foram alterados recursos nem alvos.
+- Na colina, a borda e a base das superfícies recebem mistura de cor próxima ao gramado para reduzir o contraste abrupto. Os pequenos estratos rochosos decorativos foram inseridos um pouco mais no plano da encosta, achatados e tiveram o material ajustado. A superfície matemática, o perfil trapezoidal e as pedras interativas permanecem os mesmos; não se afirma que a silhueta da rampa tenha sido resolvida.
+- Não foram feitas alterações em lago, margem, árvore, galhos caídos, iluminação global, geometria física, câmera, colisões, coleta ou controles. Não há novos assets externos, conteúdo de lore ou HUD.
+
+### Verificações e pendências
+
+- Sintaxe JavaScript verificada por parser. Constantes de mapa, lago, colina, árvore, recursos e definições de itens comparadas com o estado anterior; a revisão do diff mostra mudanças apenas na geometria/material de grama decorativa, nas cores de vértices da rampa e na decoração das rochas da colina. Não equivale a teste funcional.
+- Página e resultado visual devem ser comparados após deploy. Necessárias vistas da colina de frente e de lado, do campo em primeiro plano e à distância; outras áreas não foram refinadas nem aprovadas nesta rodada. Coleta, oclusão, movimento, desempenho e avaliação de Anderson continuam pendentes.
+- Sem alterações em releases, tags ou backups.

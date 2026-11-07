@@ -512,6 +512,13 @@
           + .13 * Math.cos(y * 1.7 - x * 1.1)
           + .08 * Math.sin(x * 4.1 + y * 2.9) * Math.cos(y * 1.4 - x * .8);
         const c = lowColor.clone().lerp(highColor, clamp(variation, 0, 1));
+        // Blend only the color at the slope's lower and side margins into
+        // nearby grass tones. Vertices and interactive terrain stay unchanged.
+        const edgeDistance = Math.min(u, 1 - u) * 2;
+        const edgeMix = (1 - Math.min(1, edgeDistance * 4)) * .32;
+        const footMix = startZ === 0 ? (1 - v) ** 8 * .38
+          : endZ === 0 ? v ** 8 * .38 : 0;
+        c.lerp(new THREE.Color(0x9fae7c), Math.min(.48, edgeMix + footMix));
         colors.push(c.r, c.g, c.b);
         if (i < cols && j < rows) {
           const a = j * (cols + 1) + i, b = a + cols + 1;
@@ -896,17 +903,20 @@
 
     function addGrassTufts() {
       const geometry = new THREE.BufferGeometry();
+      // A narrow bent blade rather than one broad triangular spike.
+      // This geometry is decorative; its instancing positions and resource
+      // selection remain unchanged.
       geometry.setAttribute('position', new THREE.Float32BufferAttribute([
-        -.032, 0, 0, .032, 0, 0, .014, .14, 0,
-        -.032, 0, 0, .014, .14, 0, 0, .24, .018,
-        -.032, 0, 0, 0, .24, .018, -.014, .14, 0
+        -.021, 0, 0, .021, 0, 0, .016, .10, .005,
+        -.021, 0, 0, .016, .10, .005, -.010, .10, .005,
+        -.010, .10, .005, .016, .10, .005, .033, .21, .010
       ], 3));
       geometry.computeVertexNormals();
       const tuftInstanceCount = 5400;
       const mesh = new THREE.InstancedMesh(geometry, materials.grassTuft, tuftInstanceCount);
       const random = seededRandom(1937);
       const dummy = new THREE.Object3D();
-      const palette = [0xa8bb79, 0x829c5e, 0xc2b77f, 0x718d52, 0x99a878];
+      const palette = [0x92aa70, 0x7e985e, 0xa5ad78, 0x718d52, 0x8fa777];
       let count = 0;
       for (let attempt = 0; attempt < 2200 && count < tuftInstanceCount; attempt++) {
         const x = MAP_BOUNDS.minX + .5 + random() * (MAP_BOUNDS.maxX - MAP_BOUNDS.minX - 1);
@@ -1042,7 +1052,10 @@
     function addHillStrata() {
       const random = seededRandom(50213);
       const rockGeometry = new THREE.IcosahedronGeometry(1, 1);
-      const hillRockMaterial = new THREE.MeshStandardMaterial({ color: 0x8a8b79, roughness: 1, flatShading: true });
+      const hillRockMaterial = new THREE.MeshStandardMaterial({
+        color: 0x858d70, roughness: 1, flatShading: true,
+        emissive: 0x283322, emissiveIntensity: .24
+      });
       const rock = new THREE.InstancedMesh(rockGeometry, hillRockMaterial, 54);
       const dummy = new THREE.Object3D();
       let count = 0;
@@ -1055,11 +1068,12 @@
         const z = terrainHeightAt(x, y);
         if (z < .2) continue;
         const size = .07 + random() * .11;
-        dummy.position.copy(designToThree(x, y, z - size * .20));
+        // Embed the decorative strata more deeply into the same slope plane.
+        dummy.position.copy(designToThree(x, y, z - size * .28));
         const slope = y < HILL_FRONT_CREST_Y ? HILL_TOP_Z / (HILL_FRONT_CREST_Y - HILL_RAMP_START_Y)
           : y > HILL_PLATEAU_END_Y ? -HILL_TOP_Z / (HILL_REAR_END_Y - HILL_PLATEAU_END_Y) : 0;
         dummy.rotation.set(-Math.atan(slope), random() * Math.PI * 2, (random() - .5) * .15);
-        dummy.scale.set(size * (1.1 + random() * .7), size * .30, size * (1.1 + random() * .5));
+        dummy.scale.set(size * (1.1 + random() * .7), size * .24, size * (1.1 + random() * .5));
         dummy.updateMatrix();
         rock.setMatrixAt(count++, dummy.matrix);
       }
@@ -1075,14 +1089,16 @@
     // lookable entries are added and interactive stone meshes remain untouched.
     function addHillGrass() {
       const geometry = new THREE.BufferGeometry();
+      // The same leaf language as the field, at a smaller hill scale.
       geometry.setAttribute('position', new THREE.Float32BufferAttribute([
-        -.025, 0, 0, .025, 0, 0, .012, .17, 0,
-        -.025, 0, 0, .012, .17, 0, -.006, .23, .012
+        -.017, 0, 0, .017, 0, 0, .013, .09, .004,
+        -.017, 0, 0, .013, .09, .004, -.008, .09, .004,
+        -.008, .09, .004, .013, .09, .004, .027, .19, .009
       ], 3));
       geometry.computeVertexNormals();
       const mesh = new THREE.InstancedMesh(geometry, materials.grassTuft, 380);
       const random = seededRandom(404018), dummy = new THREE.Object3D();
-      const palette = [0x98a96f, 0x7e965c, 0xb1b87a, 0x8e9e69];
+      const palette = [0x90a46d, 0x7e965c, 0x9eab77, 0x869c69];
       let count = 0;
       for (let attempt = 0; attempt < 480 && count < 380; attempt++) {
         const x = (random() * 2 - 1) * (HILL_HALF_WIDTH - .12);
