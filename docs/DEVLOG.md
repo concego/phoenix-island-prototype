@@ -953,8 +953,8 @@ Estas decisões são fundamentos de design, não sistemas implementados. Permane
 - Alterações em código e documentação publicadas em `main` para nova rodada de teste. Revisão estática não comprova todos os casos; teste manual real de braçadas, profundidade e limites do olhar por Anderson ainda pendente. Nenhuma release/tag alterada.
 
 
-## 7 de novembro de 2026 — olhar contínuo enquanto a seta fica pressionada
+## 7 de novembro de 2026 — bloquear S completamente em profundidade
 
-- A pedido de Anderson, substituídos os passos discretos de 5° por rotação contínua e suave enquanto uma tecla de seta permanece pressionada. Um toque curto ainda ajusta o olhar, mas manter a tecla aumenta o giro; ao soltar, o movimento para e a direção final é anunciada.
-- Velocidade de rotação configurada em 75° por segundo; limites mantidos em ±45° horizontal e ±30° vertical. Ao tocar um limite durante o movimento, o anúncio ocorre uma vez até a tecla ser solta. Combinações horizontal+vertical permitem olhar diagonalmente.
-- Atualizados README e GDD. Publicar em `main` para teste; confirmar em navegador/leitor de tela que o comportamento contínuo e os limites funcionam como esperado. A experiência de Anderson continua sendo o teste decisivo. Nenhuma release/tag alterada.
+- Correção conforme esclarecimento de Anderson: acima de 0,55 m de profundidade, S fica totalmente sem efeito. Não recua, não sobe e não desce, seja qual for a inclinação do olhar. O personagem deve usar W com o olhar para cima para chegar à zona rasa antes de nadar para trás.
+- Retirada a exceção anterior que tentava converter S em subida vertical; ajustados README e GDD para registrar precisamente o bloqueio completo.
+- Publicado em `main` para teste, sem atualizar releases/tags. A confirmação funcional segue dependendo do teste manual de Anderson.
