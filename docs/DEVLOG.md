@@ -855,3 +855,8 @@ Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStone
 - Sintaxe JavaScript verificada por parser. Constantes de mapa, lago, colina, árvore, recursos e definições de itens comparadas com o estado anterior; a revisão do diff mostra mudanças apenas na geometria/material de grama decorativa, nas cores de vértices da rampa e na decoração das rochas da colina. Não equivale a teste funcional.
 - Página e resultado visual devem ser comparados após deploy. Necessárias vistas da colina de frente e de lado, do campo em primeiro plano e à distância; outras áreas não foram refinadas nem aprovadas nesta rodada. Coleta, oclusão, movimento, desempenho e avaliação de Anderson continuam pendentes.
 - Sem alterações em releases, tags ou backups.
+
+### Observação após a publicação
+
+- O GitHub Pages publicou o commit `068e69c`, e a página abriu com HTTP 200, sem erros no console. A vista inicial frontal e uma rotação a noroeste foram observadas na versão publicada. A grama aparece mais estreita em alguns tufos, mas ainda há muitas pontas claras; a colina continua com forma trapezoidal de bordas retas e vários fragmentos escuros que parecem apoiados sobre a encosta. A mudança de cor na borda é discreta, e essa observação não comprova que o problema de integração foi resolvido.
+- Não foram obtidas vistas próximas ou laterais suficientes para avaliar o acabamento da colina, nem uma comparação controlada confiável com a versão anterior em todos os ângulos. Avaliação da árvore, lago, margem, galhos e colina por outros lados não foi abrangida por esta rodada. Gameplay, oclusão, desempenho e teste com leitor de tela continuam pendentes; nenhuma aprovação visual de Anderson é presumida.
