@@ -49,8 +49,8 @@ O movimento é feito mantendo uma tecla e parando ao soltá-la. No chão, W/S mo
 - Corrida com Shift direito: W a 3,6 m/s, A/D a 3,2 m/s e S a 2,4 m/s. Shift direito pode ser pressionado depois de começar a caminhar; ao soltá-lo, a velocidade volta à caminhada. Corrida não se aplica à escalada nem à caminhada nos galhos.
 - Shift esquerdo+A/D gira o corpo 45°; Shift esquerdo+W gira 180°. A direção final é anunciada em um dos oito rumos principais.
 - Shift esquerdo+S faz um recuo rápido de cerca de 1,35 m.
-- Setas esquerda/direita desviam o olhar em passos de 15°, até 45° para cada lado em relação ao corpo. Ao chegar ao limite, o olhar para; é preciso girar o corpo para continuar naquela direção.
-- Setas cima/baixo inclinam o olhar em passos de 15°, até 30°.
+- Setas esquerda/direita desviam o olhar em passos de 5°, até 45° para cada lado em relação ao corpo. Ao chegar ao limite, o olhar para; é preciso girar o corpo para continuar naquela direção.
+- Setas cima/baixo inclinam o olhar em passos de 5°, até 30°.
 - C anuncia coordenadas X/Y no plano e Z como altitude-base, em metros com duas casas decimais.
 
 A câmera e o perfil de percepção humano usam altura ocular de 1,60 m e campo vertical de 68°. Os anúncios de distância ao olhar usam metros e, nos objetos, medem a distância espacial entre a câmera e o ponto de referência do alvo, não necessariamente a distância horizontal até sua borda. A descrição de posição usa a projeção do ponto de referência no campo de visão: “no centro do campo de visão” só é dito quando ele está na zona central horizontal e vertical; fora dela, a posição informa esquerda/direita e acima/abaixo do centro, ou qual dos eixos está centralizado. Quando o olhar aponta para baixo, coletáveis visíveis recebem prioridade descritiva. O rumo do olhar é informado separadamente do rumo de caminhada. Essa descrição de posição não altera a seleção de alvo nem garante que a interação esteja ao alcance.
@@ -126,8 +126,8 @@ A interface da página tem instruções recolhidas, botão de inventário, paine
 - **Shift esquerdo + A/D:** girar o corpo 45° para a esquerda/direita, sem caminhar.
 - **Shift esquerdo + W:** girar o corpo 180°.
 - **Shift esquerdo + S:** recuo rápido de cerca de 1,35 m.
-- **Setas esquerda/direita:** desviar o olhar em passos de 15°, até ±45° em relação ao corpo.
-- **Setas cima/baixo:** inclinar o olhar em passos de 15°, até ±30°.
+- **Setas esquerda/direita:** desviar o olhar em passos de 5°, até ±45° em relação ao corpo.
+- **Setas cima/baixo:** inclinar o olhar em passos de 5°, até ±30°.
 - **C:** anunciar coordenadas X, Y e Z.
 - **I:** abrir/fechar o inventário.
 - **Enter:** recolher pedra solta, fibra de arbusto, galho caído ou cinzas no alcance, se alinhados com a mira. Não minera afloramentos.

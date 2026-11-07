@@ -885,3 +885,16 @@ Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStone
 
 - A primeira versão foi publicada em `8be8b82` e anunciava “na altura do centro do centro” para um objeto à direita e na altura do centro; a redação foi corrigida nesta atualização, sem mudança no cálculo.
 - Em teste após a correção anterior, um anúncio com pedra revelou discordância no masculino (“pedra ... está alinhado”). O texto central foi alterado para “está no centro do campo de visão”, neutro e mais direto.
+
+
+## 7 de novembro de 2026 — ajuste fino do olhar para centralizar objetos
+
+- Anderson relatou dificuldade para centralizar pedras soltas. A descrição mais precisa já distingue centro/lados, mas o olhar ainda avançava em passos de 15°; a zona central anunciada é menor, então alvos pequenos podiam ficar entre dois ângulos selecionáveis.
+- Reduzidos para 5° os passos horizontais e verticais das setas. Os limites continuam ±45° laterais e ±30° verticais. Não foram alterados posição/velocidade do personagem, mira ou seleção de interação, limites de alcance, prioridade de recursos, anúncio de distância, FOV ou posição central reconhecida.
+- README e GDD atualizados para documentar passos de 5°.
+
+### Verificações e pendências
+
+- Sintaxe JavaScript verificada por parser. Diff conferido: somente os dois incrementos de olhar e suas descrições no README/GDD, mais este registro; constantes de movimento, coleta, mira, árvore, pedras e centro do anúncio não mudaram.
+- Página publicada e teste de teclado confirmarão o novo passo. A comparação por Anderson, em especial o esforço necessário para centralizar pedras soltas e outros objetos pequenos, permanece necessária; não presumir que o ajuste resolveu o caso.
+- Sem alteração de releases, tags ou backups.
