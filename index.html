@@ -3006,9 +3006,9 @@
       const heading = sectors[Math.round(degrees / 22.5) % 16];
       if (climbMode === 'swimming') {
         const depth = Math.max(0, LAKE.waterZ - player.swimEyeAltitude).toFixed(2);
-        if (player.pitch > .12) return `Natação: olhar para cima; W sobe e S desce. Profundidade atual: ${depth} m.`;
-        if (player.pitch < -.12) return `Natação: olhar para baixo; W desce e S sobe. Profundidade atual: ${depth} m.`;
-        return `Natação: olhar horizontal; W/S mantêm a profundidade. Profundidade atual: ${depth} m.`;
+        if (player.pitch > 1e-5) return `Natação: olhar para cima. Profundidade atual: ${depth} m.`;
+        if (player.pitch < -1e-5) return `Natação: olhar para baixo. Profundidade atual: ${depth} m.`;
+        return `Natação: olhar horizontal. Profundidade atual: ${depth} m.`;
       }
       const targets = [
         ...campfires.map((fire, index) => ({ category: 'campfire', name: fire.lit ? `a fogueira simples acesa${campfires.length > 1 ? ` ${index + 1}` : ''}` : `a fogueira apagada e suas cinzas${campfires.length > 1 ? ` ${index + 1}` : ''}`, point: designToThree(fire.x, fire.y, terrainHeightAt(fire.x, fire.y) + (fire.lit ? .52 : .14)), fire, objects: fire.base ? lookables.filter(object => object.userData.lookCategory === 'campfire' && fire.base.children.includes(object)) : [] })),

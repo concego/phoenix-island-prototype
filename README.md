@@ -91,7 +91,7 @@ Com as mãos vazias, na faixa rasa e voltado para águas profundas, Espaço inic
 
 Para sair, é preciso estar com as mãos vazias, na superfície e perto da faixa rasa de saída; pressione Espaço. A natação não termina automaticamente ao tocar a margem. Em água muito rasa, o fundo pode elevar o personagem até a superfície, e a saída ainda exige Espaço. O mapa não tem túneis, conectores ou passagens subaquáticas; o código tem suporte futuro a marcadores de saída para terra e conexões de água, mas a lista atual está vazia.
 
-A inclinação do olhar e a profundidade aproximada são anunciadas ao alterar o olhar durante a natação. Mudanças de estado, como entrada, contato com fundo/superfície e bloqueio pela margem, têm feedback. Não há combate ou interação subaquática.
+A inclinação do olhar e a profundidade aproximada são anunciadas ao alterar o olhar durante a natação; desde o primeiro passo de 5° o anúncio informa cima ou baixo, e apenas o ângulo horizontal é anunciado como horizontal. Mudanças de estado, como entrada, contato com fundo/superfície e bloqueio pela margem, têm feedback. Não há combate ou interação subaquática.
 
 ### Fogueira simples experimental
 

@@ -196,6 +196,7 @@ O registro consolidado de ingredientes, consumo, resultados esperados e condiç�
 
 - Entrada: mãos vazias, faixa rasa e corpo voltado para água profunda; Espaço inicia.
 - W/S seguem a inclinação do olhar; no horizonte mantêm profundidade. A/D deslocam lateralmente. O nado para trás (S) só é permitido até 0,55 m de profundidade; em maior profundidade, é preciso subir até esse limite para recuar. Ao recuar, a profundidade não pode ultrapassar 0,55 m.
+- Na natação, o anúncio do olhar corresponde ao sinal real da inclinação desde o primeiro passo de 5°; só o ângulo horizontal é descrito como horizontal.
 - Saída: mãos vazias, superfície e proximidade da faixa rasa ou saída elegível, seguida de Espaço. Não sair automaticamente ao tocar a margem.
 - Não existem passagens subaquáticas no mapa atual.
 

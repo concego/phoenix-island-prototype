@@ -936,3 +936,10 @@ Estas decisões são fundamentos de design, não sistemas implementados. Permane
 - Por solicitação de Anderson, o nado para trás (S) só fica disponível quando a profundidade é de até 0,55 m, adotando o limite já usado para a faixa rasa. Em profundidade maior, a tentativa é bloqueada com anúncio; o personagem pode subir usando a combinação existente de W/S com inclinação do olhar e tentar recuar ao chegar ao limite.
 - Durante o recuo, a altitude é limitada para que S não leve o personagem abaixo de 0,55 m de profundidade. Os demais movimentos e a velocidade de natação não mudam.
 - README e GDD atualizados. Publicação em `main` e teste em execução serão conferidos; avaliação manual de Anderson continua pendente. Nenhuma pré-release ou tag será alterada.
+
+
+## 7 de novembro de 2026 — relato de olhar horizontal durante a natação
+
+- Anderson informou que, ao tentar alterar o olhar nadando, o jogo parecia puxá-lo para a horizontal. A revisão do código encontrou um descompasso: as setas alteram o ângulo em passos de 5°, mas o anúncio classificava até aproximadamente 6,9° de inclinação em qualquer direção como horizontal. Assim, o primeiro toque anunciava uma orientação e um comportamento de profundidade incompatíveis com o ângulo efetivamente usado na movimentação.
+- Ajustado o anúncio na natação para identificar cima e baixo a partir do primeiro passo de 5°, mantendo uma pequena tolerância apenas para arredondamento numérico no zero. Foram removidas da fala as instruções contraditórias sobre S, pois o nado para trás agora é limitado pela profundidade. O movimento e a câmera não foram alterados.
+- Revisão de código identificou uma causa possível do relato, sem comprovar que seja a única. Publicação e verificação do anúncio no navegador devem ser conferidas; o teste real com o leitor de tela e a avaliação de Anderson permanecem pendentes. Releases e tags não foram alteradas.
