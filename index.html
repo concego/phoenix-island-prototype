@@ -3055,7 +3055,7 @@
         if (centeredHorizontally && centeredVertically) return 'alinhado no centro do campo de visão';
         const horizontal = centeredHorizontally ? 'centralizado horizontalmente'
           : target.screen.x < 0 ? 'à esquerda' : 'à direita';
-        const vertical = centeredVertically ? 'na altura do centro'
+        const vertical = centeredVertically ? 'na altura'
           : target.screen.y > 0 ? 'acima' : 'abaixo';
         return `${horizontal} e ${vertical} do centro do campo de visão`;
       }

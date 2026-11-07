@@ -880,5 +880,7 @@ Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStone
 ### Verificações e pendências
 
 - Sintaxe JavaScript verificada por parser. Comparação estática confirmou que `TREE_AIM_MIN_ALIGNMENT`, `getEnterPickupTarget`, `getRockActionTarget`, `getTreeActionTarget`, coleta, movimento, limites de câmera e distâncias permanecem inalterados; a única regra de limiar nova pertence ao texto de posição no helper de descrição.
-- Casos de centro, esquerda/direita, acima/abaixo e centralização em um só eixo foram verificados em testes de lógica auxiliares sobre coordenadas projetadas. A correspondência no jogo ao mirar objetos em diferentes distâncias/alturas, o comportamento com leitor de tela e a confirmação de Anderson continuam pendentes; essas verificações não constituem playtest.
+- Casos de centro, esquerda/direita, acima/abaixo e centralização em um só eixo foram verificados por tabela auxiliar equivalente em Python, não executando o helper JavaScript. Uma execução da versão publicada encontrou repetição em “na altura do centro do centro”; o texto foi corrigido antes da entrega. A correspondência no jogo ao mirar objetos em diferentes distâncias/alturas, o comportamento com leitor de tela e a confirmação de Anderson continuam pendentes; essas verificações não constituem playtest.
 - Sem alterações em releases, tags ou backups.
+
+- A primeira versão foi publicada em `8be8b82` e anunciava “na altura do centro do centro” para um objeto à direita e na altura do centro; a redação foi corrigida nesta atualização, sem mudança no cálculo.
