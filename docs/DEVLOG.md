@@ -818,6 +818,13 @@ O deploy do commit `9db3a6`, que contém as mesmas alterações visuais do `5703
 Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStoneHammer`, `splitBranchIntoSticks`, `createCampfire` e `refuelCampfire`, mais os requisitos do menu contextual. Esta é conferência estática; nenhuma receita foi executada manualmente nesta atualização documental. Sem alterações em releases, tags ou backups.
 
 
+## 7 de novembro de 2026 — corrigir regra documental de proximidade das fogueiras
+
+- Anderson esclareceu que não existe e não deve existir uma restrição para criar fogueiras próximas. A decisão histórica de 26 de outubro que registrava impedir outra fogueira a até 2,4 m estava incorreta; a implementação atual, que permite criar fogueiras próximas, corresponde ao comportamento desejado.
+- Corrigidos `CRAFTING.md`, `GDD.md` e `README.md` para remover a regra indevida e declarar que uma nova fogueira pode ser criada perto de outra, acesa ou apagada, desde que os requisitos reais de criação sejam cumpridos. A proximidade de 2,4 m continua sendo apenas o alcance de interação/abastecimento, não uma separação mínima de construção.
+- Nenhum código de jogo foi alterado, pois ele já não bloqueia a criação por proximidade. As entradas históricas que registravam a regra incorreta permanecem como histórico, mas esta atualização as declara superadas e erradas.
+
+
 ## 7 de novembro de 2026 — implementar cadeia de pedra e atualizar receita da faca
 
 ### Implementado
@@ -832,3 +839,5 @@ Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStone
 - README, GDD e CRAFTING atualizados para refletir a cadeia funcional. Nenhuma etapa é mais descrita como futura/não implementada.
 - Execução manual da cadeia completa, testes de inventário cheio, falta de ingredientes, saída de produto empilhada e uso da faca na copa continuam pendentes; revisão estática não demonstra gameplay nem acessibilidade em runtime. Nenhuma aprovação de playtest é alegada.
 - Sem alteração de releases, tags ou backups.
+
+- Após a publicação de teste, a página abriu sem erros no console e o inventário abriu e fechou com I; a sequência de crafting não foi executada no navegador.
