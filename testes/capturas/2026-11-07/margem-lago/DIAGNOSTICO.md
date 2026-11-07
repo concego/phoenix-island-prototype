@@ -19,3 +19,11 @@ A captura mostra uma transição abrupta entre as duas áreas e pouca leitura vi
 Questões de diagnóstico: a faixa azul corresponde à água vista por baixo/na superfície ou a outro limite? A área oliva é o leito do lago? A linha diagonal resulta da geometria, do ângulo/câmera, da névoa, da água ou da interação de materiais? Identificar no código antes de atribuir causa. A área inferior uniforme e sem textura clara dá pouca referência de escala; a captura não mostra a margem, superfície superior do lago nem ponto de saída.
 
 Esta imagem oferece evidência de que, durante o estado descrito como natação/mergulho, a leitura subaquática continua pouco detalhada e dividida por uma borda diagonal. A comparação quantitativa/qualitativa com a captura anterior e a conclusão sobre a alteração de leito/névoa continuam pendentes; não afirmar que a rodada melhorou ou falhou sem confirmar posição de câmera e versão efetivamente servida.
+
+### `03-mais-profundo.jpg` — 7 de novembro de 2026, 08:27
+
+Anderson identificou esta imagem como “outro print mais profundo”. A cena inteira está preenchida por um campo verde-azulado escuro, quase uniforme, com variação suave de luminosidade e leve escurecimento nas bordas. Não há horizonte, superfície da água, leito, objetos, bolhas ou outras referências visíveis que permitam estimar profundidade ou orientação. A janela do navegador e a barra de tarefas aparecem fora da área do jogo.
+
+Em relação à captura anterior de natação/mergulho, a diagonal e a área oliva já não aparecem; em seu lugar há uma tela praticamente uniforme e escura. Isso documenta uma diferença entre os dois enquadramentos que Anderson nomeia como progressivamente mais profundos, mas não prova por si só que seja uma transição de profundidade correta: sem referências ambientais ou posição informada, não se pode separar névoa/intensidade da água, ausência de geometria visível, câmera obstruída ou outro estado visual. O resultado atual comunica pouca informação de ambiente e não permite perceber o leito.
+
+As duas capturas são observações de enquadramentos fornecidos por Anderson, sem controle independente da posição/câmera ou identificação dos materiais. O diagnóstico de causa, a comparação controlada com a versão anterior e a conclusão sobre a eficácia do ajuste de névoa permanecem pendentes.
