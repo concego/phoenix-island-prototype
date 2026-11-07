@@ -818,8 +818,17 @@ O deploy do commit `9db3a6`, que contém as mesmas alterações visuais do `5703
 Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStoneHammer`, `splitBranchIntoSticks`, `createCampfire` e `refuelCampfire`, mais os requisitos do menu contextual. Esta é conferência estática; nenhuma receita foi executada manualmente nesta atualização documental. Sem alterações em releases, tags ou backups.
 
 
-## 7 de novembro de 2026 — corrigir regra documental de proximidade das fogueiras
+## 7 de novembro de 2026 — implementar cadeia de pedra e atualizar receita da faca
 
-- Anderson esclareceu que não existe e não deve existir uma restrição para criar fogueiras próximas. A decisão histórica de 26 de outubro que registrava impedir outra fogueira a até 2,4 m estava incorreta; a implementação atual, que permite criar fogueiras próximas, corresponde ao comportamento desejado.
-- Corrigidos `CRAFTING.md`, `GDD.md` e `README.md` para remover a regra indevida e declarar que uma nova fogueira pode ser criada perto de outra, acesa ou apagada, desde que os requisitos reais de criação sejam cumpridos. A proximidade de 2,4 m continua sendo apenas o alcance de interação/abastecimento, não uma separação mínima de construção.
-- Nenhum código de jogo foi alterado, pois ele já não bloqueia a criação por proximidade. As entradas históricas que registravam a regra incorreta permanecem como histórico, mas esta atualização as declara superadas e erradas.
+### Implementado
+
+- Adicionados ao inventário os itens empilháveis `sharpStone` (pedra afiada) e `chippedStone` (pedra lascada), com nomes acessíveis no inventário, exame, largar/recolher e atalhos pelo sistema genérico de definições de itens. Ambos são incombustíveis e não têm função de ferramenta.
+- Menu contextual no chão agora oferece a cadeia: com pedra equipada e duas pedras disponíveis, consumir 2 pedras para 1 pedra afiada; com pedra equipada e uma pedra afiada, consumir 1 pedra + 1 pedra afiada para 1 pedra lascada; com pedra lascada equipada e 1 graveto + 1 fibra vegetal, consumir os três para fabricar a faca. A faca continua uma ferramenta de corte com as mesmas funções e dano existentes.
+- Todas as receitas verificam ingredientes, estado no chão e capacidade para o produto antes de consumir os materiais. Se faltar componente ou espaço, a ação fica desabilitada com requisito contextual e não consome materiais. Itens resultantes empilham com um existente ou ocupam slot livre pelo comportamento geral do inventário. Martelo, conversão de galhos, fogueira, ferramentas, recursos, movimento, natação e árvore não foram alterados.
+
+### Verificação e pendências
+
+- Sintaxe JavaScript analisada por parser. Comparadas constantes de mapa, lago, árvore, fogueira e recursos; funções existentes de inventário, martelo, coleta, movimento, profundidade/natação e fogueira não foram alteradas. Revisão estática confirmou presença das três receitas, definições de novos itens e condições de espaço/requisitos.
+- README, GDD e CRAFTING atualizados para refletir a cadeia funcional. Nenhuma etapa é mais descrita como futura/não implementada.
+- Execução manual da cadeia completa, testes de inventário cheio, falta de ingredientes, saída de produto empilhada e uso da faca na copa continuam pendentes; revisão estática não demonstra gameplay nem acessibilidade em runtime. Nenhuma aprovação de playtest é alegada.
+- Sem alteração de releases, tags ou backups.

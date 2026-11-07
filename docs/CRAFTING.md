@@ -31,39 +31,31 @@ Esta lista separa o que já está definido ou presente no protótipo das possibi
 
 - **Origem atual:** encontradas em arbustos; cada arbusto fornece duas fibras vegetais no protótipo atual.
 - **Papel definido no design:** material inflamável para improvisar amarrações e conectar componentes.
-- **Uso de design aprovado:** uma fibra amarra a pedra ao cabo do martelo; na receita futura de design da faca, prende a lâmina de pedra lascada ao graveto.
-- **Uso concreto no protótipo:** 1 fibra vegetal é consumida na receita implementada do martelo de pedra. A faca atualmente usa duas pedras e não consome graveto nem fibra.
+- **Usos concretos no protótipo:** 1 fibra vegetal é consumida na receita do martelo de pedra; também é consumida na montagem da faca, onde amarra a pedra lascada ao graveto.
 - **Ainda não especificado:** outras receitas de amarração ou componentes de estruturas; nenhuma foi aprovada.
 
 ### Pedras
 
 - **Propriedades:** forma mais básica de mineral presente no projeto; são resistentes e não inflamáveis. Podem ser moldadas, mas com limitações: não têm a flexibilidade de metais.
 - **Papel definido no design:** matéria-prima resistente para ferramentas e estruturas, moldável dentro de limites; não tem a flexibilidade dos metais.
-- **Cadeia aprovada apenas para o design futuro:** duas pedras → uma pedra afiada; uma pedra + uma pedra afiada → uma pedra lascada; uma pedra lascada + um graveto + uma fibra → faca de pedra. A pedra afiada é um componente intermediário de design; receitas para ferramentas futuras não estão decididas.
-- **Uso concreto no protótipo:** pedras são recolhidas soltas ou obtidas de afloramentos; a faca atual consome duas pedras e o martelo consome uma pedra. A cadeia de pedra afiada/lascada não está implementada.
+- **Cadeia atualmente implementada:** duas pedras → uma pedra afiada; uma pedra + uma pedra afiada → uma pedra lascada; uma pedra lascada + um graveto + uma fibra → faca de pedra.
+- **Outros usos concretos:** o martelo de pedra consome uma pedra. Pedras soltas são recolhidas e afloramentos podem ser minerados com o martelo.
+- **Materiais intermediários:** pedra afiada e pedra lascada são itens empilháveis, não inflamáveis, usados nesta cadeia; não são ferramentas e não têm outra função implementada.
 - **Ainda não especificado:** processo e limites práticos de moldagem além desta cadeia, receitas adicionais e funções estruturais concretas. Não assumir técnicas ou propriedades além das descritas.
 
 
 ## Estado do crafting no protótipo
 
-No código consultado, há quatro ações implementadas de criação/conversão relacionadas a itens:
+No código, estão implementadas estas ações de criação/conversão relacionadas a itens:
 
-1. **Faca de pedra:** equipa uma pedra e mantenha outra pedra no inventário; a ação consome duas pedras no total e produz uma faca. Estar no chão é obrigatório. Não requer graveto nem fibra. É a receita atual do protótipo, embora seja diferente da receita de design futuro abaixo.
-2. **Martelo de pedra:** consome 1 pedra, 1 graveto e 1 fibra vegetal, e produz um martelo reutilizável. Estar no chão é obrigatório. A fibra representa a amarração da pedra ao cabo.
-3. **Galho → gravetos:** equipe 1 galho e tenha uma faca de pedra em qualquer espaço do inventário. No chão, a ação consome o galho e produz 2 gravetos; a faca não é consumida nem precisa estar equipada. É preciso haver espaço para receber gravetos, a menos que já exista uma pilha de gravetos.
-4. **Fogueira simples:** equipe uma pilha com pelo menos 10 gravetos e esteja no chão, em terreno seco, fora da água e da lama. Consome exatamente 10 gravetos e coloca uma fogueira no ponto atual do jogador, com 180 segundos (3 minutos) de combustível inicial.
+1. **Pedra afiada:** equipe uma pedra e tenha duas pedras no total. Consome 2 pedras e produz 1 pedra afiada.
+2. **Pedra lascada:** equipe uma pedra e tenha uma pedra afiada no inventário. Consome 1 pedra e 1 pedra afiada; produz 1 pedra lascada.
+3. **Faca de pedra:** equipe uma pedra lascada e tenha 1 graveto e 1 fibra vegetal. Consome esses três componentes; produz uma faca de pedra.
+4. **Martelo de pedra:** consome 1 pedra, 1 graveto e 1 fibra vegetal, produzindo um martelo reutilizável.
+5. **Galho → gravetos:** equipe 1 galho e tenha uma faca de pedra em qualquer espaço do inventário. No chão, consome o galho e produz 2 gravetos; a faca não é consumida nem precisa estar equipada. É preciso haver espaço para receber gravetos, a menos que já exista uma pilha.
+6. **Fogueira simples:** equipe uma pilha com pelo menos 10 gravetos e esteja no chão, em terreno seco, fora da água e da lama. Consome exatamente 10 gravetos e cria a fogueira no ponto atual, com 180 segundos (3 minutos) de combustível inicial.
 
-As ferramentas e a fogueira são resultados distintos: o martelo e a faca permanecem no inventário como ferramentas, enquanto a fogueira é criada no cenário. As descrições de menu/contexto, requisitos e condições podem restringir quando cada ação aparece ou pode ser executada; não se deve inferir receitas adicionais a partir dos materiais disponíveis.
-
-### Processamento de pedra — design futuro aprovado, ainda não implementado
-
-A cadeia abaixo continua sendo uma decisão de design, não a receita que o protótipo executa hoje:
-
-1. Duas pedras → uma pedra afiada.
-2. Uma pedra + uma pedra afiada → uma pedra lascada.
-3. Uma pedra lascada + um graveto + uma fibra vegetal → uma faca de pedra; a fibra amarra a lâmina ao cabo.
-
-O código atual ainda fabrica a faca diretamente com duas pedras. Pedra afiada, pedra lascada e as duas primeiras etapas de processamento não estão implementadas. Ferramentas futuras como machado e picareta não têm receitas definidas. Esta distinção evita tratar o plano aprovado como funcionalidade existente.
+As três etapas de processamento de pedra e fabricação da faca exigem que o jogador esteja no chão e sejam feitas no menu contextual do item indicado. Antes de consumir componentes, cada receita verifica se há espaço para o resultado; se não houver, informa falta de espaço e preserva os ingredientes. Itens intermediários são empilháveis no inventário como outros tipos de item. As ferramentas permanecem no inventário, enquanto a fogueira é criada no cenário. Abastecer fogueira é uma ação de uso de combustível, não uma receita de fabricação.
 
 ## Tier 1 — ferramentas rústicas iniciais
 
@@ -71,9 +63,7 @@ O código atual ainda fabrica a faca diretamente com duas pedras. Pedra afiada, 
 
 ### Faca de pedra
 
-**Receita atualmente implementada:** equipe uma pedra e mantenha pelo menos uma pedra adicional no inventário. A ação consome duas pedras no total e produz uma faca de pedra. Exige estar no chão. Não requer graveto nem fibra vegetal.
-
-**Receita de design futuro aprovada, não implementada:** uma pedra lascada, um graveto e uma fibra vegetal; a fibra amarra a lâmina de pedra lascada ao graveto, que serve de cabo. A cadeia de processamento de pedra necessária para obter a pedra lascada também não está implementada.
+**Receita implementada:** equipe uma pedra lascada e tenha 1 graveto e 1 fibra vegetal. Consome esses três itens para produzir uma faca de pedra. Exige estar no chão. A fibra amarra a lâmina de pedra lascada ao graveto, que serve de cabo.
 
 **Uso definido:** quando equipada, pode cortar galhos vivos baixos da copa por golpes sucessivos. Cada alvo de galho vivo tem resistência 6; cada golpe da faca causa dano inteiro sorteado uniformemente entre 1 e 3. Ao esgotar a resistência, o alvo entrega um galho. A faca não é necessária para recolher galhos que já caíram no chão.
 
@@ -100,7 +90,7 @@ A fogueira simples é uma ferramenta fixa, não carregável, e a estação de tr
 
 **Condições:** estar no chão seco, fora de água e lama. A ação não é permitida durante escalada ou natação.
 
-**Consumo e colocação:** consome exatamente dez gravetos e cria a fogueira na posição atual do jogador, desde que esteja no chão e fora de água e lama. Não há restrição de proximidade: o jogador pode criar outra fogueira perto de uma fogueira acesa ou apagada. Reacender uma fogueira apagada ainda não está disponível.
+**Consumo e colocação no código atual:** consome exatamente dez gravetos e cria a fogueira na posição atual do jogador, desde que esteja no chão e fora de água e lama. A implementação consultada não verifica proximidade de fogueiras já existentes; portanto, a regra de impedir outra fogueira dentro de 2,4 m não está implementada. Reacender uma fogueira apagada também não está disponível.
 
 **Resultado no código atual:** fogueira simples acesa, com 180 segundos (3 minutos) de combustível inicial. O valor aprovado e implementado é 180 segundos; qualquer indicação de um minuto está incorreta. O texto do menu contextual ainda contém essa indicação incorreta.
 
@@ -125,7 +115,7 @@ A fogueira simples é uma ferramenta fixa, não carregável, e a estação de tr
 
 Antes de aprovar uma receita nova, registrar os ingredientes e suas quantidades, quais itens são consumidos, as condições de execução, o resultado fabricado, onde/como o resultado pode ser usado, o que acontece quando falta requisito ou espaço e se uma tentativa falha consome recursos. Não inferir uma receita a partir de convenções de gênero, realismo ou possibilidades do código.
 
-**Ainda não definido neste documento:** além da cadeia futura de pedra já aprovada, receitas futuras, custos adicionais, durabilidade de ferramentas, reaparecimento de recursos, progressão, salvamento e construção de base. São decisões em aberto, não espaços para completar por suposição.
+**Ainda não definido neste documento:** receitas além das implementadas e especificadas aqui, custos adicionais, durabilidade de ferramentas, reaparecimento de recursos, progressão, salvamento e construção de base. São decisões em aberto, não espaços para completar por suposição.
 
 ## Referências de projeto
 

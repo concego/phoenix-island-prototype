@@ -964,6 +964,8 @@
       stick: { name: 'graveto', flammable: true, weightKg: null },
       branch: { name: 'galho', flammable: true, weightKg: null },
       stone: { name: 'pedra', flammable: false, weightKg: null },
+      sharpStone: { name: 'pedra afiada', flammable: false, weightKg: null },
+      chippedStone: { name: 'pedra lascada', flammable: false, weightKg: null },
       plantFiber: { name: 'fibra vegetal', flammable: true, weightKg: null },
       stoneHammer: { name: 'martelo de pedra', flammable: false, weightKg: null, tool: 'impact' },
       stoneKnife: { name: 'faca de pedra', flammable: false, weightKg: null, tool: 'cutting' },
@@ -2096,14 +2098,36 @@
         actions.push({ label: 'Montar martelo de pedra', disabled: !craftAllowed, detail: craftDetail, run: craftStoneHammer });
       }
       if (held.itemId === 'stone') {
-        const enoughKnappingStone = inventoryQuantity('stone') >= 2;
-        const hasKnifeSlot = canAddCraftedItem('stoneKnife', { stone: 2 });
-        const craftKnifeAllowed = climbMode === 'ground' && enoughKnappingStone && hasKnifeSlot;
-        const knifeDetail = !enoughKnappingStone ? `A faca de pedra requer 2 pedras no total — uma equipada e outra no inventário; você tem ${inventoryQuantity('stone')}.`
-          : !hasKnifeSlot ? 'Requer 2 pedras no total; inventário cheio, libere um espaço para a faca.'
+        const sharpRecipe = { stone: 2 };
+        const hasTwoStones = inventoryQuantity('stone') >= 2;
+        const hasSharpSlot = canAddCraftedItem('sharpStone', sharpRecipe);
+        const sharpAllowed = climbMode === 'ground' && hasTwoStones && hasSharpSlot;
+        const sharpDetail = !hasTwoStones ? `Requer 2 pedras; você tem ${inventoryQuantity('stone')}.`
+          : !hasSharpSlot ? 'Inventário cheio; libere um espaço para a pedra afiada.'
           : climbMode !== 'ground' ? 'Disponível no chão, sem nadar nem estar agarrado à árvore.'
-          : 'Consome 2 pedras no total — a pedra nas mãos e mais uma no inventário — para criar uma faca de pedra.';
-        actions.push({ label: 'Fabricar faca de pedra', disabled: !craftKnifeAllowed, detail: knifeDetail, run: craftStoneKnife });
+          : 'Consome 2 pedras e produz 1 pedra afiada.';
+        actions.push({ label: 'Afiar pedra', disabled: !sharpAllowed, detail: sharpDetail, run: craftSharpStone });
+
+        const chippedRecipe = { stone: 1, sharpStone: 1 };
+        const hasChippedMaterials = Object.entries(chippedRecipe).every(([itemId, amount]) => inventoryQuantity(itemId) >= amount);
+        const hasChippedSlot = canAddCraftedItem('chippedStone', chippedRecipe);
+        const chippedAllowed = climbMode === 'ground' && hasChippedMaterials && hasChippedSlot;
+        const chippedDetail = !hasChippedMaterials ? 'Requer 1 pedra e 1 pedra afiada.'
+          : !hasChippedSlot ? 'Inventário cheio; libere um espaço para a pedra lascada.'
+          : climbMode !== 'ground' ? 'Disponível no chão, sem nadar nem estar agarrado à árvore.'
+          : 'Consome 1 pedra e 1 pedra afiada; produz 1 pedra lascada.';
+        actions.push({ label: 'Lascar pedra', disabled: !chippedAllowed, detail: chippedDetail, run: craftChippedStone });
+      }
+      if (held.itemId === 'chippedStone') {
+        const knifeRecipe = { chippedStone: 1, stick: 1, plantFiber: 1 };
+        const hasKnifeMaterials = Object.entries(knifeRecipe).every(([itemId, amount]) => inventoryQuantity(itemId) >= amount);
+        const hasKnifeSlot = canAddCraftedItem('stoneKnife', knifeRecipe);
+        const craftKnifeAllowed = climbMode === 'ground' && hasKnifeMaterials && hasKnifeSlot;
+        const knifeDetail = !hasKnifeMaterials ? 'Requer 1 pedra lascada, 1 graveto e 1 fibra vegetal.'
+          : !hasKnifeSlot ? 'Inventário cheio; libere um espaço para a faca.'
+          : climbMode !== 'ground' ? 'Disponível no chão, sem nadar nem estar agarrado à árvore.'
+          : 'Consome 1 pedra lascada, 1 graveto e 1 fibra vegetal para prender a lâmina ao cabo e fabricar uma faca de pedra.';
+        actions.push({ label: 'Montar faca de pedra', disabled: !craftKnifeAllowed, detail: knifeDetail, run: craftStoneKnife });
       }
       if (held.itemId === 'branch') {
         const hasKnife = inventoryQuantity('stoneKnife') >= 1;
@@ -2620,12 +2644,38 @@
       playConfirmation('menu-action');
       announce('Martelo de pedra criado.');
     }
-    function craftStoneKnife() {
+    function craftSharpStone() {
       const recipe = { stone: 2 };
-      if (climbMode !== 'ground') return;
-      if (heldInventoryEntry()?.itemId !== 'stone' || inventoryQuantity('stone') < 2) return;
+      if (climbMode !== 'ground' || heldInventoryEntry()?.itemId !== 'stone') return;
+      if (inventoryQuantity('stone') < 2) return;
+      if (!canAddCraftedItem('sharpStone', recipe)) { announce('Sem espaço no inventário.'); return; }
+      if (!consumeInventoryQuantity('stone', 2)) return;
+      addInventoryItem('sharpStone', 1);
+      closeItemActionMenu();
+      playConfirmation('menu-action');
+      announce('Pedra afiada criada.');
+    }
+    function craftChippedStone() {
+      const recipe = { stone: 1, sharpStone: 1 };
+      if (climbMode !== 'ground' || heldInventoryEntry()?.itemId !== 'stone') return;
+      if (Object.entries(recipe).some(([itemId, amount]) => inventoryQuantity(itemId) < amount)) return;
+      if (!canAddCraftedItem('chippedStone', recipe)) { announce('Sem espaço no inventário.'); return; }
+      for (const [itemId, amount] of Object.entries(recipe)) {
+        if (!consumeInventoryQuantity(itemId, amount)) return;
+      }
+      addInventoryItem('chippedStone', 1);
+      closeItemActionMenu();
+      playConfirmation('menu-action');
+      announce('Pedra lascada criada.');
+    }
+    function craftStoneKnife() {
+      const recipe = { chippedStone: 1, stick: 1, plantFiber: 1 };
+      if (climbMode !== 'ground' || heldInventoryEntry()?.itemId !== 'chippedStone') return;
+      if (Object.entries(recipe).some(([itemId, amount]) => inventoryQuantity(itemId) < amount)) return;
       if (!canAddCraftedItem('stoneKnife', recipe)) { announce('Sem espaço no inventário.'); return; }
-      consumeInventoryQuantity('stone', 2);
+      for (const [itemId, amount] of Object.entries(recipe)) {
+        if (!consumeInventoryQuantity(itemId, amount)) return;
+      }
       addInventoryItem('stoneKnife', 1);
       closeItemActionMenu();
       playConfirmation('menu-action');

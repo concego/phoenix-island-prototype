@@ -145,15 +145,15 @@ O registro consolidado de ingredientes, consumo, resultados esperados e condiç�
 ### Faca de pedra
 
 - Ferramenta de corte.
-- Receita de design aprovada: primeiro, duas pedras geram uma pedra afiada; uma pedra e uma pedra afiada geram uma pedra lascada; uma pedra lascada, um graveto e uma fibra vegetal geram uma faca de pedra. A fibra amarra a lâmina ao cabo de graveto.
-- Estado atual do protótipo: a receita implementada ainda é duas pedras no total, uma equipada e outra no inventário; ambas são consumidas. A cadeia de processamento e a nova receita ainda não foram implementadas nem testadas.
+- Receita implementada: equipe uma pedra lascada e tenha 1 graveto e 1 fibra vegetal; consome os três componentes e cria a faca. Exige estar no chão. A fibra amarra a lâmina ao cabo de graveto.
+- A cadeia de materiais implementada é: duas pedras → uma pedra afiada; uma pedra + uma pedra afiada → uma pedra lascada; uma pedra lascada + um graveto + uma fibra vegetal → uma faca de pedra.
 - Corta galhos vivos baixos da copa quando equipada. Não é necessária para recolher galhos caídos.
 - A faca não deve ser descrita como ferramenta de impacto.
 
 ### Martelo de pedra
 
 - Ferramenta de impacto.
-- Receita aprovada: uma pedra, um graveto e uma fibra vegetal para afixar a pedra ao cabo.
+- Receita implementada: uma pedra, um graveto e uma fibra vegetal para afixar a pedra ao cabo.
 - Uso implementado no protótipo: minerar afloramentos maiores. Basta o martelo estar no inventário; não precisa ser equipado.
 - A mineração exige vários golpes, anuncia progresso e só entrega as pedras no golpe final.
 - O martelo não corta nem quebra galhos, não divide galho em gravetos e ainda não tem função de construção. Não inventar outras funções sem decisão explícita.
@@ -163,10 +163,10 @@ O registro consolidado de ingredientes, consumo, resultados esperados e condiç�
 - Pedras soltas, arbustos, galhos caídos e cinzas são coletados com Enter quando elegíveis, inclusive com outro item nas mãos. Espaço usa o item equipado; não recolhe esses itens do chão.
 - Afloramentos exigem martelo no inventário e são minerados com Espaço em golpes sucessivos.
 - Arbustos são coletados e fornecem duas fibras vegetais cada no protótipo atual.
-- Para o design, está aprovada a cadeia de processamento de pedra: duas pedras geram uma pedra afiada; uma pedra + uma pedra afiada geram uma pedra lascada; uma pedra lascada + um graveto + uma fibra vegetal geram a faca de pedra. A fibra amarra a lâmina ao cabo. Essa cadeia ainda não está implementada no protótipo. A pedra afiada pode ser componente de ferramentas futuras como machado e picareta, mas as receitas dessas ferramentas não estão decididas.
+- A cadeia de processamento de pedra está implementada no protótipo: duas pedras geram uma pedra afiada; uma pedra + uma pedra afiada geram uma pedra lascada; uma pedra lascada + um graveto + uma fibra vegetal geram a faca de pedra. A fibra amarra a lâmina ao cabo. A pedra afiada pode ser componente de ferramentas futuras como machado e picareta, mas as receitas dessas ferramentas não estão decididas.
 - Gravetos são menores e mais frágeis que galhos; ambos são inflamáveis. Gravetos servem de combustível e de partes para ferramentas e estruturas; no protótipo são combustível da fogueira simples e compõem o cabo do martelo de pedra. Receitas concretas de estruturas ou outras ferramentas ainda não estão definidas. Galhos são maiores e mais resistentes que gravetos; podem servir de combustível e ser convertidos em dois gravetos com faca no inventário. Ainda não há receita especificada que use galhos como componente de ferramenta ou estrutura; lança, picareta e estruturas são possibilidades de design futuras, sem receitas aprovadas.
 - Fibras vegetais vêm dos arbustos, são inflamáveis e servem para improvisar amarrações que conectam componentes; a fibra da receita do martelo prende a pedra ao cabo. Outras receitas de amarração ou de estrutura ainda não estão especificadas.
-- Pedras são o mineral mais básico atualmente listado, resistente e não inflamável. Podem ser moldadas com limitações e não são tão flexíveis quanto metais; servem para ferramentas e estruturas. No protótipo são usadas na faca e no martelo de pedra. Processo de moldagem, técnicas e receitas estruturais concretas ainda não estão definidos.
+- Pedras são o mineral mais básico atualmente listado, resistente e não inflamável. Podem ser moldadas com limitações e não são tão flexíveis quanto metais; servem para ferramentas e estruturas. No protótipo, pedra, pedra afiada e pedra lascada são usadas na cadeia da faca, e pedra também compõe o martelo. Pedra afiada e pedra lascada são componentes intermediários, não ferramentas. Processo adicional de moldagem, técnicas e receitas estruturais concretas ainda não estão definidos.
 - Usos possíveis para ferramentas ou estruturas não são automaticamente receitas aprovadas nem autorização de implementação. O catálogo consolidado de propriedades e usos está em [`CRAFTING.md`](CRAFTING.md).
 - Coletas devem respeitar mira, alcance e espaço no inventário e não consumir o objeto se a recompensa não puder ser guardada.
 
@@ -190,6 +190,7 @@ O registro consolidado de ingredientes, consumo, resultados esperados e condiç�
 
 - Dez espaços para tipos de item, em grade de duas fileiras por cinco; começa vazio.
 - Itens do mesmo tipo acumulam sem limite artificial de pilha. Não há limite de peso implementado.
+- O inventário inclui pedra afiada e pedra lascada como componentes intermediários empilháveis, além dos itens já listados no README; não são ferramentas nem têm outros usos implementados fora da cadeia da faca.
 - Todos os dez espaços, inclusive vazios, são navegáveis por setas; Enter abre ações para espaço ocupado. O foco e os anúncios seguem as regras de acessibilidade descritas no README.
 - Ações presentes: examinar, mover, usar/equipar, soltar e atribuir atalho. Itens largados são entradas recuperáveis por controle acessível, não objetos físicos no cenário.
 - Não adicionar mochila, carga, durabilidade ou efeitos de item sem decisão aprovada.
