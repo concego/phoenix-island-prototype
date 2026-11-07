@@ -974,3 +974,9 @@ Em conversa posterior, Anderson esclareceu que centralizar o olhar em um objeto 
 ### Esclarecimento sobre centralização
 
 Anderson esclareceu que a dificuldade era localizar/centralizar os beeps espaciais emitidos pelos objetos; não era mirar visualmente o objeto. O passo de 15° é mantido por ser o controle previsto e familiar, enquanto a alteração atual restringe somente o ângulo total que o personagem pode olhar.
+
+
+## 7 de novembro de 2026 — ampliar limites do olhar mantendo passo de 15°
+
+- A pedido de Anderson, mantido o passo de 15° por toque e ampliados somente os limites: ±45° para a esquerda/direita e ±30° para cima/baixo. Isso corresponde a três passos laterais e dois verticais em cada sentido.
+- README e GDD atualizados. Nenhuma alteração em rotação corporal, movimento, natação, beeps ou releases/tags. Publicar em `main` para teste e aguardar a avaliação de Anderson.

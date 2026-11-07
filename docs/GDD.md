@@ -117,7 +117,7 @@ A distribuição, quantidades e dimensões são parâmetros do protótipo e pode
 - W/S: avançar/recuar em relação ao corpo; A/D: deslocamento lateral.
 - Shift direito combinado ao movimento: corrida, com velocidades conforme o controle atual do README.
 - Shift esquerdo+A/D: girar o corpo em 45°; Shift esquerdo+W: girar 180°; Shift esquerdo+S: recuo rápido.
-- Setas: olhar em passos de 15°, com limites de ±30° na horizontal e ±15° na vertical.
+- Setas: olhar em passos de 15°, com limites de ±45° na horizontal e ±30° na vertical.
 - C: anunciar coordenadas.
 - Espaço: interagir, usar o item em mãos ou iniciar/confirmar saída da natação conforme a situação.
 - Enter: recolher pedra solta ou fibra de arbusto quando o alvo e a interação forem elegíveis; não substitui a mineração de afloramentos.
