@@ -1755,6 +1755,7 @@
         && Math.abs(x) <= HILL_HALF_WIDTH && y > HILL_RAMP_START_Y && y < HILL_REAR_END_Y;
     }
     function playStep() {
+      if (climbMode === 'swimming') return;
       const onBranch = climbMode === 'branch';
       const onHill = !onBranch && isOnHillGround();
       const inShallowWater = !onBranch && !onHill && climbMode === 'ground' && isInLakeWater(player.x, player.y) && !isDeepLakeWater(player.x, player.y);
@@ -1870,6 +1871,7 @@
     }
     function getLookYaw() { return normalizeAngle(player.yaw + player.headYawOffset); }
     function setCamera() {
+      player.pitch = clamp(player.pitch, -VERTICAL_LOOK_LIMIT, VERTICAL_LOOK_LIMIT);
       const underwater = climbMode === 'swimming' && player.swimEyeAltitude < LAKE.waterZ - .04;
       scene.background = underwater ? underwaterColor : horizonColor;
       scene.fog = underwater ? underwaterFog : surfaceFog;
@@ -2588,6 +2590,8 @@
       swimBottomContact = false;
       swimSurfaceContact = true;
       nextSwimStrokeAt = 0;
+      nextStepAt = 0;
+      swimBackstrokeDepthContact = false;
       playBuffer('swimEnter', .34);
       announce('Você entrou na natação.');
     }
@@ -3421,19 +3425,27 @@
         updateSwimmingMarkerBeeps();
         if (activeCode && movementKeys.has(activeCode)) activeDirection = movementVector(activeCode);
         if (activeDirection && activeCode) {
-          const movement = movementVector(activeCode);
+          let movement = movementVector(activeCode);
           if (movement) activeDirection = movement;
+          if (activeCode === 'KeyS' && LAKE.waterZ - player.swimEyeAltitude > SWIM_BACKSTROKE_MAX_DEPTH_METERS + 1e-5) {
+            if (movement?.z > 1e-5) {
+              movement = { ...movement, x: 0, y: 0 };
+            } else {
+              if (!swimBackstrokeDepthContact) announce('Em maior profundidade, S só permite subir; aproxime-se da superfície para nadar para trás.');
+              swimBackstrokeDepthContact = true;
+              stopMovement();
+              setCamera();
+              return;
+            }
+          }
+          if (movement && activeCode === 'KeyS' && LAKE.waterZ - player.swimEyeAltitude <= SWIM_BACKSTROKE_MAX_DEPTH_METERS + 1e-5) {
+            swimBackstrokeDepthContact = false;
+          }
           const distance = SWIM_SPEED * delta;
           const steps = Math.max(1, Math.ceil(distance / .08));
           const stepDistance = distance / steps;
           let moved = false, blockedAtShore = false;
           for (let i = 0; i < steps; i++) {
-            if (activeCode === 'KeyS' && LAKE.waterZ - player.swimEyeAltitude > SWIM_BACKSTROKE_MAX_DEPTH_METERS + 1e-5) {
-              if (!swimBackstrokeDepthContact) announce('Em maior profundidade, não dá para nadar para trás.');
-              swimBackstrokeDepthContact = true;
-              stopMovement();
-              break;
-            }
             const tx = player.x + movement.x * stepDistance;
             const ty = player.y + movement.y * stepDistance;
             if (!isInLakeWater(tx, ty) || !isInsideMap(tx, ty)) {
@@ -3449,7 +3461,7 @@
             const minimumEyeAltitude = Math.min(surface, bottom);
             const unclamped = player.swimEyeAltitude + movement.z * stepDistance;
             let nextEyeAltitude = clamp(unclamped, minimumEyeAltitude, surface);
-            if (activeCode === 'KeyS') {
+            if (activeCode === 'KeyS' && LAKE.waterZ - player.swimEyeAltitude <= SWIM_BACKSTROKE_MAX_DEPTH_METERS + 1e-5) {
               nextEyeAltitude = Math.max(nextEyeAltitude, LAKE.waterZ - SWIM_BACKSTROKE_MAX_DEPTH_METERS);
             }
             const hitBottom = movement.z < 0 && unclamped < minimumEyeAltitude - 1e-5;
