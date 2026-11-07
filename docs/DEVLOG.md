@@ -802,3 +802,17 @@ O deploy do commit `9db3a6`, que contém as mesmas alterações visuais do `5703
 - Sintaxe do módulo JavaScript confirmada por parser. Constantes do mapa, lago, profundidade e natação foram comparadas e preservadas; as funções de profundidade, entrada/saída de natação, seleção e câmera também foram comparadas sem mudanças. Isso não equivale a teste na água.
 - Falta recapturar o fundo do lago e a água rasa/superfície para verificar cor, visibilidade do leito e se a divisão diagonal permanece. Também precisam ser testadas natação, saída, orientação e leitor de tela; nenhuma conclusão visual é considerada aprovada até a avaliação do Anderson.
 - Sem mudanças em releases, tags ou backups.
+
+
+## 7 de novembro de 2026 — alinhar documentos de crafting ao código
+
+### Revisão e alterações documentais
+
+- Comparados `docs/CRAFTING.md`, `docs/GDD.md`, `README.md` e as ações/funções de crafting de `index.html`. O código atual oferece: faca (2 pedras, uma equipada e outra disponível no inventário; consome 2 no total; exige chão), martelo (1 pedra + 1 graveto + 1 fibra; exige chão), conversão de 1 galho equipado em 2 gravetos (faca em qualquer espaço do inventário, exige chão e espaço/pilha de saída) e fogueira (10 gravetos equipados; exige chão seco fora de água/lama; consome 10 e cria no ponto atual com 180 s iniciais). Abastecer fogueira consome uma unidade inflamável e acrescenta até 60 s, até 300 s; não é uma receita de fabricação de ferramenta.
+- `CRAFTING.md` agora separa explicitamente estas ações implementadas da cadeia de pedra afiada → pedra lascada → faca, aprovada para design futuro mas não codificada. Ingredientes atuais da faca não incluem graveto ou fibra. Foi anotado que o texto do menu continua dizendo “1 minuto” para a fogueira apesar dos 180 s no código.
+- GDD e README alinhados a esses estados e à diferença entre regra de design aprovada e comportamento implementado. A regra documental de impedir fogueiras a até 2,4 m de outra não aparece no código de criação: foi marcada como não implementada, sem alterar mecânica.
+- Nenhum código de jogo ou receita foi alterado neste pedido; nenhum item, custo, saída ou requisito novo foi inventado.
+
+### Verificação
+
+Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStoneHammer`, `splitBranchIntoSticks`, `createCampfire` e `refuelCampfire`, mais os requisitos do menu contextual. Esta é conferência estática; nenhuma receita foi executada manualmente nesta atualização documental. Sem alterações em releases, tags ou backups.
