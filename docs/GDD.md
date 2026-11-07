@@ -167,6 +167,8 @@ O registro consolidado de ingredientes, consumo, resultados esperados e condiç�
 
 ### Fogueira simples
 
+- A fogueira simples é uma ferramenta fixa do Tier 1, do tipo estação de trabalho; não pode ser carregada e é a estação mais básica.
+- Não possui superfície ou suporte para apoiar algo em preparo, então não permite deixar um item sendo preparado enquanto o jogador se afasta. Para um preparo futuro como carne assada, o jogador deve segurar a carne num espeto dentro do alcance da fogueira durante o preparo. Isso descreve o comportamento esperado da estação; não aprova receita, alimento, duração ou mecânica de preparo ainda não definida.
 - Criação atual exige dez gravetos, estar no chão seco e fora de água e lama.
 - Começa com 180 segundos de combustível; material inflamável consumido pode adicionar até 60 segundos, até o máximo total de 300 segundos.
 - Gravetos, galhos e fibras vegetais estão marcados como inflamáveis.

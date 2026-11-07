@@ -6,11 +6,13 @@ O protótipo testa uma pequena fatia de coleta, fabricação e uso de ferramenta
 
 ## Organização por tier
 
-Para a etapa inicial de implementação, antes de alterar o mapa, as ferramentas rústicas aprovadas ficam no **Tier 1**. Neste momento, Tier 1 inclui a faca de pedra e o martelo de pedra. A fogueira é uma fabricação/ação, não uma ferramenta, e portanto não recebe tier neste registro.
+Para a etapa inicial de implementação, antes de alterar o mapa, as ferramentas mais rústicas aprovadas ficam no **Tier 1**. Neste momento, Tier 1 inclui a faca de pedra, o martelo de pedra e a fogueira simples. A fogueira é uma ferramenta do tipo **estação de trabalho**: não pode ser carregada e é a estação mais básica.
 
 A classificação descreve o escopo inicial atual; não afirma que todas as ferramentas futuras já foram definidas, nem estabelece conteúdo, materiais, receitas ou regras para tiers posteriores. Tiers futuros permanecem sem especificação até decisão explícita.
 
 ## Tier 1 — ferramentas rústicas iniciais
+
+### Ferramentas carregáveis
 
 ### Faca de pedra
 
@@ -38,7 +40,10 @@ A classificação descreve o escopo inicial atual; não afirma que todas as ferr
 
 **Limites:** o martelo não corta nem quebra galhos, não converte galho em gravetos e não tem função de construção. Não adicionar outras funções sem decisão explícita.
 
-## Fabricação/ação: criar uma fogueira simples
+### Estação de trabalho: fogueira simples
+
+A fogueira simples é uma ferramenta fixa, não carregável, e a estação de trabalho mais básica. Ela não tem superfície, apoio ou suporte onde deixar um item em preparo. Portanto, não permite iniciar algo, afastar-se e deixá-lo sendo preparado sozinho. Se o jogador for preparar, por exemplo, carne assada nela, deverá manter a carne num espeto e segurá-lo dentro do alcance da fogueira durante o preparo. Esse exemplo registra o comportamento esperado da estação; não aprova uma receita, item, duração ou implementação de preparo de alimentos.
+
 
 **Ingredientes:** dez gravetos na pilha equipada.
 
@@ -50,7 +55,7 @@ A classificação descreve o escopo inicial atual; não afirma que todas as ferr
 
 **Combustível adicional:** um material inflamável consumido por ação pode adicionar até 60 segundos, respeitando o máximo total de 300 segundos (5 minutos). Gravetos, galhos e fibras vegetais são inflamáveis. O combustível continua decrescendo enquanto o menu está fechado. Ao chegar a zero, o fogo e a luz se apagam; há um anúncio único se o jogador estiver próximo.
 
-**Limites:** as regras são experimentais do protótipo e não constituem um sistema geral de fogo ou sobrevivência. Não há salvamento/persistência das fogueiras.
+**Limites:** as regras são experimentais do protótipo e não constituem um sistema geral de fogo ou sobrevivência. Não há salvamento/persistência das fogueiras. O comportamento de estação acima descreve a limitação de apoio/preparo; não define receitas ou alimentos implementados.
 
 ## Coleta e conversão de galho em gravetos
 
