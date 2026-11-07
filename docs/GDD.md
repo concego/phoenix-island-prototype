@@ -145,7 +145,8 @@ O registro consolidado de ingredientes, consumo, resultados esperados e condiç�
 ### Faca de pedra
 
 - Ferramenta de corte.
-- Receita aprovada: duas pedras no total; uma pedra equipada e outra disponível no inventário. A fabricação consome as duas.
+- Receita de design aprovada: primeiro, duas pedras geram uma pedra afiada; uma pedra e uma pedra afiada geram uma pedra lascada; uma pedra lascada, um graveto e uma fibra vegetal geram uma faca de pedra. A fibra amarra a lâmina ao cabo de graveto.
+- Estado atual do protótipo: a receita implementada ainda é duas pedras no total, uma equipada e outra no inventário; ambas são consumidas. A cadeia de processamento e a nova receita ainda não foram implementadas nem testadas.
 - Corta galhos vivos baixos da copa quando equipada. Não é necessária para recolher galhos caídos.
 - A faca não deve ser descrita como ferramenta de impacto.
 
@@ -162,6 +163,7 @@ O registro consolidado de ingredientes, consumo, resultados esperados e condiç�
 - Pedras soltas, arbustos, galhos caídos e cinzas são coletados com Enter quando elegíveis, inclusive com outro item nas mãos. Espaço usa o item equipado; não recolhe esses itens do chão.
 - Afloramentos exigem martelo no inventário e são minerados com Espaço em golpes sucessivos.
 - Arbustos são coletados e fornecem duas fibras vegetais cada no protótipo atual.
+- Para o design, está aprovada a cadeia de processamento de pedra: duas pedras geram uma pedra afiada; uma pedra + uma pedra afiada geram uma pedra lascada; uma pedra lascada + um graveto + uma fibra vegetal geram a faca de pedra. A fibra amarra a lâmina ao cabo. Essa cadeia ainda não está implementada no protótipo. A pedra afiada pode ser componente de ferramentas futuras como machado e picareta, mas as receitas dessas ferramentas não estão decididas.
 - Gravetos são menores e mais frágeis que galhos; ambos são inflamáveis. Gravetos servem de combustível e de partes para ferramentas e estruturas; no protótipo são combustível da fogueira simples e compõem o cabo do martelo de pedra. Receitas concretas de estruturas ou outras ferramentas ainda não estão definidas. Galhos são maiores e mais resistentes que gravetos; podem servir de combustível e ser convertidos em dois gravetos com faca no inventário. Ainda não há receita especificada que use galhos como componente de ferramenta ou estrutura; lança, picareta e estruturas são possibilidades de design futuras, sem receitas aprovadas.
 - Fibras vegetais vêm dos arbustos, são inflamáveis e servem para improvisar amarrações que conectam componentes; a fibra da receita do martelo prende a pedra ao cabo. Outras receitas de amarração ou de estrutura ainda não estão especificadas.
 - Pedras são o mineral mais básico atualmente listado, resistente e não inflamável. Podem ser moldadas com limitações e não são tão flexíveis quanto metais; servem para ferramentas e estruturas. No protótipo são usadas na faca e no martelo de pedra. Processo de moldagem, técnicas e receitas estruturais concretas ainda não estão definidos.

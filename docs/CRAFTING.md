@@ -31,16 +31,28 @@ Esta lista separa o que já está definido ou presente no protótipo das possibi
 
 - **Origem atual:** encontradas em arbustos; cada arbusto fornece duas fibras vegetais no protótipo atual.
 - **Papel definido no design:** material inflamável para improvisar amarrações e conectar componentes.
-- **Uso concreto no protótipo:** uma fibra é ingrediente do martelo de pedra e prende a pedra ao cabo.
+- **Usos de design aprovados:** uma fibra amarra a pedra ao cabo do martelo; a faca de pedra também usa fibra para prender sua lâmina ao graveto.
+- **Uso concreto no protótipo:** uma fibra já é ingrediente do martelo de pedra. A nova receita da faca ainda não está implementada.
 - **Ainda não especificado:** outras receitas de amarração ou componentes de estruturas; nenhuma foi aprovada.
 
 ### Pedras
 
 - **Propriedades:** forma mais básica de mineral presente no projeto; são resistentes e não inflamáveis. Podem ser moldadas, mas com limitações: não têm a flexibilidade de metais.
 - **Papel definido no design:** matéria-prima resistente para ferramentas e estruturas, moldável dentro de limites; não tem a flexibilidade dos metais.
-- **Uso concreto no protótipo:** ingrediente da faca e do martelo de pedra; pedras são recolhidas soltas ou obtidas de afloramentos.
-- **Ainda não especificado:** processo e limites práticos de moldagem, receitas adicionais e funções estruturais concretas. Não assumir técnicas ou propriedades além das descritas.
+- **Cadeia de processamento aprovada para o design:** duas pedras geram uma pedra afiada; uma pedra mais uma pedra afiada geram uma pedra lascada; a pedra lascada, um graveto e uma fibra geram uma faca de pedra. A pedra afiada também fica disponível como componente intermediário para ferramentas futuras, mas as receitas dessas ferramentas não estão decididas.
+- **Uso concreto no protótipo:** pedras são recolhidas soltas ou obtidas de afloramentos; a receita atualmente implementada da faca e a receita do martelo usam pedras. A cadeia de pedras afiadas/lascadas e a nova receita da faca ainda não foram implementadas.
+- **Ainda não especificado:** processo e limites práticos de moldagem além desta cadeia, receitas adicionais e funções estruturais concretas. Não assumir técnicas ou propriedades além das descritas.
 
+
+## Processamento de pedra — cadeia aprovada para o design
+
+A cadeia abaixo define as entradas e resultados de design. Ela ainda não substitui a implementação atual do protótipo; a mudança de código precisa ser feita e testada separadamente.
+
+1. **Duas pedras → uma pedra afiada.** A pedra afiada é um componente intermediário utilizável em ferramentas.
+2. **Uma pedra + uma pedra afiada → uma pedra lascada.**
+3. **Uma pedra lascada + um graveto + uma fibra vegetal → uma faca de pedra.** A fibra amarra a pedra lascada ao graveto, que funciona como cabo.
+
+O uso da pedra afiada em ferramentas como machado e picareta é uma possibilidade de design já mencionada, mas suas receitas e quantidades ainda não foram decididas. Esta cadeia não define ferramentas, métodos, estações, tempos ou outros resultados de processamento.
 
 ## Tier 1 — ferramentas rústicas iniciais
 
@@ -48,11 +60,11 @@ Esta lista separa o que já está definido ou presente no protótipo das possibi
 
 ### Faca de pedra
 
-**Ingredientes:** duas pedras no total: uma pedra equipada e outra disponível no inventário.
+**Receita de design aprovada:** uma pedra lascada, um graveto e uma fibra vegetal. A fibra amarra a lâmina de pedra lascada ao graveto, que serve de cabo.
 
-**Consumo:** as duas pedras são consumidas.
+**Resultado esperado:** uma faca de pedra, ferramenta de corte.
 
-**Resultado esperado:** fabricação de uma faca de pedra, ferramenta de corte.
+**Estado da implementação:** o protótipo ainda usa a receita antiga de duas pedras (uma equipada e outra no inventário), consumindo ambas. A cadeia de pedra afiada → pedra lascada → faca e a nova receita com graveto e fibra ainda precisam ser implementadas e testadas; esta atualização é documental.
 
 **Uso definido:** quando equipada, pode cortar galhos vivos baixos da copa por golpes sucessivos. Cada alvo de galho vivo tem resistência 6; cada golpe da faca causa dano inteiro sorteado uniformemente entre 1 e 3. Ao esgotar a resistência, o alvo entrega um galho. A faca não é necessária para recolher galhos que já caíram no chão.
 
