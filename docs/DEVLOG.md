@@ -898,3 +898,10 @@ Revisadas as definições de receita e as rotinas `craftStoneKnife`, `craftStone
 - Sintaxe JavaScript verificada por parser. Diff conferido: somente os dois incrementos de olhar e suas descrições no README/GDD, mais este registro; constantes de movimento, coleta, mira, árvore, pedras e centro do anúncio não mudaram.
 - Página publicada e teste de teclado confirmarão o novo passo. A comparação por Anderson, em especial o esforço necessário para centralizar pedras soltas e outros objetos pequenos, permanece necessária; não presumir que o ajuste resolveu o caso.
 - Sem alteração de releases, tags ou backups.
+
+
+## 7 de novembro de 2026 — descrição narrativa dos arbustos
+
+- A descrição ao olhar para arbustos agora usa apenas “um arbusto silvestre”, sem índice/número e sem informar o recurso que fornece. A descrição armazenada no alvo do arbusto foi igualmente reduzida a “Um arbusto silvestre.”
+- Mantido inalterado o comportamento de coleta e a mensagem após coletar fibras. A mudança só retira detalhes de ficha técnica da identificação durante a observação.
+- Sintaxe e diff verificados; nenhum código de mecânica ou coleta foi alterado. Publicação e teste de anúncio no navegador serão registrados separadamente. Sem alterações em releases, tags ou backups.
