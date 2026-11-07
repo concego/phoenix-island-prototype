@@ -114,6 +114,8 @@ O olhar e a orientação corporal são controles distintos. A/D não giram o cor
 
 ## 6. Interações e ferramentas aprovadas
 
+O registro consolidado de ingredientes, consumo, resultados esperados e condições das receitas de fabricação está em [`CRAFTING.md`](CRAFTING.md). Este documento detalha as receitas atualmente aprovadas sem ampliar o escopo do protótipo.
+
 ### Árvore: duas alturas, duas mecânicas
 
 - A escalada deve permanecer funcional: aproximar-se e mirar o tronco, pressionar Espaço para agarrar, manter W para subir ao patamar alto, caminhar pelos galhos, segurar-se numa ponta com Espaço e descer com S.
