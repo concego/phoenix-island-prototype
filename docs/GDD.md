@@ -146,7 +146,23 @@ Os valores desta seção foram aprovados por Anderson em 13 de novembro de 2026 
 | Médio | arbusto, afloramento rochoso | 20 m | 30 m |
 | Pequeno | pedra solta, galho caído, fogueira | 8 m | 12 m |
 
-A classe é uma categoria de percepção do jogo, não uma medição física das malhas. A fogueira pertence à classe pequena para identificação pela forma; sua luminosidade é tratada separadamente. Não reclassificar exemplos nem acrescentar novos sem decisão de Anderson.
+A classe é uma categoria de detecção do jogo, não uma medição física das malhas. A fogueira pertence à classe pequena para identificação pela forma; sua luminosidade é tratada separadamente. Não reclassificar as classes desta tabela nem acrescentar novos alvos a ela sem decisão de Anderson.
+
+**Escala de porte físico dos objetos (decisão aprovada em 13 de novembro de 2026):** essa é uma escala independente das classes de detecção acima. Classificar cada objeto pela sua maior dimensão física, em metros. Usar os limites exatos abaixo; cada intervalo é aberto à esquerda e fechado à direita, exceto o primeiro e a faixa final. A escala cresce para cima e pode ganhar categorias adicionais se o jogo incluir objetos ainda maiores.
+
+| Porte físico | Maior dimensão |
+|---|---:|
+| Minúsculo | até 0,25 m |
+| Pequeno | acima de 0,25 m até 1 m |
+| Médio | acima de 1 m até 3 m |
+| Grande | acima de 3 m até 10 m |
+| Enorme | acima de 10 m até 30 m |
+| Colossal | acima de 30 m até 100 m |
+| Monumental | acima de 100 m; sem limite superior definido |
+
+A maior dimensão serve para classificar o porte; não determina, sozinha, oclusão nem área encoberta. O efeito visual de um objeto sobre outro depende de geometria, posição e interseção com a linha de visão, cuja regra ainda será definida. Portanto, não inferir que um objeto grande oculta integralmente algo atrás dele, nem que objetos pequenos nunca ocultam. A escala também não define quais materiais bloqueiam.
+
+Exemplos de porte a confirmar pelas dimensões reais dos modelos do jogo: pedra solta e galho caído provavelmente pequeno; arbusto pequeno ou médio; árvore grande ou enorme; colina enorme ou colossal; montanha colossal ou monumental. Esses exemplos não atribuem dimensões aos assets existentes. Não atribuir ao lago uma função de obstáculo com base no seu porte: bloqueio da superfície, visão através da água e visão subaquática continuam sem decisão.
 
 **Iluminação ambiente:** usar a iluminância ambiente local em lux como banda de entrada do modelo provisório. Aplicar o multiplicador indicado aos dois alcances-base (identificação e contorno/indício); não aplicar este multiplicador à luminosidade própria da fogueira.
 
@@ -183,7 +199,7 @@ Usar uma única condição atmosférica por avaliação; não somar tetos nem in
 
 **Fogueira — detecção da luminosidade:** a fogueira é um alvo pequeno, não um objeto grande. Em condição escura, a fonte luminosa pode permitir detectar um brilho até 25 m; isso não permite identificar a fogueira como objeto a essa distância. O reconhecimento pela forma continua sujeito à classe pequena (até 8 m em condição de referência), multiplicador de luz ambiente e teto atmosférico. Para a pista de brilho, aplicar o teto atmosférico, mas não o multiplicador de iluminância ambiente. O alcance exato do bônus conforme a iluminância ambiente acima de 1 lux, a redução gradual do bônus e os limiares de transição ainda não foram definidos: não interpolar, não criar faixas adicionais e não implementar essa parte até Anderson decidir. Quando apenas o brilho for detectável, a mensagem deve dizer “uma luz” ou “um brilho”, não “uma fogueira”.
 
-**Oclusão e múltiplos alvos — decisão ainda pendente:** os alcances numéricos acima pressupõem que não haja obstrução. A próxima etapa de design definirá quais geometrias bloqueiam a linha de visão, oclusão parcial, objetos alinhados no mesmo eixo e prioridade dos anúncios. Até essa definição, não converter obstáculos em multiplicadores, não assumir que qualquer geometria opaca/renderizada bloqueia, não ignorar obstrução, não escolher quantos alvos alinhados anunciar e não criar regras específicas por objeto. Se a tarefa de implementação depender dessas decisões, parar e perguntar a Anderson no chat.
+**Oclusão e múltiplos alvos — decisão ainda pendente:** os alcances numéricos acima pressupõem que não haja obstrução. A escala de porte físico acima está aprovada, mas não é regra de oclusão e não pode ser usada como substituta dela. A próxima etapa de design definirá quais geometrias bloqueiam a linha de visão, oclusão parcial, objetos alinhados no mesmo eixo e prioridade dos anúncios. Até essa definição, não converter obstáculos em multiplicadores, não assumir que qualquer geometria opaca/renderizada bloqueia, não ignorar obstrução, não escolher quantos alvos alinhados anunciar e não criar regras específicas por objeto. Se a tarefa de implementação depender dessas decisões, parar e perguntar a Anderson no chat.
 
 **Regra de implementação:** os parâmetros acima substituem “nenhum alcance-base/faixa foi decidido”, mas não autorizam por si só alteração de código. Antes de uma implementação solicitada, apresentar a fórmula acima e as pendências de oclusão/alvos alinhados. Manter separados campo angular, alcance perceptivo, visibilidade atmosférica, iluminância ambiente, detecção da luz emitida pela fogueira, linha de visão, renderização, colisão/transponibilidade e alcance/seleção de interação. Nunca usar `camera.far = 100` como alcance de design.
 
