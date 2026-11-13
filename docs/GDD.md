@@ -125,6 +125,23 @@ A distribuição, quantidades e dimensões são parâmetros do protótipo e pode
 
 O olhar e a orientação corporal são controles distintos. A/D não giram o corpo. Não introduzir atalhos que conflitem com essas funções sem decisão explícita.
 
+### Percepção visual do cenário — estado observado e decisões pendentes
+
+O código atual implementa uma seleção parcial de alvos para as descrições de olhar; ela não equivale a uma regra de visão completa nem está consolidada como sistema final. Esta descrição serve para a IA de desenvolvimento distinguir o comportamento existente das regras ainda por decidir.
+
+**Estado atual encontrado no código (13 de novembro de 2026):**
+
+- Não há um alcance máximo de percepção em metros aprovado como regra de jogo. A câmera Three.js tem plano distante de 100 m; isso é um limite técnico de projeção/renderização de pontos-alvo, não um alcance de percepção escolhido para o design. Não apresentar 100 m como alcance deliberado.
+- O campo vertical da câmera está definido em 68°. A extensão horizontal depende da proporção da tela; isso não estabelece alcance em profundidade.
+- As descrições analisam uma lista selecionada de alvos com pontos de referência, verificando enquadramento e elevação. Não enumeram nem anunciam todos os objetos visíveis ou todos os objetos na mesma direção; o anúncio é escolhido por categorias e prioridades codificadas.
+- A checagem de linha de visão testa o perfil matemático do terreno entre jogador e alvo, com amostras de 0,01 m e folga de 0,01 m, e lança raio contra a lista `lookables`. Um alvo ignora suas próprias malhas cadastradas, mas outra malha cadastrada atingida antes pode ocultá-lo. Geometrias da cena que não estejam em `lookables` não participam desse teste semântico de oclusão, ainda que sejam renderizadas.
+- A lista de colisão física é separada da lista `lookables`; atualmente os obstáculos físicos de deslocamento incluem a árvore e os afloramentos de pedra. Não existe uma classificação geral que diga quais objetos são fisicamente intransponíveis, quais são atravessáveis mas opacos, ou quais são decoração visual transparente para percepção.
+- Logo, “visível graficamente”, “considerado visível pelo anúncio acessível”, “bloqueia movimento” e “pode ser selecionado para interação” são estados diferentes. O alcance da coleta/interação também não é o alcance de percepção.
+
+**Regra para o desenvolvimento:** não acrescentar ou alterar distância, oclusão, classes de obstáculo, prioridade entre alvos ou exceções individuais por intuição ou para corrigir um caso isolado. A percepção está deliberadamente marcada como necessitando de uma regra de design explícita e coerente. Antes de propor mudança de código, descrever o comportamento atual e pedir a Anderson as decisões que faltarem. Manter separados os conceitos de campo angular, alcance de percepção, bloqueio de linha de visão, colisão/transponibilidade e seleção de interação; só depois aplicar as regras aprovadas uniformemente.
+
+**Ainda por decidir:** alcance de percepção em metros (se houver um limite comum ou por categoria), critérios de oclusão visual/semântica, classificação e exceções dos tipos de geometria, o comportamento desejado para vários alvos alinhados e a prioridade dos anúncios. Capturas, limite de renderização, alcances de interação e comportamento atual do código não resolvem essas decisões nem autorizam copiá-las como regras finais.
+
 ## 6. Interações e ferramentas aprovadas
 
 O registro consolidado de ingredientes, consumo, resultados esperados e condições das receitas de fabricação está em [`CRAFTING.md`](CRAFTING.md). Este documento detalha as receitas atualmente aprovadas sem ampliar o escopo do protótipo.
