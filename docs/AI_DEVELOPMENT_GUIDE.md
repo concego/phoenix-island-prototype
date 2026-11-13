@@ -45,6 +45,10 @@ Nesta fase, não exibir controles ou instruções visíveis; o único texto vis�
 
 - Faça mudanças focadas e preserve mecânicas independentes já aprovadas.
 - Ao mexer em geometria, altura ou seleção de alvos, verifique efeitos sobre colisão, alcance, oclusão, coleta, escalada, locomoção e descrição acessível.
+- **Percepção/visão ainda não é uma regra de design fechada.** Consulte a seção “Percepção visual do cenário — estado observado e decisões pendentes” do GDD: não existe alcance de percepção em metros aprovado; o `camera.far = 100` é limite técnico, não decisão de design. Não use isso como especificação nem invente outra distância.
+- Ao mexer em percepção, descreva antes o comportamento encontrado no código. Não ajuste alcance, linha de visão, listas de geometrias opacas, classes de obstáculo, prioridade ou exceções por objeto sem decisão explícita de Anderson. Não corrija um caso isolado com mais uma exceção ad hoc.
+- Distinga e teste separadamente: campo angular/projeção, distância perceptiva, oclusão semântica, malha efetivamente renderizada, colisão física/transponibilidade e seleção/alcance da interação. `lookables`, `blockers`, alvos de anúncio e alvos de interação não são listas intercambiáveis.
+- Se as decisões faltantes forem necessárias, apresente a Anderson o estado atual e perguntas concretas (alcance, quais classes de objeto ocultam, como tratar múltiplos alvos alinhados e prioridade) antes de codificar. Documente teste de casos alinhados e o que fica atrás de cada tipo de obstáculo; não alegue que revisão estática valida percepção em jogo.
 - A informação necessária à interação não pode depender exclusivamente de visão ou de um som ambíguo. Preserve a navegação por teclado e os anúncios acessíveis existentes, salvo mudança explicitamente aprovada.
 - Não trate checagem estática, sintaxe válida, workflow concluído ou página carregada como prova de gameplay correto ou acessibilidade validada.
 - Verifique os casos de sucesso e falha pertinentes, incluindo inventário cheio, fora de alcance, disputa entre alvos, limites do mapa e estados próximos afetados.
