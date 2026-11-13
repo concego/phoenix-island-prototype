@@ -125,25 +125,67 @@ A distribuição, quantidades e dimensões são parâmetros do protótipo e pode
 
 O olhar e a orientação corporal são controles distintos. A/D não giram o corpo. Não introduzir atalhos que conflitem com essas funções sem decisão explícita.
 
-### Percepção visual do cenário — estado observado e decisões pendentes
+### Percepção visual do cenário — parâmetros hipotéticos de trabalho e decisões pendentes
 
-O código atual implementa uma seleção parcial de alvos para as descrições de olhar; ela não equivale a uma regra de visão completa nem está consolidada como sistema final. Esta descrição serve para a IA de desenvolvimento distinguir o comportamento existente das regras ainda por decidir.
+Os valores desta seção foram aprovados por Anderson em 13 de novembro de 2026 como parâmetros hipotéticos para trabalhar num escopo mais realista. São valores de design para o jogo, não medições universais da visão humana. Eles substituem a antiga instrução de que nenhum valor-base ou faixa havia sido escolhido. Não alteram por si mesmos o código nem autorizam uma mudança de implementação.
 
 **Estado atual encontrado no código (13 de novembro de 2026):**
 
-- A direção de design agora é usar valores realistas para o campo angular de visão humano. O código atual tem campo vertical da câmera definido em 68°, mas esse valor isolado não representa uma especificação completa nem substitui a futura definição baseada em referências humanas; a extensão horizontal depende da proporção da tela.
-- O alcance de percepção deve considerar um **fator de visibilidade** que pode aumentá-lo ou reduzi-lo conforme condições do ambiente. Fatores já apontados para consideração incluem iluminação, altitude e obstáculos à frente. A lista definitiva de variáveis, seus pesos, fórmulas, faixas e efeitos específicos ainda não foi definida.
-- A câmera Three.js tem plano distante de 100 m; isso é um limite técnico de projeção/renderização de pontos-alvo, não um alcance de percepção escolhido para o design. Não apresentar 100 m como alcance deliberado nem usá-lo como substituto do fator de visibilidade.
-- As descrições analisam uma lista selecionada de alvos com pontos de referência, verificando enquadramento e elevação. Não enumeram nem anunciam todos os objetos visíveis ou todos os objetos na mesma direção; o anúncio é escolhido por categorias e prioridades codificadas.
-- A checagem de linha de visão testa o perfil matemático do terreno entre jogador e alvo, com amostras de 0,01 m e folga de 0,01 m, e lança raio contra a lista `lookables`. Um alvo ignora suas próprias malhas cadastradas, mas outra malha cadastrada atingida antes pode ocultá-lo. Geometrias da cena que não estejam em `lookables` não participam desse teste semântico de oclusão, ainda que sejam renderizadas.
-- A lista de colisão física é separada da lista `lookables`; atualmente os obstáculos físicos de deslocamento incluem a árvore e os afloramentos de pedra. Não existe uma classificação geral que diga quais objetos são fisicamente intransponíveis, quais são atravessáveis mas opacos, ou quais são decoração visual transparente para percepção.
-- Logo, “visível graficamente”, “considerado visível pelo anúncio acessível”, “bloqueia movimento” e “pode ser selecionado para interação” são estados diferentes. O alcance da coleta/interação também não é o alcance de percepção.
+- A câmera Three.js usa campo vertical de 68° e plano distante de 100 m. Esses valores descrevem a implementação atual e não substituem os parâmetros de gameplay abaixo.
+- As descrições atuais consultam uma lista selecionada de alvos e prioridades codificadas; não constituem percepção global de todos os objetos.
+- A linha de visão atual testa o perfil matemático do terreno entre jogador e alvo, com amostras de 0,01 m e folga de 0,01 m, e lança raio contra `lookables`. O alvo ignora suas próprias malhas cadastradas, mas uma malha cadastrada antes dele pode ocultá-lo. Geometrias que não estejam em `lookables` não participam desse teste semântico de oclusão.
+- `lookables`, colisão física, malhas renderizadas e alvos de interação são conjuntos distintos. O alcance de interação não é alcance de percepção.
 
-**Direção de design aprovada:** calcular a percepção a partir de um campo angular baseado em valores realistas de visão humana, com o alcance modulado por um fator de visibilidade ambiental. Esse fator pode aumentar ou reduzir o alcance em função das condições presentes, incluindo fatores como iluminação, altitude e obstáculos à frente. Os exemplos de fatores não constituem lista fechada nem definem fórmula ou valores.
+**Faixas de distância de referência:** perto = até 8 m; média = acima de 8 m e até 20 m; longe = acima de 20 m e até 45 m. A faixa longe não é teto de renderização. Alvos podem ser apenas detectáveis além do alcance de identificação, até os limites por tamanho definidos abaixo.
 
-**Regra para o desenvolvimento:** não acrescentar ou alterar distâncias, oclusão, classes de obstáculo, prioridade entre alvos ou exceções individuais por intuição ou para corrigir um caso isolado. Implementar a direção acima exige antes definir medidas angulares realistas, alcance-base, fatores considerados e como eles afetam o alcance; não inventar números, pesos ou fórmulas. Manter separados os conceitos de campo angular, distância de percepção modulada por visibilidade, bloqueio de linha de visão, colisão/transponibilidade e seleção de interação. Descrever o comportamento atual e pedir a Anderson as decisões quantitativas ou de classificação que ainda faltarem antes de codificar.
+**Classe de tamanho e alcance-base em condição de referência** (ar limpo, sem oclusão, iluminação ambiente de pelo menos 100 lux; distâncias medidas do jogador ao alvo):
 
-**Ainda por decidir:** referências e medidas angulares humanas a adotar; alcance-base em condições de referência; fatores de visibilidade incluídos e seus modelos/valores; tratamento de oclusão parcial e classes de geometria; comportamento para vários alvos alinhados e prioridade dos anúncios. Capturas, limite de renderização, alcances de interação e comportamento atual do código não resolvem essas decisões nem autorizam copiá-las como regras finais.
+| Classe de tamanho aparente | Exemplos do mapa atual | Identificar o objeto até | Detectar contorno/indício até |
+|---|---|---:|---:|
+| Grande | colina, árvore, lago | 45 m | 60 m |
+| Médio | arbusto, afloramento rochoso | 20 m | 30 m |
+| Pequeno | pedra solta, galho caído, fogueira | 8 m | 12 m |
+
+A classe é uma categoria de percepção do jogo, não uma medição física das malhas. A fogueira pertence à classe pequena para identificação pela forma; sua luminosidade é tratada separadamente. Não reclassificar exemplos nem acrescentar novos sem decisão de Anderson.
+
+**Iluminação ambiente:** usar a iluminância ambiente local em lux como banda de entrada do modelo provisório. Aplicar o multiplicador indicado aos dois alcances-base (identificação e contorno/indício); não aplicar este multiplicador à luminosidade própria da fogueira.
+
+| Iluminância ambiente local | Multiplicador do alcance-base |
+|---|---:|
+| Menos de 0,01 lux | 0,25 |
+| De 0,01 lux até menos de 0,1 lux | 0,35 |
+| De 0,1 lux até menos de 1 lux | 0,50 |
+| De 1 lux até menos de 10 lux | 0,65 |
+| De 10 lux até menos de 100 lux | 0,80 |
+| 100 lux ou mais | 1,00 |
+
+Os intervalos são fechados à esquerda e abertos à direita, exceto a última banda. Não interpolar entre bandas nem criar uma curva contínua sem aprovação. Lux representa iluminância incidente, não luminância aparente; não converter diretamente entre lux e cd/m². Estes números são níveis de jogo aproximados.
+
+**Visibilidade atmosférica:** selecionar a condição aplicável e usar seu valor como teto de alcance para identificação e contorno/indício, após aplicar o multiplicador de iluminação. Assim, alcance efetivo = menor entre (alcance-base da classe × multiplicador de iluminação) e teto atmosférico.
+
+| Condição no jogo | Teto de alcance |
+|---|---:|
+| Ar limpo | 60 m |
+| Névoa leve | 45 m |
+| Névoa moderada | 25 m |
+| Névoa/nevoeiro forte ou fumaça densa | 10 m |
+| Quase sem visibilidade | 5 m |
+
+Usar uma única condição atmosférica por avaliação; não somar tetos nem inventar pesos para misturas de condições. Os limites abaixo de 1 km são escalas de gameplay, não definições meteorológicas. Não tratar altitude como multiplicador numérico: ela pode afetar linha de visada/horizonte por geometria, mas qualquer regra de oclusão e sua aplicação permanecem sujeitas à próxima definição específica.
+
+**Mensagens por nível de detecção:**
+
+- Dentro do alcance de identificação calculado: identificar o objeto pelo nome, se o tipo for distinguível.
+- Acima do alcance de identificação, mas até o alcance de contorno/indício: usar “a silhueta de [objeto] à distância” somente quando a forma permite reconhecer a categoria; se não for possível definir o tipo, usar “algo à distância”.
+- Acima do alcance de contorno/indício: não detectar nem anunciar o alvo.
+- “Perto”, “a distância” e termos equivalentes descrevem a faixa global (até 8 m; acima de 8 até 20 m; acima de 20 m). Não inventar subfaixas verbais.
+- A mensagem não deve afirmar identificação quando o modelo só permite detectar um contorno ou indício.
+
+**Fogueira — detecção da luminosidade:** a fogueira é um alvo pequeno, não um objeto grande. Em condição escura, a fonte luminosa pode permitir detectar um brilho até 25 m; isso não permite identificar a fogueira como objeto a essa distância. O reconhecimento pela forma continua sujeito à classe pequena (até 8 m em condição de referência), multiplicador de luz ambiente e teto atmosférico. Para a pista de brilho, aplicar o teto atmosférico, mas não o multiplicador de iluminância ambiente. O alcance exato do bônus conforme a iluminância ambiente acima de 1 lux, a redução gradual do bônus e os limiares de transição ainda não foram definidos: não interpolar, não criar faixas adicionais e não implementar essa parte até Anderson decidir. Quando apenas o brilho for detectável, a mensagem deve dizer “uma luz” ou “um brilho”, não “uma fogueira”.
+
+**Oclusão e múltiplos alvos — decisão ainda pendente:** os alcances numéricos acima pressupõem que não haja obstrução. A próxima etapa de design definirá quais geometrias bloqueiam a linha de visão, oclusão parcial, objetos alinhados no mesmo eixo e prioridade dos anúncios. Até essa definição, não converter obstáculos em multiplicadores, não assumir que qualquer geometria opaca/renderizada bloqueia, não ignorar obstrução, não escolher quantos alvos alinhados anunciar e não criar regras específicas por objeto. Se a tarefa de implementação depender dessas decisões, parar e perguntar a Anderson no chat.
+
+**Regra de implementação:** os parâmetros acima substituem “nenhum alcance-base/faixa foi decidido”, mas não autorizam por si só alteração de código. Antes de uma implementação solicitada, apresentar a fórmula acima e as pendências de oclusão/alvos alinhados. Manter separados campo angular, alcance perceptivo, visibilidade atmosférica, iluminância ambiente, detecção da luz emitida pela fogueira, linha de visão, renderização, colisão/transponibilidade e alcance/seleção de interação. Nunca usar `camera.far = 100` como alcance de design.
 
 ## 6. Interações e ferramentas aprovadas
 
