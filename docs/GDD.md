@@ -203,6 +203,8 @@ Usar uma única condição atmosférica por avaliação; não somar tetos nem in
 
 **Regra de implementação:** os parâmetros acima substituem “nenhum alcance-base/faixa foi decidido”, mas não autorizam por si só alteração de código. Antes de uma implementação solicitada, apresentar a fórmula acima e as pendências de oclusão/alvos alinhados. Manter separados campo angular, alcance perceptivo, visibilidade atmosférica, iluminância ambiente, detecção da luz emitida pela fogueira, linha de visão, renderização, colisão/transponibilidade e alcance/seleção de interação. Nunca usar `camera.far = 100` como alcance de design.
 
+A fronteira da próxima etapa codificável está detalhada em [`PERCEPTION_IMPLEMENTATION_SCOPE.md`](PERCEPTION_IMPLEMENTATION_SCOPE.md). Esse documento autoriza somente o escopo técnico ali descrito depois de pedido explícito de implementação; não resolve nem autoriza implementar oclusão.
+
 ## 6. Interações e ferramentas aprovadas
 
 O registro consolidado de ingredientes, consumo, resultados esperados e condições das receitas de fabricação está em [`CRAFTING.md`](CRAFTING.md). Este documento detalha as receitas atualmente aprovadas sem ampliar o escopo do protótipo.
